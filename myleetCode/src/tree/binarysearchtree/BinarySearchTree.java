@@ -597,4 +597,38 @@ public class BinarySearchTree {
             prevNode.right = newNode;
         }
     }
+
+    /**
+     * 975.奇偶跳
+     * @param A
+     * @return
+     */
+    public int oddEvenJumps(int[] A) {
+        int size = A.length;
+        boolean[] odd = new boolean[size];// 第i个节点奇数次跳跃能否到达最后节点
+        boolean[] even = new boolean[size];// 第i个节点偶数次跳跃能否到达最后节点
+
+        TreeMap<Integer, Integer> tm = new TreeMap<>();
+
+        odd[size - 1] = even[size - 1] = true;// 最后一个节点跳到本身是肯定可以的
+        tm.put(A[size - 1], size - 1);
+        int ret = 1;
+        for (int i = size - 2; i >= 0; i--) {
+            Integer ceil = tm.ceilingKey(A[i]);
+            Integer floor = tm.floorKey(A[i]); // the greatest key <= the given key or null
+
+            if (ceil != null){
+                odd[i] = even[tm.get(ceil)];
+            }
+            if (floor != null){
+                even[i] = odd[tm.get(floor)];
+            }
+            if (odd[i]) {
+                ret++;
+            }
+
+            tm.put(A[i], i); // as a result, it will always keep a biggest pos of A[i].
+        }
+        return ret;
+    }
 }

@@ -24,12 +24,7 @@ public class SummaryRanges {
     private TreeSet<Interval> intervalSet;
 
     public SummaryRanges() {
-        intervalSet = new TreeSet<>(new Comparator<Interval>() {
-            @Override
-            public int compare(Interval o1, Interval o2) {
-                return o1.start - o2.start;
-            }
-        });
+        intervalSet = new TreeSet<>((o1, o2) -> o1.start - o2.start);
     }
 
     public void addNum(int val) {
