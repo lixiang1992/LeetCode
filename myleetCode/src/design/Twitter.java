@@ -15,11 +15,11 @@ public class Twitter {
     // key:用户id -> value: 用户key的关注人集合
     private Map<Integer, Set<Integer>> userFollowMap;
     // key:用户id -> value:用户的最近LATELY条推文
-    private Map<Integer, Queue<Tweet>> userTweetMap;
+    private Map<Integer, Deque<Tweet>> userTweetMap;
     // 最近推文的数量
     private static final int LATELY = 10;
     // 学院派算法可以不用考虑多线程导致的问题，但是工业需要考虑多线程改变时间的值
-    private long curTime = Long.MIN_VALUE;
+    private long curTime = 0L;
 
     /**
      * 推文
@@ -68,17 +68,14 @@ public class Twitter {
 
     /** Compose a new tweet. */
     public void postTweet(int userId, int tweetId) {
-        Queue<Tweet> tweetQueue = userTweetMap.get(userId);// 当前用户最近的推文队列
-        if (tweetQueue == null) {
-            tweetQueue = new PriorityQueue<>();// 最近推文是一个小顶堆
-            userTweetMap.put(userId,tweetQueue);
-        }
+        Deque<Tweet> tweetQueue = userTweetMap.computeIfAbsent(userId, k -> new LinkedList<>());// 当前用户最近的推文队列
+        // 最近推文是一个小顶堆
         Tweet tweet = new Tweet(tweetId,curTime++);
         if (tweetQueue.size() < LATELY){
-            tweetQueue.offer(tweet);// 当前用户最近推文数量未到上限，直接加入
+            tweetQueue.addFirst(tweet);// 当前用户最近推文数量未到上限，直接加入在头部
         }else {
-            tweetQueue.poll();// 当前用户最近推文达到上限，移除最早发送的
-            tweetQueue.offer(tweet);// 最近的推文加入
+            tweetQueue.removeLast();// 当前用户最近推文达到上限，移除最早发送的
+            tweetQueue.addFirst(tweet);// 最近的推文加入
         }
     }
 
@@ -87,7 +84,7 @@ public class Twitter {
         Queue<Tweet> newTweetQueue = new PriorityQueue<>();// 最近的推文集合，小顶堆
         Set<Integer> followSet = getFollowSetByUserId(userId);// 当前关注人的关注集合
         for (int followId:followSet){
-            Queue<Tweet> tweetQueue = userTweetMap.get(followId);
+            Deque<Tweet> tweetQueue = userTweetMap.get(followId);
             if (tweetQueue == null){
                 continue;
             }

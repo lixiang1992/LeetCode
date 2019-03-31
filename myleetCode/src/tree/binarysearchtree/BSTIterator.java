@@ -28,14 +28,16 @@ public class BSTIterator {
 
     /** @return the next smallest number */
     public int next() {
-        TreeNode curNode = deque.pollLast();
+        TreeNode curNode = deque.pollLast();// 获得最小节点
         int value = curNode.val;
-        curNode = curNode.right;
-        addNode(curNode);
+        curNode = curNode.right;// 往右边移动
+        addNode(curNode);// 因为左子树在之前已经加入队列，这个时候把最小节点的右子树加入
         return value;
     }
 
     private void addNode(TreeNode curNode){
+        // 二叉搜索树的性质 left < root < right
+        // 每个节点都把其左子树加入双端队列，当前双端队列的队尾肯定是最小的
         while (curNode != null){
             deque.offer(curNode);
             curNode = curNode.left;
