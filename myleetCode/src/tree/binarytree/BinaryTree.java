@@ -301,6 +301,52 @@ public class BinaryTree {
         }
         return null;
     }
+
+    /**
+     * 110.判断是否平衡二叉树
+     * 自己写的
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root){
+        if (root == null) {
+            return true;
+        }
+        int leftDepth = depth(root.left);
+        int rightDepth = depth(root.right);
+        if (Math.abs(leftDepth - rightDepth) > 1) {
+            return false;
+        } else {
+            return isBalanced(root.left) && isBalanced(root.right);
+        }
+    }
+
+    /**
+     * 110.判断是否平衡二叉树
+     * 来自leetcode快速代码
+     * @param root
+     * @return
+     */
+    public boolean isBalanced2(TreeNode root) {
+        return balancedDepth(root) != -1;
+    }
+
+    private int balancedDepth(TreeNode root) {
+        if (root == null)
+            return 0;
+
+        int left = balancedDepth(root.left);
+        if (left == -1)
+            return -1;
+        int right = balancedDepth(root.right);
+        if (right == -1)
+            return -1;
+
+        if (Math.abs(left - right) > 1)
+            return -1;
+        return Math.max(left, right) + 1;
+    }
+
     /**
      * 124. 二叉树中的最大路径和
      * 思路：二叉树中某一个节点为根结点的最大路径和，

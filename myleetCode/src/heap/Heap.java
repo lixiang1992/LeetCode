@@ -4,6 +4,26 @@ import java.util.*;
 
 public class Heap {
 
+    /**
+     * 215. 数组中的第K个最大元素
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int findKthLargest(int[] nums, int k) {
+        Queue<Integer> pq = new PriorityQueue<>(k);
+        for (int i=0;i<nums.length;i++){
+            if (pq.size() < k){
+                pq.offer(nums[i]);
+            }else {
+                if (nums[i] > pq.peek()){
+                    pq.poll();
+                    pq.offer(nums[i]);
+                }
+            }
+        }
+        return pq.peek();
+    }
 
     /**
      * 347.给定一个非空的整数数组，返回其中出现频率前 k 高的元素。
