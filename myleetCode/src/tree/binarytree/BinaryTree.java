@@ -1758,4 +1758,142 @@ public class BinaryTree {
         }
         return root;
     }
+
+
+    /**
+     * 1022.根到叶子节点的二进制之和
+     * @param root
+     * @return
+     */
+    public int sumRootToLeaf(TreeNode root) {
+        return sumRootToLeaf(root, 0);
+    }
+
+    /**
+     * 1022的递归的深度优先遍历
+     * @param root
+     * @param val
+     * @return
+     */
+    private int sumRootToLeaf(TreeNode root, int val) {
+        if(root == null)
+            return 0;
+        val = (val << 1) + root.val;
+        return root.left == root.right ? val : sumRootToLeaf(root.left, val)
+                + sumRootToLeaf(root.right, val);
+    }
+
+    /**
+     * 1026. 节点与其祖先之间的最大差值
+     * 给定二叉树的根节点 root，找出存在于不同节点 A 和 B 之间的最大值 V，其中 V = |A.val - B.val|，且 A 是 B 的祖先。
+     *
+     * （如果 A 的任何子节点之一为 B，或者 A 的任何子节点是 B 的祖先，那么我们认为 A 是 B 的祖先）
+     * @param root root
+     * @return 最大差的绝对值
+     */
+    public int maxAncestorDiff(TreeNode root) {
+        int left = maxAncestorDiff(root.left, root.val, root.val);
+        int right = maxAncestorDiff(root.right, root.val, root.val);
+        return left > right ? left : right;
+    }
+
+    private int maxAncestorDiff(TreeNode root, int max, int min){
+        // 递归终止条件
+        if(root == null){
+            return 0;
+        }
+        if(root.val > max){
+            max = root.val;
+        } else if(root.val < min){
+            min = root.val;
+        }
+        if(root.left == null && root.right == null){
+            return max - min;
+        }
+        int left = maxAncestorDiff(root.left, max, min);
+        int right = maxAncestorDiff(root.right, max, min);
+        return left > right ? left : right;
+    }
+
+    /**
+     * 1028. 从先序遍历还原二叉树
+     * 我们从二叉树的根节点 root 开始进行深度优先搜索。
+     *
+     * 在遍历中的每个节点处，我们输出 D 条短划线（其中 D 是该节点的深度），然后输出该节点的值。（如果节点的深度为 D，则其直接子节点的深度为 D + 1。根节点的深度为 0）。
+     *
+     * 如果节点只有一个子节点，那么保证该子节点为左子节点。
+     *
+     * 给出遍历输出 S，还原树并返回其根节点 root
+     * @param S
+     * @return
+     */
+    public TreeNode recoverFromPreorder(String S) {
+        int firstNumIndex = S.indexOf('-');
+        if(firstNumIndex == -1){
+            return new TreeNode(Integer.valueOf(S));
+        }
+        String rootValue = S.substring(0,firstNumIndex);
+        TreeNode root = new TreeNode(Integer.valueOf(rootValue));// 构造根节点
+
+        Deque<TreeNode> stack = new LinkedList<>();// 双端队列模拟栈
+        stack.push(root);// 根节点入栈
+        int nodeValue = 0;
+        int prevDepth = 0;// 上一次的深度
+        int depth = 0;// 当前深度
+        for (int i = firstNumIndex;i<S.length();i++){
+            char cur = S.charAt(i);
+            if ('-' == cur){
+                // 表示深度的字符
+                if (nodeValue > 0){
+                    // 表示之前是数值
+                    TreeNode node = new TreeNode(nodeValue);
+                    buildNodeRelation(depth,prevDepth,stack,node);
+                    stack.push(node);// 节点入栈，先序遍历
+                    nodeValue = 0;// 节点值清空
+                    prevDepth = depth;
+                    depth = 1;
+                }else {
+                    depth++;
+                }
+            }else {
+                // 这个代表字符是数字
+                nodeValue = nodeValue * 10 + (cur - '0');
+                if (i == S.length() - 1){// 最后一个元素了
+                    // 表示之前是数值
+                    TreeNode node = new TreeNode(nodeValue);
+                    buildNodeRelation(depth,prevDepth,stack,node);
+                }
+            }
+        }
+        return root;
+    }
+
+    /**
+     * 处理1028题中树中节点关系的方法
+     * @param depth 当前深度
+     * @param prevDepth 上一个节点的深度
+     * @param stack 用来遍历的栈
+     * @param node 当前节点
+     */
+    private void buildNodeRelation(int depth,int prevDepth,Deque<TreeNode> stack,TreeNode node){
+        if (depth > prevDepth){// 深度更大，表示是左子树
+            TreeNode prevNode = stack.peek();
+            prevNode.left = node;
+        }else if (depth == prevDepth){// 深度一样是右子树
+            stack.pop();// 之前那个不在使用了
+            TreeNode prevNode = stack.peek();
+            prevNode.right = node;
+        }else {// 深度小，则一直从栈中弹出，直到相等
+            int diff = prevDepth - depth + 2;
+            TreeNode prevNode = null;
+            while (diff>0 && !stack.isEmpty()){
+                prevNode = stack.pop();
+                diff--;
+            }
+            if (prevNode != null){
+                prevNode.right = node;
+                stack.push(prevNode);// 这里设置回去是为了之前弹出的时候不漏掉，只有子节点都不会再使用的时候才pop
+            }
+        }
+    }
 }
