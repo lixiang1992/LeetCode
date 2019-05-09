@@ -631,4 +631,29 @@ public class BinarySearchTree {
         }
         return ret;
     }
+
+    /**
+     * 1038.从二叉搜索树到更大和树
+     *
+     * 给出二叉搜索树的根节点，该二叉树的节点值各不相同，修改二叉树，使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。
+     * 反向中序遍历，前一个节点的值加在后一个节点上
+     * @param root
+     * @return
+     */
+    public TreeNode bstToGst(TreeNode root) {
+        TreeNode node = root;
+        Deque<TreeNode> stack = new LinkedList<>();
+        int sumValue = 0;
+        while (node != null || !stack.isEmpty()){
+            while (node != null){
+                stack.push(node);
+                node = node.right;
+            }
+            node = stack.pop();
+            node.val += sumValue;// 节点加上之前node.val的和
+            sumValue = node.val;// 之前node.val值的和更新
+            node = node.left;// 左子树遍历
+        }
+        return root;
+    }
 }
