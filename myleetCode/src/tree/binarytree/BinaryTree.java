@@ -192,43 +192,6 @@ public class BinaryTree {
     }
 
     /**
-     * 倒序层次遍历分层显示
-     *
-     * @param root
-     * @return
-     */
-    public List<List<Integer>> levelOrderBottom(TreeNode root) {
-        if (root == null) {
-            return new LinkedList<>();
-        }
-        List<List<Integer>> level = new LinkedList<>();
-        List<Integer> everyLevel = new LinkedList<>();
-        TreeNode node = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(node);
-        int rear = queue.size();
-        int index = 0;
-        while (!queue.isEmpty()) {
-            node = queue.poll();
-            everyLevel.add(node.val);
-            index++;
-            if (node.left != null) {
-                queue.offer(node.left);
-            }
-            if (node.right != null) {
-                queue.offer(node.right);
-            }
-            if (index == rear) {
-                ((LinkedList<List<Integer>>) level).addFirst(everyLevel);
-                everyLevel = new LinkedList<>();
-                index = 0;
-                rear = queue.size();
-            }
-        }
-        return level;
-    }
-
-    /**
      * 103.锯齿形层次遍历
      *
      * @param root
@@ -271,36 +234,42 @@ public class BinaryTree {
     }
 
     /**
-     * 105.前序和中序构造二叉树
-     * @param preorder
-     * @param inorder
+     * 倒序层次遍历分层显示
+     *
+     * @param root
      * @return
      */
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        return buildTreeHelper(preorder,inorder,0,preorder.length - 1,0,inorder.length - 1);
-    }
-
-    private TreeNode buildTreeHelper(int[] preorder,int[] inorder,int preStart,int preEnd,int inStart,int inEnd) {
-        if (preStart >= preorder.length){
-            return null;
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        if (root == null) {
+            return new LinkedList<>();
         }
-        // 先序遍历的首元素为新节点
-        TreeNode node = new TreeNode(preorder[preStart]);
-        if (preStart == preEnd){// 到了最后一个元素，不需要继续往下走了，返回
-            return node;
-        }
-        for (int index = inEnd; index >= inStart; index--) {
-            // 先序遍历的首元素在中序遍历中找到了对应下标，
-            // 中序遍历下标往左的都是左子树，往右的都是右子树
-            if (preorder[preStart] == inorder[index]) {
-                int length = index - inStart;// 左节点的长度
-                node.left = buildTreeHelper(preorder, inorder, preStart + 1, preStart + length, inStart, index - 1);
-                node.right = buildTreeHelper(preorder, inorder, preStart + length + 1, preEnd, index + 1, inEnd);
-                return node;
+        List<List<Integer>> level = new LinkedList<>();
+        List<Integer> everyLevel = new LinkedList<>();
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        int rear = queue.size();
+        int index = 0;
+        while (!queue.isEmpty()) {
+            node = queue.poll();
+            everyLevel.add(node.val);
+            index++;
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+            if (index == rear) {
+                ((LinkedList<List<Integer>>) level).addFirst(everyLevel);
+                everyLevel = new LinkedList<>();
+                index = 0;
+                rear = queue.size();
             }
         }
-        return null;
+        return level;
     }
+
 
     /**
      * 110.判断是否平衡二叉树
@@ -502,7 +471,7 @@ public class BinaryTree {
     }
 
     /**
-     * 使用O(1)的空间复杂度层次遍历二叉树,
+     * 116.使用O(1)的空间复杂度层次遍历二叉树,
      * 完全二叉树的算法
      *
      * @param root
@@ -527,7 +496,7 @@ public class BinaryTree {
     }
 
     /**
-     * 使用O(1)的空间复杂度层次遍历二叉树,自己写的通用算法
+     * 117.使用O(1)的空间复杂度层次遍历二叉树,自己写的通用算法
      * 通用算法
      *
      * @param root
@@ -1046,6 +1015,140 @@ public class BinaryTree {
     }
 
     /**
+     * 637. 二叉树的层平均值
+     * @param root root
+     * @return 每一层的平均值
+     */
+    public List<Double> averageOfLevels(TreeNode root) {
+        List<Double> result = new ArrayList<>();
+        if (root == null){
+            return result;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int front = 0;
+        int rear = queue.size();
+        double sum = 0.0;
+        while (!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            front++;
+            sum += node.val;
+            if (node.left != null){
+                queue.offer(node.left);
+            }
+            if (node.right != null){
+                queue.offer(node.right);
+            }
+            if (front == rear){
+                double avg = sum/rear;
+                result.add(avg);
+                sum = 0.0;
+                front = 0;
+                rear = queue.size();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 654.最大二叉树
+     * 给定一个不含重复元素的整数数组。一个以此数组构建的最大二叉树定义如下：
+     *
+     * 二叉树的根是数组中的最大元素。
+     * 左子树是通过数组中最大值左边部分构造出的最大二叉树。
+     * 右子树是通过数组中最大值右边部分构造出的最大二叉树。
+     * 通过给定的数组构建最大二叉树，并且输出这个树的根节点。
+     * @param nums
+     * @return
+     */
+    public TreeNode constructMaximumBinaryTree(int[] nums) {
+        TreeNode root = new TreeNode(nums[0]);
+        for (int i=1;i<nums.length;i++){
+            TreeNode newNode = new TreeNode(nums[i]);
+            if (nums[i] > root.val){// 比原根节点大，成为新的根节点
+                newNode.left = root;// 旧根节点的下标肯定小于新节点，作为新根节点的左孩子
+                root = newNode;// 新的根节点
+            }else {
+                TreeNode prev = root;
+                TreeNode node = root.right;
+                while (node != null && node.val > newNode.val){
+                    prev = node;// 新的节点只会是旧节点的右子树，旧节点只要比新节点大，就继续往右子树找
+                    node = node.right;// 右子树移动
+                }
+                prev.right = newNode;// 插入新节点
+                newNode.left = node;
+            }
+        }
+        return root;
+    }
+
+    class MyPair{
+        TreeNode node;
+        int index;
+        public MyPair(TreeNode node, int index){
+            this.node = node;
+            this.index = index;
+        }
+    }
+
+    /**
+     * 662. 二叉树最大宽度
+     * 给定一个二叉树，编写一个函数来获取这个树的最大宽度。树的宽度是所有层中的最大宽度。这个二叉树与满二叉树（full binary tree）结构相同，但一些节点为空。
+     *
+     * 每一层的宽度被定义为两个端点（该层最左和最右的非空节点，两端点间的null节点也计入长度）之间的长度。
+     * @param root
+     * @return
+     */
+    public int widthOfBinaryTree(TreeNode root) {
+        if(root==null)
+            return 0;
+        Queue<MyPair> queue = new LinkedList<MyPair>();
+        int max = 0;
+        queue.add(new MyPair(root,0));
+        while(!queue.isEmpty()){
+            Queue<MyPair> nextQueue = new LinkedList<MyPair>();
+            int left,right;
+            left=Integer.MAX_VALUE;
+            right=-1;
+            int size = queue.size();
+            while(!queue.isEmpty()){
+                MyPair pair = queue.poll();
+                TreeNode node = pair.node;
+                int index = size==1? 0 : pair.index;
+                if(index<left)
+                    left = index;
+                if(index>right)
+                    right = index;
+                if(node.left!=null)
+                    nextQueue.add(new MyPair(node.left,index*2+1));
+                if(node.right!=null)
+                    nextQueue.add(new MyPair(node.right,(index+1)*2));
+            }
+            if(right-left+1 > max)
+                max = right-left+1;
+            queue = nextQueue;
+        }
+        return max;
+    }
+
+    /**
+     * 814.二叉树剪枝 后续遍历删除节点
+     * @param root
+     * @return
+     */
+    public TreeNode pruneTree(TreeNode root) {
+        if (root == null){// 递归终止条件
+            return null;
+        }
+        root.left = pruneTree(root.left);// 进入左子树，并重新赋值给父节点的左孩子
+        root.right = pruneTree(root.right);// 进入右子树，并重新赋值给父节点的右孩子
+        if (root.left == null && root.right == null && root.val == 0){
+            return null;// 叶子节点，并且val是0的删除
+        }
+        return root;// 返回原节点
+    }
+
+    /**
      * 863.二叉树中所有距离为 K 的结点
      * target上面的节点已target为首节点
      * 深度优先遍历找到target，再往上递推找其他节点
@@ -1382,14 +1485,87 @@ public class BinaryTree {
      * 给定一个二叉树，我们在树的节点上安装摄像头。
      * 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
      * 计算监控树的所有节点所需的最小摄像头数量。
-     * @param root
+     * @param root 根节点
      * @return
      */
     public int minCameraCover(TreeNode root) {
         if(root == null){
             return 0;
         }
-        return 0;
+        int sumValue = 0;
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode node = root;
+        TreeNode tempNode = node;// 上一个遍历到的节点
+        // 采用后续遍历
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                if (isLeaf(node.left) || isLeaf(node.right)){
+                    sumValue++;
+                    node.val = 1;// 1表示监控器节点
+                    if (node.left != null){
+                        node.left.val = 2;// 2表示被监控到
+                    }
+                    if (node.right != null){
+                        node.right.val = 2;// 2表示被监控到
+                    }
+                }
+                node = node.left;
+            }else {
+                node = stack.peek();
+                if (node.right == null || node.right == tempNode){
+                    // 当前节点出栈，出栈判断子树和自身是否在监控中
+                    if (!isControlNode(node.left) || !isControlNode(node.right)){
+                        // 左右孩子有一个没有被监控了
+                        node.val = 1;
+                        sumValue++;// 当前节点是监控器
+                    }else if (isCameraNode(node.left) || isCameraNode(node.right)){
+                        // 左右孩子有一个是监控器节点
+                        if (node.val == 0){
+                            node.val = 2;// 当前节点被监控
+                        }
+                    }
+                    tempNode = stack.pop();
+                    node = null;
+                }else {
+                    // 进入右子树
+                    node = node.right;
+                }
+            }
+        }
+        if (tempNode.val == 0){// 最后一个节点可能漏掉
+            sumValue++;
+        }
+        return sumValue;
+    }
+
+    /**
+     * 是叶子节点
+     * @param node 节点
+     * @return 是否叶子节点
+     */
+    private boolean isLeaf(TreeNode node){
+        return node != null && (node.left == null && node.right == null);
+    }
+
+    /**
+     * 是监控器节点
+     * node.val = 1表示该节点是监控器
+     * @param node 节点
+     * @return 节点是否监控器
+     */
+    private boolean isCameraNode(TreeNode node){
+        return node != null && node.val == 1;
+    }
+
+    /**
+     * 是被监控节点
+     * node.val 是1货2都表示被监控了
+     * @param node 节点
+     * @return 节点是否被监控
+     */
+    private boolean isControlNode(TreeNode node){
+        return node == null || node.val > 0;
     }
 
     /**
@@ -1527,28 +1703,6 @@ public class BinaryTree {
         public int compareTo(Coordinate o) {
             if (this.x == o.x && this.y == o.y) {
                 return this.value - o.value;
-            }else if(this.x == o.x){
-                return o.y - this.y;// 纵坐标大的在前面
-            }
-            return this.x - o.x;
-        }
-    }
-
-    private static class TreeNode_987 implements Comparable<TreeNode_987>{
-        private TreeNode node;
-        private int x;
-        private int y;
-
-        public TreeNode_987(TreeNode node, int x, int y) {
-            this.node = node;
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public int compareTo(TreeNode_987 o) {
-            if (this.x == o.x && this.y == o.y) {
-                return this.node.val - o.node.val;
             }else if(this.x == o.x){
                 return o.y - this.y;// 纵坐标大的在前面
             }
