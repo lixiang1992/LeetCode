@@ -1534,6 +1534,7 @@ public class BinaryTree {
             }
         }
         if (tempNode.val == 0){// 最后一个节点可能漏掉
+            tempNode.val = 1;// 标记为监控节点
             sumValue++;
         }
         return sumValue;
@@ -1560,7 +1561,7 @@ public class BinaryTree {
 
     /**
      * 是被监控节点
-     * node.val 是1货2都表示被监控了
+     * node.val 是1或2都表示被监控了
      * @param node 节点
      * @return 节点是否被监控
      */

@@ -107,4 +107,39 @@ public class Greedy {
         }
         return result;
     }
+
+    /**
+     * 134.加油站
+     * @param gas
+     * @param cost
+     * @return
+     */
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        int index = -1;
+        int currentGas = 0;// 当前油量
+        int length = gas.length;
+        int start = 0;
+        int i = start;
+        int end = 0;
+        while (true){
+            if (i>=length){
+                i = length - i;
+            }
+            currentGas = currentGas + gas[i] - cost[i];// 第i个加油站还剩的汽油
+            while (currentGas < 0){// 当前汽油不足了
+                currentGas = currentGas - gas[start] + cost[start];// 起始加油站舍弃，重新判断当前油量是否足够
+                start++;
+                if (start >= length){
+                    return -1;// 到达数组尾部，则没有解，直接返回
+                }
+            }
+            i++;
+            end++;
+            if(end - start == length){
+                index = start;
+                break;
+            }
+        }
+        return index;
+    }
 }
