@@ -1,43 +1,11 @@
 package main;
 
-import string.MyStringEx;
-import tree.binarysearchtree.MyCalendarTwo;
-import tree.trie.MapSum;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        MapSum sum = new MapSum();
-        sum.insert("app",3);
-        sum.sum("ap");
-//        String a = "jd";
-//        String b = "hud";
-//        System.out.println(a.compareTo(b));
-//        String str = "2000000000000000000";
-//        new MyStringEx().myAtoi(str);
-//        List<int[]> data = new ArrayList<>();
-//        setdata(data);
-//        MyCalendarTwo calendarTwo = new MyCalendarTwo();
-//        int i = 0;
-//        while (i<39){
-//            int start = data.get(i)[0];
-//            int end = data.get(i)[1];
-//            calendarTwo.book(start,end);
-//            i++;
-//        }
-//        BinaryTree binaryTree = new BinaryTree();
-//        TreeNode root = new TreeNode(3);
-//        root.left = new TreeNode(9);
-//        root.right = new TreeNode(20);
-////        root.left.left = new TreeNode(3);
-////        root.left.right = new TreeNode(4);
-//        root.right.left = new TreeNode(15);
-//        root.right.right = new TreeNode(7);
-//        String count = binaryTree.smallestFromLeaf(root);
-//        System.out.println(count);
+
     }
 
     private static void setdata(List<int[]> data) {

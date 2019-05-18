@@ -8,6 +8,30 @@ import java.util.List;
 public class DynamicProgramming {
 
     /**
+     * 91.解码方法
+     * 带有约束信息的斐波拉契数列问题
+     * @param s
+     * @return
+     */
+    public int numDecodings(String s) {
+        int sLength = s.length();
+        int dp[] = new int[sLength + 1];
+        dp[sLength - 1] = s.charAt(sLength - 1) != '0' ? 1 : 0;
+        dp[sLength] = 1;
+        for(int i = sLength - 2; i >= 0; i--) {
+            char c1 = s.charAt(i);
+            char c2 = s.charAt(i + 1);
+            if(c2 == '0' && !(c1 <= '2' && c1 >= '1') || c1 == '0') {
+                dp[i] = 0;
+            } else if(c1 <= '1' || (c1 <= '2' && c2 <= '6'))
+                dp[i] = dp[i + 1] + dp[i + 2];
+            else
+                dp[i] = dp[i + 1];
+        }
+        return dp[0];
+    }
+
+    /**
      * 120.给定一个三角形，找出自顶向下的最小路径和。每一步只能移动到下一行中相邻的结点上
      * @param triangle
      * @return

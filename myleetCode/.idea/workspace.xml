@@ -2,22 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="efcbcc69-3a21-4a7e-9848-79be48ece055" name="Default Changelist" comment="381. O(1) 时间插入、删除和获取随机元素 - 允许重复">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/MinStack.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/MyHashMap.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/MyHashSet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/MyLinkedList.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/MyQueue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/MyStack.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/design/WordDictionary.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/myleetCode/list/link/Link.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myleetCode/list/link/Link.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/myleetCode/main/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myleetCode/main/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/myleetCode/tree/binarysearchtree/BSTIterator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/myleetCode/tree/binarysearchtree/BSTIterator.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/design/LFUCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/design/LFUCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/heap/Heap.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/heap/Heap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dynamic/DynamicProgramming.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dynamic/DynamicProgramming.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tree/binarytree/BinaryTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tree/binarytree/BinaryTree.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,44 +19,28 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/design/LFUCache.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="960">
-              <caret line="48" column="18" selection-start-line="48" selection-start-column="18" selection-end-line="48" selection-end-column="18" />
+            <state relative-caret-position="332">
+              <caret line="195" column="24" lean-forward="true" selection-start-line="195" selection-start-column="24" selection-end-line="195" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3373#3374#0" expanded="true" />
-                <element signature="e#3424#3425#0" expanded="true" />
+                <element signature="e#3908#3909#0" expanded="true" />
+                <element signature="e#3982#3983#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/TreeSet.java">
+        <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/HashMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="453" column="38" lean-forward="true" selection-start-line="453" selection-start-column="38" selection-end-line="453" selection-end-column="38" />
+            <state relative-caret-position="7920">
+              <caret line="478" column="7" selection-start-line="478" selection-start-column="7" selection-end-line="478" selection-end-column="7" />
               <folding>
-                <element signature="e#15084#15085#0" expanded="true" />
-                <element signature="e#15119#15120#0" expanded="true" />
+                <element signature="e#19327#19328#0" expanded="true" />
+                <element signature="e#19410#19411#0" expanded="true" />
+                <element signature="e#21335#21336#0" expanded="true" />
+                <element signature="e#21367#21368#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/NavigableMap.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="236" column="19" selection-start-line="236" selection-start-column="19" selection-end-line="236" selection-end-column="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/design/MyLinkedList.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1876">
-              <caret line="123" column="24" selection-start-line="123" selection-start-column="24" selection-end-line="123" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -76,26 +48,44 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/design/LRUCache.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="512">
-              <caret line="54" column="30" lean-forward="true" selection-start-line="54" selection-start-column="30" selection-end-line="54" selection-end-column="30" />
+            <state relative-caret-position="972">
+              <caret line="54" column="30" selection-start-line="54" selection-start-column="30" selection-end-line="54" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/heap/KthLargest.java">
+        <entry file="file://$PROJECT_DIR$/src/bit/Bit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
-              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+            <state relative-caret-position="234">
+              <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="17" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/heap/Heap.java">
+        <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/Queue.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="24" selection-end-column="25" />
+            <state relative-caret-position="2646">
+              <caret line="180" column="12" selection-start-line="180" selection-start-column="12" selection-end-line="180" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/tree/binarysearchtree/ExamRoom.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="7" selection-start-line="7" selection-end-line="7" />
             </state>
           </provider>
         </entry>
@@ -103,7 +93,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/sort/QuickSort.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
+            <state relative-caret-position="36">
               <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
             </state>
           </provider>
@@ -112,21 +102,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/string/MyStringEx.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="40">
+            <state relative-caret-position="36">
               <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/PriorityQueue.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2760">
-              <caret line="168" column="16" selection-start-line="168" selection-start-column="16" selection-end-line="168" selection-end-column="16" />
-              <folding>
-                <element signature="e#4779#4780#0" expanded="true" />
-                <element signature="e#4822#4823#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -136,6 +113,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="package-info" />
         <option value="Class" />
       </list>
     </option>
@@ -146,7 +124,11 @@
       <find>depth</find>
       <find>peekLast</find>
       <find>peek</find>
+      <find>大链</find>
     </findStrings>
+    <replaceStrings>
+      <replace>主链</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -154,18 +136,26 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/Main.java" />
         <option value="$PROJECT_DIR$/src/design/RandomizedCollection.java" />
         <option value="$PROJECT_DIR$/src/design/MyStack.java" />
         <option value="$PROJECT_DIR$/src/design/MyLinkedList.java" />
         <option value="$PROJECT_DIR$/src/design/MyHashSet.java" />
         <option value="$PROJECT_DIR$/src/design/MyHashMap.java" />
-        <option value="$PROJECT_DIR$/src/tree/binarytree/BinaryTree.java" />
         <option value="$PROJECT_DIR$/src/design/MyQueue.java" />
         <option value="$PROJECT_DIR$/src/tree/trie/WordDictionary.java" />
-        <option value="$PROJECT_DIR$/src/design/WordDictionary.java" />
         <option value="$PROJECT_DIR$/src/design/MinStack.java" />
         <option value="$PROJECT_DIR$/src/heap/Heap.java" />
+        <option value="$PROJECT_DIR$/src/struct/pub/tree/TreeNode.java" />
+        <option value="$PROJECT_DIR$/src/design/WordDictionary.java" />
+        <option value="$PROJECT_DIR$/src/tree/binarysearchtree/ExamRoom.java" />
+        <option value="$PROJECT_DIR$/src/tree/ntree/Node.java" />
+        <option value="$PROJECT_DIR$/src/tree/ntree/NTree.java" />
+        <option value="$PROJECT_DIR$/src/tree/binarysearchtree/BinarySearchTree.java" />
+        <option value="$PROJECT_DIR$/src/bit/Bit.java" />
+        <option value="$PROJECT_DIR$/src/greedy/Greedy.java" />
+        <option value="$PROJECT_DIR$/src/tree/binarytree/BinaryTree.java" />
+        <option value="$PROJECT_DIR$/src/main/Main.java" />
+        <option value="$PROJECT_DIR$/src/dynamic/DynamicProgramming.java" />
         <option value="$PROJECT_DIR$/src/design/LFUCache.java" />
       </list>
     </option>
@@ -182,6 +172,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -204,32 +196,25 @@
               <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
               <item name="myleetCode" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="heap" type="462c0819:PsiDirectoryNode" />
+              <item name="dynamic" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
               <item name="myleetCode" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="math" type="462c0819:PsiDirectoryNode" />
+              <item name="greedy" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
               <item name="myleetCode" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="sort" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
-              <item name="myleetCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tree" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
               <item name="myleetCode" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="tree" type="462c0819:PsiDirectoryNode" />
-              <item name="binarysearchtree" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
@@ -238,25 +223,16 @@
               <item name="tree" type="462c0819:PsiDirectoryNode" />
               <item name="binarytree" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="myleetCode" type="b2602c69:ProjectViewProjectNode" />
-              <item name="myleetCode" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tree" type="462c0819:PsiDirectoryNode" />
-              <item name="trie" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554615736878" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1557937409057" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.0" />
@@ -313,7 +289,39 @@
       <workItem from="1554536886394" duration="98000" />
       <workItem from="1554543225159" duration="7617000" />
       <workItem from="1554597564348" duration="10090000" />
-      <workItem from="1554630447983" duration="3348000" />
+      <workItem from="1554630447983" duration="3464000" />
+      <workItem from="1554643326448" duration="1762000" />
+      <workItem from="1554691243840" duration="67000" />
+      <workItem from="1554860196266" duration="678000" />
+      <workItem from="1554904662556" duration="596000" />
+      <workItem from="1555806633137" duration="845000" />
+      <workItem from="1556106869023" duration="2102000" />
+      <workItem from="1556116490377" duration="4506000" />
+      <workItem from="1556148555005" duration="1506000" />
+      <workItem from="1556375569040" duration="4365000" />
+      <workItem from="1556406618471" duration="3485000" />
+      <workItem from="1556460374143" duration="3606000" />
+      <workItem from="1556609558301" duration="687000" />
+      <workItem from="1556631315707" duration="5775000" />
+      <workItem from="1556667298766" duration="4251000" />
+      <workItem from="1556760031663" duration="1459000" />
+      <workItem from="1556787549602" duration="2517000" />
+      <workItem from="1556842801761" duration="2616000" />
+      <workItem from="1556929192920" duration="3502000" />
+      <workItem from="1557059246056" duration="7870000" />
+      <workItem from="1557239461702" duration="82000" />
+      <workItem from="1557326893288" duration="4027000" />
+      <workItem from="1557358070453" duration="2112000" />
+      <workItem from="1557416832407" duration="1044000" />
+      <workItem from="1557568386726" duration="8859000" />
+      <workItem from="1557588633860" duration="395000" />
+      <workItem from="1557621496841" duration="1695000" />
+      <workItem from="1557899090408" duration="43000" />
+      <workItem from="1557921478398" duration="4051000" />
+      <workItem from="1557932033371" duration="4674000" />
+      <workItem from="1558142681982" duration="7318000" />
+      <workItem from="1558165576113" duration="6626000" />
+      <workItem from="1558185716873" duration="6349000" />
     </task>
     <task id="LOCAL-00001" summary="284 顶端迭代器">
       <created>1554370031735</created>
@@ -329,17 +337,82 @@
       <option name="project" value="LOCAL" />
       <updated>1554467104279</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="设计-栈，队列，链表，110-是否平衡二叉树">
+      <created>1554636676226</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1554636676226</updated>
+    </task>
+    <task id="LOCAL-00004" summary="1022 从根到叶的二进制数之和&#10;1026 节点与其祖先之间的最大差值&#10;1028 从先序遍历还原二叉树">
+      <created>1556410758245</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1556410758245</updated>
+    </task>
+    <task id="LOCAL-00005" summary="211 添加与搜索单词">
+      <created>1556465555139</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1556465555139</updated>
+    </task>
+    <task id="LOCAL-00006" summary="855 考场就坐">
+      <created>1556681174530</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1556681174530</updated>
+    </task>
+    <task id="LOCAL-00007" summary="N叉树">
+      <created>1557065906326</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1557065906327</updated>
+    </task>
+    <task id="LOCAL-00008" summary="1038.从二叉搜索树到更大和树">
+      <created>1557417756540</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1557417756540</updated>
+    </task>
+    <task id="LOCAL-00009" summary="968.监控二叉树">
+      <created>1557578359223</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1557578359223</updated>
+    </task>
+    <task id="LOCAL-00010" summary="136.加油站问题">
+      <created>1557937364045</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1557937364045</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="52918000" />
+    <option name="totallyTimeSpent" value="152504000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21588486" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21321961" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -350,11 +423,11 @@
       <window_info anchor="bottom" id="Messages" order="0" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" />
-      <window_info anchor="bottom" id="Run" order="3" />
+      <window_info anchor="bottom" id="Run" order="3" weight="0.329718" />
       <window_info anchor="bottom" id="Debug" order="4" weight="0.3991323" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="7" />
+      <window_info anchor="bottom" id="TODO" order="7" weight="0.329718" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.27657267" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
@@ -417,10 +490,38 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="284 顶端迭代器" />
     <MESSAGE value="381. O(1) 时间插入、删除和获取随机元素 - 允许重复" />
-    <option name="LAST_COMMIT_MESSAGE" value="381. O(1) 时间插入、删除和获取随机元素 - 允许重复" />
+    <MESSAGE value="设计-栈，队列，链表，110-是否平衡二叉树" />
+    <MESSAGE value="1022 从根到叶的二进制数之和&#10;1026 节点与其祖先之间的最大差值&#10;1028 从先序遍历还原二叉树" />
+    <MESSAGE value="211 添加与搜索单词" />
+    <MESSAGE value="855 考场就坐" />
+    <MESSAGE value="N叉树" />
+    <MESSAGE value="1038.从二叉搜索树到更大和树" />
+    <MESSAGE value="968.监控二叉树" />
+    <MESSAGE value="136.加油站问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="136.加油站问题" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="root" language="JAVA" />
+        <watch expression="root" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>root</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>S.length()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>iterator.hasNext()</expression-string>
         <language-id>JAVA</language-id>
@@ -476,13 +577,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/design/RandomizedSet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -521,17 +615,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/HashMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10354">
-          <caret line="812" column="20" selection-start-line="812" selection-start-column="20" selection-end-line="812" selection-end-column="20" />
-          <folding>
-            <element signature="e#21335#21336#0" expanded="true" />
-            <element signature="e#21367#21368#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/design/MyHashSet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1540">
@@ -563,13 +646,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tree/binarytree/BinaryTree.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6060">
-          <caret line="306" column="11" selection-start-line="306" selection-start-column="11" selection-end-line="306" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/design/MyQueue.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="400">
@@ -591,13 +667,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/design/WordDictionary.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="812">
-          <caret line="98" selection-start-line="98" selection-end-line="98" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/Deque.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2">
@@ -605,32 +674,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/tree/binarysearchtree/BinarySearchTree.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-400">
-          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/math/Math.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-868">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/LinkedList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12200">
-          <caret line="649" column="17" selection-start-line="649" selection-start-column="13" selection-end-line="649" selection-end-column="17" />
-          <folding>
-            <element signature="e#8008#8009#0" expanded="true" />
-            <element signature="e#8036#8037#0" expanded="true" />
-            <element signature="e#20770#20771#0" expanded="true" />
-            <element signature="e#20799#20800#0" expanded="true" />
-            <element signature="e#23699#23700#0" expanded="true" />
-            <element signature="e#23735#23736#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -653,37 +700,165 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/TreeSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6948">
+          <caret line="453" column="38" selection-start-line="453" selection-start-column="38" selection-end-line="453" selection-end-column="38" />
+          <folding>
+            <element signature="e#15084#15085#0" expanded="true" />
+            <element signature="e#15119#15120#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/NavigableMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3654">
+          <caret line="236" column="19" selection-start-line="236" selection-start-column="19" selection-end-line="236" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/design/MyLinkedList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2214">
+          <caret line="123" column="24" selection-start-line="123" selection-start-column="24" selection-end-line="123" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/struct/pub/tree/TreeNode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="23" lean-forward="true" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/lang/String.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="655" column="16" selection-start-line="655" selection-start-column="16" selection-end-line="655" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/lang/Character.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="6600" column="23" lean-forward="true" selection-start-line="6600" selection-start-column="23" selection-end-line="6600" selection-end-column="23" />
+          <folding>
+            <element signature="e#238047#238048#0" expanded="true" />
+            <element signature="e#238094#238095#0" expanded="true" />
+            <element signature="e#239612#239613#0" expanded="true" />
+            <element signature="e#239689#239690#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/heap/KthLargest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
+        <state relative-caret-position="126">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/heap/Heap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="24" selection-end-column="25" />
+        <state relative-caret-position="522">
+          <caret line="29" column="18" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sort/QuickSort.java">
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/TreeMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        <state relative-caret-position="2160">
+          <caret line="146" column="11" selection-start-line="146" selection-start-column="11" selection-end-line="146" selection-end-column="11" />
+          <folding>
+            <element signature="e#5767#5768#0" expanded="true" />
+            <element signature="e#5800#5801#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/string/MyStringEx.java">
+    <entry file="file://$PROJECT_DIR$/src/design/WordDictionary.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="40">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        <state relative-caret-position="252">
+          <caret line="14" column="38" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
+          <folding>
+            <element signature="e#1920#1921#0" expanded="true" />
+            <element signature="e#1970#1971#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/LinkedList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="404" column="19" selection-start-line="404" selection-start-column="19" selection-end-line="404" selection-end-column="19" />
+          <folding>
+            <element signature="e#8008#8009#0" expanded="true" />
+            <element signature="e#8036#8037#0" expanded="true" />
+            <element signature="e#11209#11210#0" expanded="true" />
+            <element signature="e#11247#11248#0" expanded="true" />
+            <element signature="e#20770#20771#0" expanded="true" />
+            <element signature="e#20799#20800#0" expanded="true" />
+            <element signature="e#23699#23700#0" expanded="true" />
+            <element signature="e#23735#23736#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tree/ntree/NTree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2142">
+          <caret line="122" column="66" selection-start-line="122" selection-start-column="66" selection-end-line="122" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tree/ntree/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+          <folding>
+            <element signature="e#192#193#0" expanded="true" />
+            <element signature="e#223#224#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/package-info.java" />
+    <entry file="file://$PROJECT_DIR$/src/tree/binarysearchtree/BinarySearchTree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3209">
+          <caret line="22" column="24" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/greedy/Greedy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2106">
+          <caret line="119" column="32" selection-start-line="119" selection-start-column="32" selection-end-line="119" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tree/binarytree/BinaryTree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2934">
+          <caret line="166" column="55" selection-start-line="166" selection-start-column="55" selection-end-line="166" selection-end-column="55" />
+          <folding>
+            <element signature="e#7998#7999#0" expanded="true" />
+            <element signature="e#8046#8047#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/dynamic/DynamicProgramming.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="22" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/PriorityQueue.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2760">
+        <state relative-caret-position="2484">
           <caret line="168" column="16" selection-start-line="168" selection-start-column="16" selection-end-line="168" selection-end-column="16" />
           <folding>
             <element signature="e#4779#4780#0" expanded="true" />
@@ -692,47 +867,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/design/MyLinkedList.java">
+    <entry file="file://$PROJECT_DIR$/src/design/LFUCache.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1876">
-          <caret line="123" column="24" selection-start-line="123" selection-start-column="24" selection-end-line="123" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/NavigableMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="236" column="19" selection-start-line="236" selection-start-column="19" selection-end-line="236" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/TreeSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="453" column="38" lean-forward="true" selection-start-line="453" selection-start-column="38" selection-end-line="453" selection-end-column="38" />
+        <state relative-caret-position="332">
+          <caret line="195" column="24" lean-forward="true" selection-start-line="195" selection-start-column="24" selection-end-line="195" selection-end-column="24" />
           <folding>
-            <element signature="e#15084#15085#0" expanded="true" />
-            <element signature="e#15119#15120#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#3908#3909#0" expanded="true" />
+            <element signature="e#3982#3983#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/HashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7920">
+          <caret line="478" column="7" selection-start-line="478" selection-start-column="7" selection-end-line="478" selection-end-column="7" />
+          <folding>
+            <element signature="e#19327#19328#0" expanded="true" />
+            <element signature="e#19410#19411#0" expanded="true" />
+            <element signature="e#21335#21336#0" expanded="true" />
+            <element signature="e#21367#21368#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/design/LRUCache.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="54" column="30" lean-forward="true" selection-start-line="54" selection-start-column="30" selection-end-line="54" selection-end-column="30" />
+        <state relative-caret-position="972">
+          <caret line="54" column="30" selection-start-line="54" selection-start-column="30" selection-end-line="54" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/design/LFUCache.java">
+    <entry file="file://$PROJECT_DIR$/src/bit/Bit.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="48" column="18" selection-start-line="48" selection-start-column="18" selection-end-line="48" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3373#3374#0" expanded="true" />
-            <element signature="e#3424#3425#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="234">
+          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="17" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/codeTool/Java/jdk1.8.0_202/src.zip!/java/util/Queue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2646">
+          <caret line="180" column="12" selection-start-line="180" selection-start-column="12" selection-end-line="180" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tree/binarysearchtree/ExamRoom.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="16" column="21" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="7" selection-start-line="7" selection-end-line="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sort/QuickSort.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/string/MyStringEx.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
