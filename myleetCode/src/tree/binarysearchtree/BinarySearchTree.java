@@ -608,25 +608,31 @@ public class BinarySearchTree {
         boolean[] odd = new boolean[size];// 第i个节点奇数次跳跃能否到达最后节点
         boolean[] even = new boolean[size];// 第i个节点偶数次跳跃能否到达最后节点
 
+        // key：数组的值，value：数组下标
         TreeMap<Integer, Integer> tm = new TreeMap<>();
 
         odd[size - 1] = even[size - 1] = true;// 最后一个节点跳到本身是肯定可以的
         tm.put(A[size - 1], size - 1);
         int ret = 1;
         for (int i = size - 2; i >= 0; i--) {
-            Integer ceil = tm.ceilingKey(A[i]);
-            Integer floor = tm.floorKey(A[i]); // the greatest key <= the given key or null
+            Integer ceil = tm.ceilingKey(A[i]);// 不小于当前A[i]的key 数组的值
+            Integer floor = tm.floorKey(A[i]); // 不大于当前A[i]的key 数组的值
 
+            // 找不到，表示没有这样的元素了，肯定就没法到达最后节点
             if (ceil != null){
+                // 奇数次跳跃是找i之后(i<j)，数值A[i] <= A[j] 的最小A[j]->key所对应的index。
+                // 奇数跳跃的下一次肯定是偶数跳跃，所以从偶数跳跃的数组中获取index得到能否到达末尾节点。
                 odd[i] = even[tm.get(ceil)];
             }
             if (floor != null){
+                // 偶数次跳跃是找到i之后(i>j)，数值A[i] >= A[j] 的最大A[j]->key所对应的index。
+                // 偶数次跳跃的下一次肯定是奇数跳跃，所以从奇数跳跃的数组中获取index得到是否能到达末尾节点
                 even[i] = odd[tm.get(floor)];
             }
             if (odd[i]) {
-                ret++;
+                ret++;// 第一次跳跃就能到达末尾的，永远都是奇数跳跃，所以查看奇数的数组
             }
-
+            // 节点映射加入treeMap
             tm.put(A[i], i); // as a result, it will always keep a biggest pos of A[i].
         }
         return ret;
