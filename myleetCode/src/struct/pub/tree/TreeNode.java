@@ -1,5 +1,8 @@
 package struct.pub.tree;
 
+/**
+ * 树的节点
+ */
 public class TreeNode {
     public int val;
     public TreeNode left;
