@@ -2125,6 +2125,9 @@ public class BinaryTree {
         }
         // 1.找到x所在节点
         TreeNode node = findXNode(root,x);
+        if(node == null){
+            return true;// 都找不到X了，就随便他玩了
+        }
         // 2.统计x左节点总数和x右节点总数
         int leftCount = nodeCount(node.left);
         int rightCount = nodeCount(node.right);
