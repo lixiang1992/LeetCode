@@ -2108,4 +2108,73 @@ public class BinaryTree {
         }
     }
 
+    /**
+     * 1145. 二叉树着色游戏
+     * 1.找到X所在节点
+     * 2.统计X左右节点个数，也就获取到X父节点所拥有的节点数
+     * 3.从左，右，父节点数中，找到最大的数字
+     * ps：还有一种思路，采用后序遍历统计节点数，遍历过程中可以知道x所在节点，然后求解，主要思路是一致的，方向不同
+     * @param root
+     * @param n
+     * @param x
+     * @return
+     */
+    public boolean btreeGameWinningMove(TreeNode root, int n, int x) {
+        if (root == null){
+            return false;
+        }
+        // 1.找到x所在节点
+        TreeNode node = findXNode(root,x);
+        // 2.统计x左节点总数和x右节点总数
+        int leftCount = nodeCount(node.left);
+        int rightCount = nodeCount(node.right);
+        // 3.从左，右，非x子树（父）的节点数中，找到最大的数字，看是否大于n/2
+        int parentCount = n - leftCount - rightCount - 1;// 属于父节点的节点总数
+        int winCount = n >> 1;// 获胜的数字
+        int maxCount = Math.max(Math.max(leftCount,rightCount),parentCount);// 三个选择点最大的计数
+        return maxCount > winCount ;
+    }
+
+    /**
+     * 找到x所在的节点，层次遍历寻找
+     * @param root
+     * @param x
+     * @return
+     */
+    private TreeNode findXNode(TreeNode root,int x){
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        boolean find_x = false;
+        while (!queue.isEmpty()){
+            node = queue.poll();
+            if (node.val == x){
+                find_x = true;
+                break;
+            }
+            if (node.left != null){
+                queue.offer(node.left);
+            }
+            if (node.right != null){
+                queue.offer(node.right);
+            }
+        }
+        if (find_x){
+            return node;
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 节点数统计
+     * @param node
+     * @return
+     */
+    private int nodeCount(TreeNode node){
+        if (node == null){
+            return 0;
+        }
+        return 1 + nodeCount(node.left) + nodeCount(node.right);
+    }
 }
