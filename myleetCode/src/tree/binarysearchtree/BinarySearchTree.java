@@ -599,6 +599,52 @@ public class BinarySearchTree {
     }
 
     /**
+     * 846.一手顺子
+     * 爱丽丝有一手（hand）由整数数组给定的牌。 
+     *
+     * 现在她想把牌重新排列成组，使得每个组的大小都是 W，且由 W 张连续的牌组成。
+     *
+     * 如果她可以完成分组就返回 true，否则返回 false。
+     *
+     * @param hand
+     * @param W
+     * @return
+     */
+    public boolean isNStraightHand(int[] hand, int W){
+        if (hand.length % W != 0){
+            return false;// 不能整除就不能重新排列为顺子
+        }
+        TreeMap<Integer,Integer> orderMap = new TreeMap<>();
+        for (int i = 0;i<hand.length;i++){
+            int count = orderMap.getOrDefault(hand[i],0);
+            orderMap.put(hand[i],count+1);// 对原来的hand数组排序并且记录个数
+        }
+        // map不为空，继续遍历
+        while (!orderMap.isEmpty()){
+            Integer currentKey = orderMap.firstKey();
+            // 遍历
+            for(int i = 0;i < W;i++){
+                Integer currentValue = orderMap.get(currentKey);
+                if (currentValue == null){
+                    // value为空，表示currentKey不存在
+                    // 则说明在一个W的范围内，无法连续的生产W个元素，返回false
+                    return false;
+                }
+                currentValue--;
+                // 如果数量等于0了，则表示map中没有这个数了，移除掉
+                if (currentValue == 0){
+                    orderMap.remove(currentKey);
+                }else{
+                    orderMap.put(currentKey,currentValue);// 修改count值
+                }
+                // key后移，因为顺子是连续的，只会差一个数
+                currentKey++;
+            }
+        }
+        return true;
+    }
+
+    /**
      * 975.奇偶跳
      * @param A
      * @return
