@@ -817,23 +817,69 @@ public class BinaryTree {
 
     /**
      * 337.打家劫舍 III
+     *
+     * 动态规划算法思想：以node为根节点的最优解要氛围两种状态
+     * 1.当前根节点node不取，则node的最优解为node.left的最优解+node.right的最优解。
+     *  即->node.maxValue = node.left.maxValue + node.right.maxValue
+     * 2.当前根节点node要取，则node的直接左右孩子都不能取，node的最优解是node.left的左右子树最优解之和+node.right的左右子树最优解之和
+     * 即-> node.maxValue = node.value + node.left.left.maxValue + node.left.right.maxValue + node.right.left.maxValue + node.right.right.maxValue
+     *
      * @param root 根节点
      * @return 最优解
      */
     public int rob(TreeNode root) {
-        int[] leftValue = new int[]{0},rightValue = new int[]{0};
-        return robHelper(root,leftValue,rightValue);
+        int[] res = dpRob(root);
+        return Math.max(res[0],res[1]);
     }
 
-    private int robHelper(TreeNode root,int[] leftValue,int[] rightValue){
+    /**
+     * 用一个数组来建立备忘录，不用再次重复计算左右子节点的最优值
+     * TODO 考虑使用非递归的后序遍历解决，自底向上，同样可以避免重复计算
+     * @param root
+     * @return
+     */
+    private int[] dpRob(TreeNode root){
+        // res[0]表示不选当前节点的最优解，res[1]表示选择当前节点的最优解
+        int[] res = new int[]{0,0};
+        if (root == null){
+            return res;
+        }
+        int[] leftRes = dpRob(root.left);
+        int[] rightRes = dpRob(root.right);
+        // 左右子树可以随便抢，不一定非要从左右子树节点选择，所以要计算一下最优值，然后取和
+        res[0] = Math.max(leftRes[0],leftRes[1]) + Math.max(rightRes[0],rightRes[1]);
+        res[1] = root.val + leftRes[0] + rightRes[0];
+        return res;
+    }
+
+    // 这种算法产生了大量的重复计算
+    private int robHelper(TreeNode root){
         if (root == null){
             return 0;
         }
-        int[] ll = new int[]{0},lr = new int[]{0},rl = new int[]{0},rr = new int[]{0};
-        leftValue[0] = robHelper(root.left,ll,lr);
-        rightValue[0] = robHelper(root.right,rl,rr);
-        return Math.max(root.val + ll[0]+lr[0]+rl[0]+rr[0],leftValue[0]+rightValue[0]);
+        // 1.这里的 robHelper(root.left)和robHelper(root.right)已经计算过子节点的最优解的
+        int exclude = robHelper(root.left) + robHelper(root.right);// 不取当前根节点的最优解
+        int include = root.val;// 取当前根节点的最优解
+        if (root.left!= null){
+            // 2.这里又重新计算的左孩子节点的左右子树最优解，与1中的robHelper(root.left)计算重复
+            include  +=robHelper(root.left.left) + robHelper(root.left.right);
+        }
+        if (root.right != null){
+            // 3.同理，这里又重新计算的右孩子节点的左右子树最优解，与1中的robHelper(root.right)计算重复
+            include  += robHelper(root.right.left) + robHelper(root.right.right);
+        }
+        return Math.max(exclude,include);
     }
+
+//    private int robHelper(TreeNode root,int[] leftValue,int[] rightValue){
+//        if (root == null){
+//            return 0;
+//        }
+//        int[] ll = new int[]{0},lr = new int[]{0},rl = new int[]{0},rr = new int[]{0};
+//        leftValue[0] = robHelper(root.left,ll,lr);
+//        rightValue[0] = robHelper(root.right,rl,rr);
+//        return Math.max(root.val + ll[0]+lr[0]+rl[0]+rr[0],leftValue[0]+rightValue[0]);
+//    }
 
     /**
      * 508. 出现次数最多的子树元素和
@@ -1051,6 +1097,65 @@ public class BinaryTree {
     }
 
     /**
+     * 652.寻找重复的子树
+     * 序列化思维，记录下访问节点的后序遍历路径，序列化路径为node.val,leftPath,rightPath
+     * 这里采用后序遍历来操作，用备忘录思想来存储左右节点之前的序列化路径
+     * @param root
+     * @return
+     */
+    public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
+        List<TreeNode> result = new ArrayList<>();
+        Map<TreeNode,String> nodePathMap = new HashMap<>();// 记录每个节点的序列化路径，备忘录
+        Map<String,Integer> pathCount = new HashMap<>();// 路径计数器，其实只记录出现一次的
+        TreeNode node = root;// 遍历的节点
+        TreeNode tempNode = node;// 上一个遍历的节点
+        Deque<TreeNode> stack = new LinkedList<>();// 老规矩，双端队列模拟栈
+        // 后序遍历
+        while (node != null) {
+            while (node.left != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            // 右节点为空，或者右节点已经被访问过
+            while (node != null && (node.right == null || node.right == tempNode)) {
+                //-------路径访问，备忘路径算法开始
+                // 获取路径
+                String path = getNodePath(node, nodePathMap);
+                // 路径加入备忘录
+                nodePathMap.put(node, path);
+                // 之前不包括的，直接记录下来
+                if (pathCount.get(path) != null && pathCount.get(path) == 1) {
+                    // 如果包括了，代表路径重复了，加入返回的结果集
+                    result.add(node);
+                }
+                // 路径次数记录
+                pathCount.put(path, pathCount.getOrDefault(path, 0) + 1);
+                //-------路径访问，备忘路径算法开始结束
+                tempNode = node;// 上一个已经输出的节点
+                if (stack.isEmpty()) {
+                    return result;
+                }
+                node = stack.pop();
+            }
+            stack.push(node);
+            node = node.right;
+        }
+        return result;
+    }
+
+    /**
+     * 获取节点路径
+     * @param node
+     * @param nodePathMap
+     * @return
+     */
+    private String getNodePath(TreeNode node,Map<TreeNode,String> nodePathMap){
+        String leftNodePath = node.left == null ? "" : nodePathMap.get(node.left);
+        String rightNodePath = node.right == null ? "" : nodePathMap.get(node.right);
+        return node.val + "," + leftNodePath + "," + rightNodePath;
+    }
+
+    /**
      * 654.最大二叉树
      * 给定一个不含重复元素的整数数组。一个以此数组构建的最大二叉树定义如下：
      *
@@ -1082,10 +1187,99 @@ public class BinaryTree {
         return root;
     }
 
-    class MyPair{
-        TreeNode node;
-        int index;
-        public MyPair(TreeNode node, int index){
+    /**
+     * 655.输出二叉树构建的类，记录树节点，树下标，当前树为root的左右子树下标
+     */
+    private class My655Pair{
+        TreeNode node;// 树节点
+        int index;// 节点的下标
+        int leftLimit;// 当前node为root的左界限
+        int rightLimit;// 当前node为root的右界限
+
+        My655Pair(TreeNode node, int index,int leftLimit,int rightLimit){
+            this.node = node;
+            this.index = index;
+            this.leftLimit = leftLimit;
+            this.rightLimit = rightLimit;
+        }
+    }
+
+    /**
+     * 655.输出二叉树
+     * @param root
+     * @return
+     */
+    public List<List<String>> printTree(TreeNode root) {
+        // 返回的结果用arrayList
+        List<List<String>> printList = new ArrayList<>();
+        // 先获取高度
+        int depth = depth(root);// 二叉树高度
+        int width = (1 << depth) - 1;// 二叉树宽度
+
+        Queue<My655Pair> queue = new LinkedList<>();// 队列遍历
+        // root的index
+        int rootIndex = width >> 1;
+        // root入队列
+        queue.offer(new My655Pair(root,rootIndex,0,width));
+        // 每一层的打印列表
+        List<String> everyFloor = getNewFloorList(width);
+
+        int front = 0;// 记录层数，队头
+        int tail = queue.size();// 记录层数，队尾
+        // 层次遍历
+        while (!queue.isEmpty()){
+            My655Pair pair = queue.poll();// 出队列
+            front++;// 每出一个元素，队列头部后移
+            // 改变当前pair所在list下标的值
+            everyFloor.set(pair.index,String.valueOf(pair.node.val));
+            if (pair.node.left != null){
+                // 左子树不空的处理
+                int leftLimit = pair.leftLimit;
+                int rightLimit = pair.index;
+                int leftIndex = (leftLimit + rightLimit) >> 1;
+                // 获取左孩子下标
+                My655Pair leftPair = new My655Pair(pair.node.left,leftIndex,leftLimit,rightLimit);
+                queue.offer(leftPair);
+            }
+            if (pair.node.right != null){
+                // 右子树不空的处理
+                int leftLimit = pair.index;
+                int rightLimit = pair.rightLimit;
+                int rightIndex = (leftLimit + rightLimit) >> 1;
+                My655Pair rightPair = new My655Pair(pair.node.right,rightIndex,leftLimit,rightLimit);
+                queue.offer(rightPair);
+            }
+            // 当前层遍历结束，层数+1，打印数组记录，重新初始化
+            if (front == tail){
+                printList.add(everyFloor);// 打印数组记录
+                everyFloor = getNewFloorList(width);// 获取新的数组
+                front = 0;// 进入下一层，初始化
+                tail = queue.size();// 进入下一层，初始化
+            }
+        }
+        return printList;
+    }
+
+    /**
+     * 获取新的初始化打印List
+     * @param width
+     * @return
+     */
+    private List<String> getNewFloorList(int width){
+        List<String> everyFloor = new ArrayList<>(width);
+        for(int i = 0;i<width;i++){
+            everyFloor.add("");
+        }
+        return everyFloor;
+    }
+
+    /**
+     * 662.二叉树最大宽度的结构类
+     */
+    private class MyPair{
+        TreeNode node;// 树节点
+        int index;// 节点的下标
+        MyPair(TreeNode node, int index){
             this.node = node;
             this.index = index;
         }
@@ -1102,11 +1296,11 @@ public class BinaryTree {
     public int widthOfBinaryTree(TreeNode root) {
         if(root==null)
             return 0;
-        Queue<MyPair> queue = new LinkedList<MyPair>();
+        Queue<MyPair> queue = new LinkedList<>();
         int max = 0;
         queue.add(new MyPair(root,0));
         while(!queue.isEmpty()){
-            Queue<MyPair> nextQueue = new LinkedList<MyPair>();
+            Queue<MyPair> nextQueue = new LinkedList<>();
             int left,right;
             left=Integer.MAX_VALUE;
             right=-1;
@@ -1341,6 +1535,84 @@ public class BinaryTree {
             }
         }
         return subNode.poll();
+    }
+
+    /**
+     * 894.所有的满二叉树
+     *
+     * 满二叉树是一类二叉树，其中每个结点恰好有 0 或 2 个子结点。
+     *
+     * 返回包含 N 个结点的所有可能满二叉树的列表。 答案的每个元素都是一个可能树的根结点。
+     *
+     * 答案中每个树的每个结点都必须有 node.val=0。
+     *
+     * 你可以按任何顺序返回树的最终列表。
+     *
+     * 解题思路：
+     * 当N = 1时，只有一个节点本身。
+     * 当N = 3时，一个根节点，左边是N = 1时的子树，右边是N= 3 - 1 - 1，所以也是N= 1的子树。
+     * 当N = 5时，一个根节点，左边可以是N = 1 或者N =3，相应的右边是N=3或者N=1。
+     * 都可以拆成更小的子问题来解决，这点其实向分治（说是DP也行，但是这不是最优子结构的问题）
+     * @param N
+     * @return
+     */
+    public List<TreeNode> allPossibleFBT(int N) {
+        List<TreeNode> result = new ArrayList<>();
+        if((N & 1) == 0){
+            // N为偶数，无法构成满二叉树
+            return new ArrayList<>();
+        }
+        if (N == 1){
+            TreeNode node = new TreeNode(0);
+            result.add(node);
+            return result;
+        }
+        TreeNode root = new TreeNode(0);
+        return null;
+    }
+
+    /**
+     * 给定一个无向、连通的树。树中有 N 个标记为 0...N-1 的节点以及 N-1 条边 。
+     *
+     * 第 i 条边连接节点 edges[i][0] 和 edges[i][1] 。
+     *
+     * 返回一个表示节点 i 与其他所有节点距离之和的列表 ans。
+     *
+     * @param N
+     * @param edges
+     * @return
+     */
+    public int[] sumOfDistancesInTree(int N, int[][] edges) {
+        return null;
+    }
+
+    /**
+     * 897.递增顺序查找树
+     * @param root
+     * @return
+     */
+    public TreeNode increasingBST(TreeNode root) {
+        TreeNode node = root;
+        TreeNode prevNode = null;
+        TreeNode newNode = null;// 新的root
+        Deque<TreeNode> stack = new LinkedList<>();
+        while(node != null || !stack.isEmpty()){
+            stack.push(node);
+            node = node.left;
+            while(node == null && !stack.isEmpty()){
+                node = stack.pop();
+                if (newNode == null){
+                    newNode = node;
+                    prevNode = newNode;
+                }else {
+                    prevNode.right = node;
+                    node.left = null;
+                    prevNode = node;
+                }
+                node = node.right;
+            }
+        }
+        return newNode;
     }
 
     /**
@@ -1611,18 +1883,24 @@ public class BinaryTree {
         TreeNode node = root;// 当前节点
         Deque<TreeNode> stack = new LinkedList<>();// 先序遍历的栈
         int index = 0;
+        // 非递归的先序遍历
         while (node != null || !stack.isEmpty()){
             stack.push(node);
             if (index >= voyage.length){
+                // 下标超了，返回失败结果集
                 return getFalseResult(resultList);
             }
+            // 当前节点和路径上的节点值不一样，表示失败了
+            // 为什么呢，如果是根节点，开始就不一样，没法交换，直接失败
+            // 如果是子节点，在下一步左孩子不空的，且对应节点值不同时候，已经交换了左右节点，然后入栈
+            // 这个时候的node节点，已经是交换过的节点，再不相等，表示左右孩子都无法满足条件，直接返回失败的结果集
             if(!compareNodeAndTarget(node,voyage[index++])){
                 return getFalseResult(resultList);
             }
-            // 左孩子不为空，且对应值不同则交换
+            // 左孩子不为空，且对应值不相等，则交换左右孩子，同时记录下当前翻转的节点
             if (node.left != null && node.left.val != voyage[index]){
                 changeChild(node);// 交换左右子树
-                resultList.add(node.val);
+                resultList.add(node.val);// 记录当前翻转节点
             }
             node = node.left;
             while (node == null && !stack.isEmpty()){
@@ -1630,6 +1908,7 @@ public class BinaryTree {
                 node = node.right;
             }
         }
+        // 如果遍历完了，voyage还没遍历完，则无法匹配，返回失败的结果
         if (index < voyage.length - 1){
             return getFalseResult(resultList);
         }
@@ -1669,18 +1948,18 @@ public class BinaryTree {
      * @return
      */
     public int distributeCoins(TreeNode root) {
-        getDepth(root);
+        getDepth979(root);
         return res;
     }
 
     private int res = 0;
 
-    private int getDepth(TreeNode root){
+    private int getDepth979(TreeNode root){
         if (root == null){
             return 0;
         }
-        int left = getDepth(root.left);
-        int right = getDepth(root.right);
+        int left = getDepth979(root.left);
+        int right = getDepth979(root.right);
         res = Math.abs(left) + Math.abs(right);
         return left + right + root.val - 1;
     }
@@ -2084,6 +2363,66 @@ public class BinaryTree {
     }
 
     /**
+     * 1110.删点成林
+     * 给出二叉树的根节点 root，树上每个节点都有一个不同的值。
+     *
+     * 如果节点值在 to_delete 中出现，我们就把该节点从树上删去，最后得到一个森林（一些不相交的树构成的集合）。
+     *
+     * 返回森林中的每棵树。你可以按任意顺序组织答案。
+     *
+     * @param root
+     * @param to_delete
+     * @return
+     */
+    public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
+        List<TreeNode> result = new ArrayList<>();// 返回结果
+        Set<Integer> set = new HashSet<>();
+        for (int data : to_delete){
+            set.add(data);
+        }
+        //直接把根插入集合，因为经过后续判断后就是删除后的root
+        if (!set.contains(root.val)) {
+            result.add(root);
+        }
+        TreeNode node = root;
+        TreeNode tempNode = node;// 上一个遍历到的节点
+        // 后序遍历处理，简化需要考虑的事情
+        Deque<TreeNode> stack = new LinkedList<>();// 双端队列模拟栈
+        while (node != null || !stack.isEmpty()){
+            if (node != null){// 节点不空，正常遍历入栈
+                stack.push(node);
+                node = node.left;
+            }else{
+                node = stack.peek();
+                if(node.right == null || node.right == tempNode){// 节点已经访问过
+                    // 当前节点要去掉的情况
+                    if(set.contains(node.val)){
+                        if (node.left != null && !set.contains(node.left.val)){
+                            result.add(node.left);
+                        }
+                        if (node.right != null && !set.contains(node.right.val)){
+                            result.add(node.right);
+                        }
+                    }
+                    //若该节点是不需要删除的节点，则判断左右节点，若需要删除直接指向null
+                    if (node.left != null && set.contains(node.left.val)) {
+                        node.left = null;
+                    }
+                    if (node.right != null && set.contains(node.right.val)) {
+                        node.right = null;
+                    }
+                    // 其实node就是stack.pop()了
+                    tempNode = stack.pop();// 记录上一个已经访问的节点
+                    node = null;
+                }else {
+                    node = node.right;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * 1123.最深叶节点的最近公共祖先
      *
      * 思路：最深叶子节点的公共祖先的左右子树高度相同，也就是最深叶子节点的深度一定相同。
@@ -2106,6 +2445,46 @@ public class BinaryTree {
         }else {
             return lcaDeepestLeaves(root.right);
         }
+    }
+
+    /**
+     * 1130. 叶值的最小代价生成树
+     * 给你一个正整数数组 arr，考虑所有满足以下条件的二叉树：
+     *
+     * 每个节点都有 0 个或是 2 个子节点。
+     * 数组 arr 中的值与树的中序遍历中每个叶节点的值一一对应。（知识回顾：如果一个节点有 0 个子节点，那么该节点为叶节点。）
+     * 每个非叶节点的值等于其左子树和右子树中叶节点的最大值的乘积。
+     * 在所有这样的二叉树中，返回每个非叶节点的值的最小可能总和。这个和的值是一个 32 位整数。
+     *
+     * 思路：DP或者单调栈
+     * 先说单调栈思路
+     * @param arr
+     * @return
+     */
+    public int mctFromLeafValues(int[] arr) {
+        // 单调栈
+        int sum = 0;
+        Deque<Integer> stack = new LinkedList<>();// 构造一个单调递减的栈，遇到增加的就弹出相乘
+        stack.push(arr[0]);// 第一个节点先进来，让for里面代码不那么冗余
+        for (int i = 1;i<arr.length;i++){
+            while (!stack.isEmpty() && arr[i] > stack.peek()){// 比最小的元素大了，要一直弹出，保证栈的单调性，直到栈的最小元素大于arr[i]
+                // 弹出之后的第二小的元素，是在stack中还是新来的这个arr[i]不知道，所以要比较一下
+                int min1 = stack.pop();
+                int min2;
+                if (!stack.isEmpty()){
+                    min2 = Math.min(arr[i],stack.peek());
+                }else{
+                    min2 = arr[i];
+                }
+                sum += min1 * min2;
+            }
+            stack.push(arr[i]);
+        }
+        // 如果栈不空，剩下的叶子节点要乘起来
+        while (stack.size()>1){
+            sum += stack.pop()*stack.peek();
+        }
+        return sum;
     }
 
     /**
