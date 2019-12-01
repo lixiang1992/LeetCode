@@ -1,7 +1,7 @@
 package struct.pub.tree;
 
 /**
- * trie树的节点
+ * trie(字典)树的节点
  */
 public class TrieNode {
     public char data;// 字符
