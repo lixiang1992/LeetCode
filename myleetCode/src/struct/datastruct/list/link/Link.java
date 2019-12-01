@@ -1,4 +1,4 @@
-package list.link;
+package struct.datastruct.list.link;
 
 
 import struct.pub.list.ListNode;
