@@ -1,4 +1,4 @@
-package tree.ntree;
+package struct.datastruct.tree.ntree;
 
 import java.util.Deque;
 import java.util.LinkedList;

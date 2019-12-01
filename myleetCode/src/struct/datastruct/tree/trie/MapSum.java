@@ -1,4 +1,4 @@
-package tree.trie;
+package struct.datastruct.tree.trie;
 
 import java.util.Map;
 import java.util.TreeMap;

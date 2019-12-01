@@ -1,4 +1,4 @@
-package tree.binarysearchtree;
+package struct.datastruct.tree.binarysearchtree;
 
 import java.util.TreeSet;
 

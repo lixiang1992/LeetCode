@@ -1,9 +1,8 @@
-package tree.binarysearchtree;
+package struct.datastruct.tree.binarysearchtree;
 
-import tree.pub.Interval;
+import struct.datastruct.tree.pub.Interval;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 

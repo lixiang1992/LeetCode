@@ -1,4 +1,4 @@
-package tree.binarytree;
+package struct.datastruct.tree.binarytree;
 
 import struct.pub.tree.TreeNode;
 

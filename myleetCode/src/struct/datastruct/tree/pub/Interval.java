@@ -1,4 +1,4 @@
-package tree.pub;
+package struct.datastruct.tree.pub;
 
 /**
  * 区间间隔，为352的内部类（作为结构体使用）

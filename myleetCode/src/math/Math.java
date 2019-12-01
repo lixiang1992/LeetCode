@@ -1,5 +1,8 @@
 package math;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Math {
     /**
      * 整数反转
@@ -83,5 +86,43 @@ public class Math {
             res = res-nums[i];
         }
         return res;
+    }
+
+    /**
+     * 5113.删除区间
+     * @param intervals
+     * @param toBeRemoved
+     * @return
+     */
+    public List<List<Integer>> removeInterval(int[][] intervals, int[] toBeRemoved) {
+        int removeMin = toBeRemoved[0];
+        int removeMax = toBeRemoved[1];
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0;i<intervals.length;i++){
+            // 如果移除区间最大值比当前区间最小值还小或者移除区间最小值比比当前区间最大值要大
+            if (removeMax < intervals[i][0] || removeMin >= intervals[i][1]){
+                result.add(getEveryList(intervals[i][0],intervals[i][1]));// 当前区间不移除
+            }else if(removeMin > intervals[i][0] && removeMax >= intervals[i][1]){
+                // 移除区间的头部在当前区间内，但是尾部在当前区间外
+                result.add(getEveryList(intervals[i][0],removeMin));
+            }else if (removeMin <= intervals[i][0] && removeMax < intervals[i][1]){
+                // 移除区间尾部在当前区间内，但是头部在当前区间外
+                result.add(getEveryList(removeMax,intervals[i][1]));
+            }else if(removeMin > intervals[i][0] && removeMax < intervals[i][1]){
+                // 移除区间在当前区间内的
+                result.add(getEveryList(intervals[i][0],removeMin));
+                result.add(getEveryList(removeMax,intervals[i][1]));
+            }else {
+                continue;
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> getEveryList(int min,int max){
+        List<Integer> everyOne = new ArrayList<>();
+        everyOne.add(min);
+        everyOne.add(max);
+        return everyOne;
     }
 }

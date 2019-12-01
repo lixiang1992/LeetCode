@@ -1,4 +1,4 @@
-package tree.binarysearchtree;
+package struct.datastruct.tree.binarysearchtree;
 
 import struct.pub.list.ListNode;
 import struct.pub.tree.TreeNode;
@@ -598,6 +598,67 @@ public class BinarySearchTree {
         }
     }
 
+//    /**
+//     * 699.方块类
+//     */
+//    private class Block implements Comparable<Block>{
+//
+//        int left;
+//        int right;
+//
+//        Block(int left, int right) {
+//            this.left = left;
+//            this.right = right;
+//        }
+//
+//        @Override
+//        public int compareTo(Block o) {
+//            if (this.left == o.left){
+//                return this.right - o.right;
+//            }
+//            return this.left - o.left;
+//        }
+//    }
+//
+//    /**
+//     * 699.掉落的方块
+//     * @param positions
+//     * @return
+//     */
+//    public List<Integer> fallingSquares(int[][] positions) {
+//        TreeMap<Block,Integer> segmentMap = new TreeMap<>();
+//        List<Integer> result = new ArrayList<>();
+//        // 加入第一个元素
+//        Block first = new Block(positions[0][0],positions[0][0] + positions[0][1]);
+//        segmentMap.put(first,positions[0][1]);
+//        int maxHigh = positions[0][1];
+//        result.add(maxHigh);
+//        for (int i = 1; i < positions.length;i++){
+//            int left = positions[i][0];
+//            int right = positions[i][0] + positions[i][1];
+//            int high = positions[i][1];
+//            Block temp = new Block(right,Integer.MAX_VALUE);
+//            Block floor = segmentMap.floorKey(temp);
+//            if (floor == null){// 没有比temp小的，说明新进来的位置是横坐标最小的
+//                // 记录block和其对应的高度
+//                segmentMap.put(new Block(left,right),high);
+//                // 求最大高度
+//                maxHigh = Math.max(maxHigh,high);
+//                result.add(maxHigh);
+//            } else {
+//              // 存在比temp小的block
+//                if (left < floor.right){
+//                    // 新的方块左侧和旧方块的右侧有交叉
+//                    int blockHigh = segmentMap.get(floor);
+//                    blockHigh += high;
+//                    segmentMap.remove(floor);
+//                    segmentMap.put(new Block(floor.left,positions[i][0]+positions[i][1]),blockHigh);
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
     /**
      * 846.一手顺子
      * 爱丽丝有一手（hand）由整数数组给定的牌。 
@@ -689,8 +750,8 @@ public class BinarySearchTree {
      *
      * 给出二叉搜索树的根节点，该二叉树的节点值各不相同，修改二叉树，使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。
      * 反向中序遍历，前一个节点的值加在后一个节点上
-     * @param root
-     * @return
+     * @param root 根节点
+     * @return 根节点
      */
     public TreeNode bstToGst(TreeNode root) {
         TreeNode node = root;

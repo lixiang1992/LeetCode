@@ -208,6 +208,125 @@ public class Link {
     }
 
     /**
+     * 24.两两交换链表节点
+     * @param head
+     * @return
+     */
+    public ListNode swapPairs(ListNode head) {
+        ListNode prev = null;
+        ListNode node = head;
+        // 交换链表节点的核心逻辑
+        ListNode nextOne = null;// 下一步要到达的节点
+        while(node != null){
+            // 确认下一个开始的节点
+            if (node.next != null){
+                nextOne = node.next.next;
+            }else{
+                break;
+            }
+            if (prev != null) {
+                prev.next = node.next;// 节点调换，prev的next指向当前节点的next
+            } else {
+              head = node.next; // prev指针为空，表示是头节点，需要转换头节点
+            }
+            node.next.next = node;// node.next的next指针指向当前node，断开之前的链表，完成两两交换的第一步
+            node.next = nextOne;// node的next的指针指向下一个开始的节点
+            prev = node;// 前指针转移
+            node = nextOne;// 当前指针后移
+        }
+        return head;
+    }
+
+    /**
+     * K个一组翻转链表，还是有点乱，要理一下
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode first = new ListNode(0);// 虚拟节点
+        first.next = head;
+
+        ListNode node = head;
+        ListNode prevTailNode = first;// 上一组翻转的尾节点
+        ListNode curReverseTailNode = first;// 当前反转链表的尾部节点
+
+        while(true){
+            int i = 0;
+            // 遍历找到下一个翻转节点
+            while (curReverseTailNode != null && i< k){
+                curReverseTailNode = curReverseTailNode.next;
+                i++;
+            }
+            // 为空表示数量不够了，不翻转，直接返回
+            if (curReverseTailNode ==null){
+                prevTailNode.next = node;
+                break;
+            }else{
+                // 下一个翻转节点记录
+                ListNode nextReverseNode = curReverseTailNode.next;
+                // 链表断开，为了之后的链表翻转
+                curReverseTailNode.next = null;
+                // 上一个链表的尾部和反转后的头部链接起来
+                prevTailNode.next = curReverseTailNode;
+                // node节点是尾节点了
+                prevTailNode = node;
+                curReverseTailNode = node;
+                // 链表翻转
+                reverseList(node);
+                node = nextReverseNode;
+                // next指针重新执行，否则找第K个节点会断开
+                curReverseTailNode.next = nextReverseNode;
+            }
+        }
+        return first.next;
+    }
+
+    /**
+     * 链表反转
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode cur = head;
+        while(cur!=null) {
+            ListNode next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        ListNode first = new ListNode(0);// 虚拟节点
+        first.next = head;
+        ListNode firstTail = first;
+        int i = 1;
+        while(i<m){
+            // 记录不反转之前链表的尾部节点
+            firstTail = firstTail.next;
+            i++;
+        }
+
+        ListNode prev = firstTail;
+        ListNode node = firstTail.next;// 开始翻转的节点
+        ListNode reverseTail = node;// 翻转后的尾部
+
+        while(node != null && i<=n){
+            firstTail.next = node;// 记录翻转链表的头部
+            ListNode next = node.next;
+            node.next = prev;
+            prev = node;
+            node = next;
+            i++;
+        }
+        reverseTail.next = node;// 全部翻转完毕，链表重新接上
+        return first.next;
+    }
+
+    /**
      * 41.缺失的第一个正整数
      * @param nums
      * @return
@@ -249,5 +368,129 @@ public class Link {
             }
         }
         return len + 1;
+    }
+
+    /**
+     * 203.移除链表元素
+     * @param head
+     * @param val
+     * @return
+     */
+    public ListNode removeElements(ListNode head, int val) {
+        if (head == null){
+            return null;
+        }
+        ListNode prev = null;
+        ListNode node = head;
+        while (node != null){
+            if (node.val == val){
+                if (prev == null){
+                    ListNode next = head.next;
+                    head.next = null;
+                    head = next;
+                    node = head;
+                }else {
+                    prev.next = node.next;
+                    node.next = null;
+                    node = prev.next;
+                }
+            } else {
+                prev = node;
+                node = node.next;
+            }
+
+        }
+        return head;
+    }
+
+    /**
+     * 143.重排链表
+     * 给定一个单链表 L：L0→L1→…→Ln-1→Ln ，
+     * 将其重新排列后变为： L0→Ln→L1→Ln-1→L2→Ln-2→…
+     *
+     * 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
+     *
+     * 1.双指针前进，找到中间节点和尾部节点
+     * 2.从中间节点开始反转链表，到最后一个节点位置
+     * 3.头尾同时遍历，尾部往头部的中间插入，完美
+     * @param head
+     */
+    public void reorderList(ListNode head) {
+        if (head == null){
+            return;
+        }
+        ListNode slow = head;
+        ListNode fast = slow;
+        ListNode tailPrev = null;
+        // 找到中间节点
+        while (fast != null && fast.next != null){
+            slow = slow.next;
+            tailPrev = fast.next;
+            fast = fast.next.next;
+        }
+        // 快指针如果出了链表了，尾部节点就是tailPrev
+        if (fast == null){
+            fast = tailPrev;
+        }
+        // 从中间节点反转链表
+        ListNode prev = slow;
+        ListNode cur = prev.next;
+        while (cur != null){
+            ListNode next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        // 从头开始遍历
+        ListNode front = head;
+        ListNode next = front.next;
+        ListNode tail = fast;
+        ListNode tailNext = fast.next;
+        while (front != slow && tailNext != null){
+            tail.next = next;
+            front.next = tail;
+            front = next;
+            next = next.next;
+            tail = tailNext;
+            tailNext = tailNext.next;
+        }
+        slow.next = null;
+    }
+
+    /**
+     * 147.对链表进行插入排序
+     * @param head
+     * @return
+     */
+    public ListNode insertionSortList(ListNode head) {
+        if (head == null){
+            return head;
+        }
+        ListNode newHead = head;// 新的头部节点
+
+
+        ListNode node = head.next;
+        ListNode prevNode = head;// 前指针
+        ListNode nextNode;// 下一个要遍历的指针
+
+        while(node != null){
+            nextNode = node.next;// 记录下一个节点
+            if (node.val < newHead.val){// 比头节点要小
+                // 从这删除
+                prevNode.next = node.next;// 先删除这个节点，再插入到应该去的地方
+                node.next = null;
+                node.next = newHead;
+                newHead = node;
+                node = nextNode;// 设置到头部，新头部指针移动
+            }else {
+                // 指针后移
+                while (node.next != null){
+                    prevNode = node;
+                    node = node.next;
+                }
+            }
+
+        }
+        return newHead;
     }
 }

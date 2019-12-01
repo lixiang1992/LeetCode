@@ -1,4 +1,4 @@
-package tree.binarytree;
+package struct.datastruct.tree.binarytree;
 
 import struct.pub.tree.TreeLinkNode;
 import struct.pub.tree.TreeNode;
@@ -1758,7 +1758,7 @@ public class BinaryTree {
      * 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
      * 计算监控树的所有节点所需的最小摄像头数量。
      * @param root 根节点
-     * @return
+     * @return 最小监控的数量
      */
     public int minCameraCover(TreeNode root) {
         if(root == null){
@@ -1949,10 +1949,10 @@ public class BinaryTree {
      */
     public int distributeCoins(TreeNode root) {
         getDepth979(root);
-        return res;
+        return m_979_res;
     }
 
-    private int res = 0;
+    private int m_979_res = 0;
 
     private int getDepth979(TreeNode root){
         if (root == null){
@@ -1960,7 +1960,7 @@ public class BinaryTree {
         }
         int left = getDepth979(root.left);
         int right = getDepth979(root.right);
-        res = Math.abs(left) + Math.abs(right);
+        m_979_res = Math.abs(left) + Math.abs(right);
         return left + right + root.val - 1;
     }
 
@@ -2258,8 +2258,8 @@ public class BinaryTree {
      * 如果节点只有一个子节点，那么保证该子节点为左子节点。
      *
      * 给出遍历输出 S，还原树并返回其根节点 root
-     * @param S
-     * @return
+     * @param S 先序遍历路径
+     * @return root
      */
     public TreeNode recoverFromPreorder(String S) {
         int firstNumIndex = S.indexOf('-');
@@ -2357,6 +2357,12 @@ public class BinaryTree {
         return result;
     }
 
+    /**
+     * 对数的换底公式
+     * @param value 求对数的值
+     * @param base 对数的底
+     * @return 换底之后的值
+     */
     private int log(int value,int base){
         double result = Math.log(value)/Math.log(base);
         return (int) result;
@@ -2370,8 +2376,8 @@ public class BinaryTree {
      *
      * 返回森林中的每棵树。你可以按任意顺序组织答案。
      *
-     * @param root
-     * @param to_delete
+     * @param root root
+     * @param to_delete 要删除的节点
      * @return
      */
     public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
@@ -2429,7 +2435,7 @@ public class BinaryTree {
      * 如果左右子树不等高，高度小的那个子树节点的叶子节点的深度肯定不是最深的（因为比高度大的子树深度小）。
      * 所以，最深叶子节点肯定在深度较大的子树当中，采用深度优先遍历，每次只要继续往深度更大的子树进行递归即可。
      * 如果左右子树深度相同，表示获取到了最深叶子节点的最近公共祖先
-     * @param root
+     * @param root root
      * @return 公共祖先
      */
     public TreeNode lcaDeepestLeaves(TreeNode root) {
@@ -2458,8 +2464,8 @@ public class BinaryTree {
      *
      * 思路：DP或者单调栈
      * 先说单调栈思路
-     * @param arr
-     * @return
+     * @param arr 树的数组
+     * @return 最小代价生成树的值
      */
     public int mctFromLeafValues(int[] arr) {
         // 单调栈
@@ -2519,9 +2525,9 @@ public class BinaryTree {
 
     /**
      * 找到x所在的节点，层次遍历寻找
-     * @param root
-     * @param x
-     * @return
+     * @param root 根节点
+     * @param x 值为x的节点
+     * @return 值为x的节点
      */
     private TreeNode findXNode(TreeNode root,int x){
         TreeNode node = root;
@@ -2541,17 +2547,13 @@ public class BinaryTree {
                 queue.offer(node.right);
             }
         }
-        if (find_x){
-            return node;
-        }else{
-            return null;
-        }
+        return find_x ? node : null;
     }
 
     /**
      * 节点数统计
-     * @param node
-     * @return
+     * @param node 当前节点
+     * @return 这个节点的子树有多少个节点数
      */
     private int nodeCount(TreeNode node){
         if (node == null){
