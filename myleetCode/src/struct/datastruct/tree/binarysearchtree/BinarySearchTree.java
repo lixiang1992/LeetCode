@@ -167,7 +167,7 @@ public class BinarySearchTree {
             if (node.val > key) {
                 preNode = node;
                 node = node.left;
-            } else if (node.val < key) {
+            } else {
                 preNode = node;
                 node = node.right;
             }
@@ -184,7 +184,7 @@ public class BinarySearchTree {
             } else if (root.right == null) {
                 root = root.left;
             } else {
-                root.val = findSuccessorVal(root);
+                root.val = findDelNodeSuccessorVal(root);
             }
             return root;
         }
@@ -209,18 +209,18 @@ public class BinarySearchTree {
             }
             node.left = null;
         } else {
-            node.val = findSuccessorVal(node);
+            node.val = findDelNodeSuccessorVal(node);
         }
         return root;
     }
 
     /**
      * 找到node节点的后继节点的值
-     *
+     * 走到这个方法里来的node节点，都是左右子树存在的节点
      * @param node
      * @return
      */
-    private int findSuccessorVal(TreeNode node) {
+    private int findDelNodeSuccessorVal(TreeNode node) {
         TreeNode preNode = node;
         node = node.right;
         if (node.left == null) {
@@ -243,7 +243,7 @@ public class BinarySearchTree {
 
     /**
      * 查询二叉搜索树的节点
-     *
+     * left<root<right
      * @param root 根节点
      * @param val 值
      * @return val所在的节点
@@ -255,10 +255,13 @@ public class BinarySearchTree {
         TreeNode node = root;
         while (node != null) {
             if (val < node.val) {
+                // 目标val比当前node.val要小，则表示目标在node的左子树中
                 node = node.left;
             } else if (val > node.val) {
+                // 目标val比当前node.val要大，则表示目标在node的右子树中
                 node = node.right;
             } else {
+                // val和node.val想等了，就找到了节点
                 return node;
             }
         }
@@ -768,5 +771,40 @@ public class BinarySearchTree {
             node = node.left;// 左子树遍历
         }
         return root;
+    }
+
+    /**
+     * 1214.查找两颗二叉搜索树之和
+     * 给出两棵二叉搜索树，请你从两棵树中各找出一个节点，使得这两个节点的值之和等于目标值 Target。
+     *
+     * 如果可以找到返回 True，否则返回 False。
+     *
+     * 参考两数之和的做法来做这个，利用二叉搜索树的性质（left<root<right）来找另一个节点的值
+     * @param root1 第一颗二叉搜索树root
+     * @param root2 第二颗二叉搜索树root
+     * @param target 目标值
+     * @return
+     */
+    public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target) {
+        if (root1 == null || root2 == null){
+            return false;
+        }
+        TreeNode node = root1;
+        Deque<TreeNode> stack = new LinkedList<>();// 双端队列模拟栈
+        while(node != null || !stack.isEmpty()){
+            stack.push(node);
+            node = node.left;
+            while (node == null && !stack.isEmpty()){
+                node = stack.pop();// 中序遍历出栈
+                int value = target - node.val;// 目标value值
+                // 从另一个二叉搜索树中寻找value所在的节点
+                TreeNode node2 = searchBST(root2,value);
+                if (node2 != null){// 节点不空则满足题意，否则继续遍历
+                    return true;
+                }
+                node = node.right;
+            }
+        }
+        return false;
     }
 }
