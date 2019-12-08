@@ -480,6 +480,270 @@ public class BinarySearchTree {
     }
 
     /**
+     * 426题的Node节点
+     */
+    private static class Node{
+        int val;
+        Node left;
+        Node right;
+
+        Node() {}
+
+        Node(int _val) {
+            val = _val;
+        }
+
+        Node(int _val,Node _left,Node _right) {
+            val = _val;
+            left = _left;
+            right = _right;
+        }
+    }
+
+
+    /**
+     * 426.将一个二叉搜索树就地转化为一个已排序的双向循环链表。可以将左右孩子指针作为双向循环链表的前驱和后继指针。
+     *
+     * @param root root
+     * @return BST转DoubleLink的头结点
+     */
+    public Node treeToDoublyList(Node root) {
+        if (root == null){
+            return null;
+        }
+        Node head = new Node();// 哨兵
+        Node curLinkNode = head;// 链表的当前节点
+        // 中序遍历
+        Node node = root;
+        Deque<Node> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
+                // 中序遍历的节点出栈了
+                node = stack.pop();
+                // ---树节点接入链表中
+                curLinkNode.right = node;// 先接右
+                node.left = curLinkNode;// 再接左
+                // ---树节点接入链表结束
+                // 当前链表指针后移
+                curLinkNode = node;
+                // 进入右子树
+                node = node.right;
+            }
+        }
+        curLinkNode.right = head.right;// 最后一个节点right指向头部
+        head.right.left = curLinkNode;// 这一步是把链表的真正第一个节点的left指针指向尾部
+        return head.right;
+    }
+
+    /**
+     * 776.拆分二叉搜索树
+     * @param root
+     * @param V
+     * @return
+     */
+    public TreeNode[] splitBST(TreeNode root, int V) {
+        // 存储>V值的节点，本身是一个哨兵，不参与真正运算，简化实现
+        TreeNode bigTreeNode = new TreeNode(Integer.MAX_VALUE);
+        // 存储<=V值的节点，本身是一个哨兵，不参与真正运算，简化实现
+        TreeNode smallTreeNode = new TreeNode(Integer.MAX_VALUE);
+        // 当前bigTree的节点
+        TreeNode curBigTreeNode = bigTreeNode;
+        // 当前smallTree的节点
+        TreeNode curSmallTreeNode = smallTreeNode;
+        // node节点
+        TreeNode node = root;
+        while (node != null){
+            if (node.val>V){
+                // node.val比V大，加入到bigTree中
+                // bigTree中操作
+                if (node.val <= curBigTreeNode.val){
+                    curBigTreeNode.left = node;
+                }else {
+                    curBigTreeNode.right = node;
+                }
+                // 当前大树指针移动
+                curBigTreeNode = node;
+                // 目标V在node的左子树中，node.right.val肯定都比V要大，全部都进入bigTree中
+                node = node.left;
+                // 之前node比V大，下一个节点的值比V小了，拐点出现，原来的树要断开了,bigTree中存的是比V大的值
+                // 现在curBigTreeNode指向的node.parent节点，node.parent.left不能再加入到bigTree中，要断开
+                // 但是node.parent.right中还是有可能要加入到bigTree中，这个在接下来的遍历中在bigTree操作中会处理到
+                if (node != null && node.val <= V){
+                    curBigTreeNode.left = null;
+                }
+            }else {
+                // node.val比V小，加入到smallTree中
+                // smallTree中操作
+                if (node.val <= curSmallTreeNode.val){
+                    curSmallTreeNode.left = node;
+                }else {
+                    curSmallTreeNode.right = node;
+                }
+                // 当前小树指针移动
+                curSmallTreeNode = node;
+                // 目标V在node的右子树中，node.left.val肯定都比V要小，全部都进入smallTree中
+                node = node.right;
+                // 之前node比V小，下一个节点的值比V大了，拐点出现，原来的树要断开了，smallTree中存的是比V小的值
+                // 现在curSmallTreeNode指向的node.parent节点，node.parent.right不能再加入到smallTree中，要断开
+                // 但是node.parent.left中还是有可能要加入到smallTree中，这个在接下来的遍历中在smallTree操作中会处理到
+                if (node != null && node.val > V){
+                    curSmallTreeNode.right = null;
+                }
+            }
+        }
+        return new TreeNode[]{smallTreeNode.left,bigTreeNode.left};
+    }
+
+//    /**
+//     * 776.拆分二叉搜索树
+//     * // 存在问题，测试用例没通过，而且实现太复杂了，上一个解答代码简洁很多，思路也更加清晰
+//     * @param root
+//     * @param V
+//     * @return
+//     */
+//    public TreeNode[] splitBST(TreeNode root, int V){
+//        TreeNode[] result = new TreeNode[2];
+//        if (root == null){
+//            return result;
+//        }
+//        // 表示从根节点分开
+//        if(root.val == V){
+//            result[0] = root;
+//            result[1] = root.right;
+//            root.right = null;// 两棵树断开
+//            return result;
+//        }
+//        // 正式处理
+//        TreeNode node = root;// 当前遍历节点
+//        TreeNode parentNode = null;// 记录node的父节点
+//        // key->node;value->parentNode
+//        Map<TreeNode,TreeNode> nodeParentMap = new HashMap<>();
+//        boolean isLeft = V <= root.val;// 是否在root的左子树
+//        // 找拐点的位置
+//        while (node != null){
+//            nodeParentMap.put(node,parentNode);
+//            if (V < node.val){
+//                parentNode = node;
+//                node = node.left;
+//                if (!isLeft){
+//                    break;// 一开始往右子树走，现在往左了，拐点出现，就是parent
+//                }
+//            }else if(V > node.val){
+//                parentNode = node;
+//                node = node.right;
+//                if (isLeft){
+//                    break;// 一开始往左子树走，现在往右了，拐点出现，就是parent
+//                }
+//            }else {
+//                // 没有拐点，直接找到了可以返回了
+//                if (isLeft){
+//                    parentNode.left = node.right;
+//                    node.right = null;
+//                    result[0] = node;
+//                    result[1] = root;
+//                }else {
+//                    result[0] = root;
+//                    result[1] = node.right;
+//                    node.right = null;// 两棵树断开
+//                }
+//                return result;
+//            }
+//        }
+//        // node是空，表示没有拐点，也没有对应的值，树不动，只有一个
+//        if (node == null){
+//            if (isLeft){// 左子树找的化，整个树都在右边
+//                result[0] = null;
+//                result[1] = root;
+//            }else {
+//                result[0] = root;
+//                result[1] = null;
+//            }
+//            return result;
+//        }
+//        TreeNode inflectionNode = parentNode;// 记录拐点
+//        // 二叉搜索树查询节点的方式来找V，但是不一定能找到
+//        while (node != null){
+//            nodeParentMap.put(node,parentNode);
+//            if (V < node.val){
+//                parentNode = node;
+//                node = node.left;
+//            }else if (V > node.val){
+//                parentNode = node;
+//                node = node.right;
+//            }else {
+//                break;
+//            }
+//        }
+//        // node为parent左孩子的第一个节点
+//        TreeNode firstLeftNode;
+//        if (parentNode.val>V){
+//            // V应该为parentNode的左孩子，如果node是空的，则表示V不在树，可以当成一个虚拟的左孩子
+//            if (node != null){
+//                // node不空的话，node的右孩子就要接入到parent的左孩子中
+//                parentNode.left = node.right;
+//                node.right = null;// node和原来的右孩子断开
+//            }
+//            firstLeftNode = node;
+//        }else {
+//            // 这时候V是parentNode的右孩子，这个时候要往上一层递归，找到node是parentNode为左子树的第一个根节点
+//            if (node == null){
+//                node = parentNode;
+//            }
+//            firstLeftNode = findLeftNodeRoot(node,nodeParentMap);
+//        }
+//        parentNode = nodeParentMap.get(inflectionNode);// 找到拐点的父节点
+////        if (firstLeftNode == inflectionNode){
+////            parentNode.left = node.right;
+////        }else {
+//            // 拐点的右子树指向firstLeftNode
+//            if (isLeft){
+//                if (firstLeftNode != inflectionNode){
+//                    parentNode.left = inflectionNode.right;
+//                    inflectionNode.right = firstLeftNode;
+//                }
+//                result[0] = inflectionNode;
+//                result[1] = root;
+//            }else {
+//                parentNode.right = firstLeftNode;
+//                result[0] = root;
+//                result[1] = inflectionNode;
+//            }
+////        }
+//        return result;
+//    }
+//
+//    /**
+//     * 找到第一个node为parent指定孩子的节点，并处理对应的逻辑
+//     * @param node
+//     * @param nodeParentMap
+//     * @param
+//     * @return
+//     */
+//    private TreeNode findLeftNodeRoot(TreeNode node, Map<TreeNode, TreeNode> nodeParentMap){
+//        if (node == null){
+//            return null;
+//        }
+//        TreeNode curNode = node;
+//        TreeNode parentNode = nodeParentMap.get(curNode);
+//        while (parentNode != null){
+//            if (curNode == parentNode.left){
+//                // 找到第一个curNode是parentNode的left的节点
+//                // 比node大的节点接入到parentNode的左子树中，parentNode和node.right都会比node的值大
+//                // 其实就是把比node.val大的值，合并到一个子树中，并断开node和node.right的联系
+//                parentNode.left = node.right;
+//                node.right = null;
+//                break;
+//            }
+//            curNode = parentNode;
+//            parentNode = nodeParentMap.get(curNode);
+//        }
+//        return curNode;
+//    }
+
+    /**
      * 938. 二叉搜索树的范围和
      * @param root
      * @param L
