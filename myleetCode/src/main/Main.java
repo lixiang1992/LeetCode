@@ -1,38 +1,30 @@
 package main;
 
+import struct.datastruct.tree.binarysearchtree.BinarySearchTree;
+import struct.pub.tree.TreeNode;
+
 public class Main {
 
     public static void main(String[] args) {
-//        MyStringEx ex = new MyStringEx();
-//        String test = "MCMXCIV";
-//        ex.romanToInt(test);
-//        MagicDictionary magicDictionary = new MagicDictionary();
-//        magicDictionary.buildDict(new String[]{"hello","hallo","leetcode"});
-//        System.out.println(magicDictionary.search("hello"));
-//        System.out.println(magicDictionary.search("hhllo"));
-//        System.out.println(magicDictionary.search("hell"));
-//        System.out.println(magicDictionary.search("leetcodeed"));
-//        TreeNode root = new TreeNode(-1);
-//        root.left = new TreeNode(-1);
-//        root.right = new TreeNode(-1);
-//        root.left.left = new TreeNode(-1);
-//        root.left.right = new TreeNode(-1);
-//        FindElements findElements = new FindElements(root);
-//        BinaryTree tree = new BinaryTree();
-////        int[] arr = new int[]{15,13,5,3,15};
-//        TreeNode root = new TreeNode(1);
-//        root.left = new TreeNode(2);
-//        root.left.left = new TreeNode(4);
-//        root.right = new TreeNode(3);
-//        root.right.left = new TreeNode(2);
-//        root.right.left.left = new TreeNode(4);
-//        root.right.right = new TreeNode(4);
-//        List<TreeNode> list = tree.findDuplicateSubtrees(root);
 
-//        System.out.println(sum);
+//        int nodes = 7;
+//        int[] parent = new int[]{-1,0,0,1,2,2,2};
+//        int[] value = new int[]{1,-2,4,0,-2,-1,-1};
+//        DynamicProgramming programming = new DynamicProgramming();
+//        programming.deleteTreeNodes(nodes,parent,value);
+        BinarySearchTree tree = new BinarySearchTree();
+        TreeNode root = new TreeNode(10);
+        root.left = new TreeNode(5);
+        root.right = new TreeNode(20);
+
+        root.left.left = new TreeNode(3);
+        root.left.right = new TreeNode(9);
+        root.right.left = new TreeNode(15);
+        root.right.right = new TreeNode(25);
+        TreeNode node1 = root.left.right;
+        node1.left = new TreeNode(8);
+        node1.left.left = new TreeNode(6);
+        node1.left.left.right = new TreeNode(7);
+        tree.splitBST(root,6);
     }
-
-
-
-
 }

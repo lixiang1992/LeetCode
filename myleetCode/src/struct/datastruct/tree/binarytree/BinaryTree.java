@@ -1326,6 +1326,112 @@ public class BinaryTree {
     }
 
     /**
+     * 742.二叉树最近叶节点
+     * 给定一个 每个结点的值互不相同 的二叉树，和一个目标值 k，找出树中与目标值 k 最近的叶结点。 
+     *
+     * 这里，与叶结点 最近 表示在二叉树中到达该叶节点需要行进的边数与到达其它叶结点相比最少。而且，当一个结点没有孩子结点时称其为叶结点。
+     *
+     * 在下面的例子中，输入的树以逐行的平铺形式表示。实际上的有根树 root 将以TreeNode对象的形式给出。
+     *
+     * @param root root
+     * @param k 目标值
+     * @return 最近叶子节点的值
+     */
+    public int findClosestLeaf(TreeNode root, int k) {
+        // 先深度优先遍历
+        TreeNode node = root;
+        Map<TreeNode,TreeNode> parentMap = new HashMap<>();
+        Deque<TreeNode> stack = new LinkedList<>();
+        stack.push(node);
+        while (!stack.isEmpty()){
+            node = stack.pop();
+            if (node.val == k){
+                break;
+            }
+            if (node.right != null){
+                parentMap.put(node.right,node);
+                stack.push(node.right);
+            }
+            if (node.left != null){
+                parentMap.put(node.left,node);
+                stack.push(node.left);
+            }
+        }
+        // 如果node就是叶子节点，就直接返回自己
+        // 这一块已经冗余在下面的遍历情况中了
+//        if (node.left == null && node.right == null){
+//            return node.val;
+//        }
+        // key 路径数 value node.val
+        int[] nearLeafValue = new int[]{Integer.MAX_VALUE,Integer.MAX_VALUE};
+        TreeNode currentNode = node;
+        int initLength = 0;
+        while (currentNode != null){
+            if (node == currentNode.left){
+                node = currentNode.right;
+            }else if(node == currentNode.right){
+                node = currentNode.left;
+            }else {
+                node = currentNode;
+            }
+            // 当前node获取最小叶子节点路径长度
+            makeMinLeaf(node,initLength,nearLeafValue);
+            // currentNode往上递归
+            currentNode = parentMap.get(currentNode);
+            initLength+=2;// 向之前的兄弟节点遍历找叶子节点
+            if (nearLeafValue[0] <= initLength){
+                return nearLeafValue[1];
+            }
+        }
+        return nearLeafValue[1];
+    }
+
+    /**
+     * 记录每个root节点初始长度length下的最短路径，记录在nearLeafValue中
+     * @param root root
+     * @param length 初始化路径的长度
+     * @param nearLeafValue 最近叶子节点的层数->叶子节点值
+     */
+    private void makeMinLeaf(TreeNode root,int length,int[] nearLeafValue){
+        if (root == null){
+            return ;
+        }
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        int front = 0;
+        int rear = queue.size();
+        int floor = length;
+        while (!queue.isEmpty()){
+            node = queue.poll();
+            front++;
+            if (node.left == null && node.right == null){
+                // 找到第一个叶子节点记录下来返回
+                // 之前的直接覆盖
+                nearLeafValue[0] = floor;
+                nearLeafValue[1] = node.val;
+                return;
+            }
+            if (node.left != null){
+                queue.offer(node.left);
+            }
+            if (node.right != null){
+                queue.offer(node.right);
+            }
+            if (front == rear){
+                front = 0;
+                rear = queue.size();
+                floor++;
+                // 比最小的那个层还大了，就没比较继续遍历了
+                if (nearLeafValue[0] <= floor){
+                    return;
+                }
+            }
+        }
+    }
+
+
+    /**
      * 814.二叉树剪枝 后续遍历删除节点
      * @param root
      * @return

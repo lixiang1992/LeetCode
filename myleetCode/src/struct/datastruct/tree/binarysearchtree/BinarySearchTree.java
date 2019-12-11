@@ -480,12 +480,13 @@ public class BinarySearchTree {
     }
 
     /**
-     * 426题的Node节点
+     * 426,510的Node节点
      */
     private static class Node{
         int val;
         Node left;
         Node right;
+        Node parent;
 
         Node() {}
 
@@ -537,6 +538,41 @@ public class BinarySearchTree {
         head.right.left = curLinkNode;// 这一步是把链表的真正第一个节点的left指针指向尾部
         return head.right;
     }
+
+    /**
+     * 510. 二叉搜索树中的中序后继 II
+     * 给定一棵二叉搜索树和其中的一个节点，找到该节点在树中的中序后继。
+     *
+     * 一个结点 p 的中序后继是键值比 p.val大所有的结点中键值最小的那个。
+     *
+     * 你可以直接访问结点，但无法直接访问树。每个节点都会有其父节点的引用。
+     * 思路：红黑树（TreeMap）是怎么找后继的，这个就怎么找就行了，不需要中序遍历。
+     *
+     * 1.x存在右子树，那么x的后继就是x.right子树的最左节点
+     * 2.x不存在右子树，那么x的后继就是x所在子树的第一个左孩子的父节点
+     * @param x
+     * @return
+     */
+    public Node inorderSuccessor(Node x) {
+        Node node = x.right;
+        if (node != null){
+            // 存在右子树，那么x的后继就是node的最左节点
+            while (node.left != null){
+                node = node.left;
+            }
+            return node;
+        }else {
+            // 不存在右子树，那么x的后继就是x所在子树的第一个左孩子的父节点
+            node = x;
+            Node parent = node.parent;
+            while(parent != null && parent.right == node){
+                node = parent;
+                parent = parent.parent;
+            }
+            return parent;
+        }
+    }
+
 
     /**
      * 776.拆分二叉搜索树

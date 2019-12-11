@@ -145,7 +145,7 @@ public class DynamicProgramming {
     }
 
     /**
-     *
+     * 朋友圈
      * @param M
      * @return
      */
@@ -181,5 +181,132 @@ public class DynamicProgramming {
         return 0;
     }
 
+    /**
+     * 5114.删除树节点
+     * @param nodes
+     * @param parent
+     * @param value
+     * @return
+     */
+    public int deleteTreeNodes(int nodes, int[] parent, int[] value) {
+        // 从后往前找，自底向上递推
+        int result = nodes;
+        boolean[] isVisit = new boolean[value.length];// 记录节点是否访问过
+        int[] childNum = getChildNum(value.length);// 每个节点有效的孩子个数（为0删除之后，就没有孩子了）
+        // 倒数第一个节点默认访问了
+        isVisit[isVisit.length - 1] = true;
+        int lastParentNode = parent[parent.length - 1];// 最后一个节点的父节点先记录下来
+        int countValue = value[value.length - 1];
+        if (countValue == 0){
+            childNum[childNum.length - 1] = 0;// 没有子树了
+            result -= 1;// 第一个元素的特殊处理如果是0直接干掉
+        }else {
+            childNum[lastParentNode + 1]+= childNum[childNum.length - 1];
+        }
+        for (int i = parent.length - 2; i>=0;i--){
+            if (isVisit[i]){
+                continue;// 被访问过，直接过
+            }
+            isVisit[i] = true;// 访问过
+            if (parent[i] == lastParentNode){
+                // 父节点一样的记录下来
+                countValue += value[i];
+                childNum[lastParentNode + 1] = childNum[lastParentNode + 1] + childNum[i];// 当前节点的孩子
+            }else {
+                // 不相等了，说明不是同一个子树了
+                // 子树值合计到父节点上来
+                countValue += value[lastParentNode + 1];
+                if (countValue == 0){
+                    result = result - childNum[lastParentNode + 1];// 合计是0，去掉全部的子节点个数和父节点本身
+                    isVisit[lastParentNode + 1] = true;// 父节点也访问过
+                }
+                value[lastParentNode + 1] = countValue;
+            }
+            // 每次都变一下吧
+            lastParentNode = parent[i];
+            if (value[i] == 0){
+                result--;
+                childNum[lastParentNode + 1]--;
+            }
+        }
+        return result;
+    }
+
+    private int[] getChildNum(int length){
+        int[] childNum = new int[length];
+        for (int i = 0;i < childNum.length;i++){
+            childNum[i] = 1;
+        }
+        return childNum;
+    }
+
+//    class Solution {
+//        static class TreeNode {
+//            Integer value, sum = null, num = null;
+//            List<TreeNode> children;
+//
+//            public TreeNode() {
+//                this.children = new ArrayList<TreeNode>();
+//            }
+//
+//            public TreeNode(int value) {
+//                this.value = value;
+//                this.children = new ArrayList<TreeNode>();
+//            }
+//
+//            public void addTreeNode(TreeNode treeNode) {
+//                this.children.add(treeNode);
+//            }
+//        }
+//
+//        public int deleteTreeNodes(int nodes, int[] parent, int[] value) {
+//            TreeNode root = null;
+//            TreeNode[] treeArr = new TreeNode[nodes];
+//
+//            // 创建节点对象
+//            for(int i = 0; i < nodes; i++) {
+//                treeArr[i] = new TreeNode(value[i]);
+//                if (parent[i] == -1) root = treeArr[i];
+//            }
+//            // 构造节点关系
+//            for(int i = 0; i < nodes; i++) {
+//                if (parent[i] != -1) {
+//                    treeArr[parent[i]].addTreeNode(treeArr[i]);
+//                }
+//            }
+//            // 计算每个子树的节点数量和总和值
+//            computeTree(root);
+//
+//            if (root.sum == 0) return 0;
+//            return nodes - removeZeroTreeNode(root);
+//        }
+//
+//        // 递归计算该及其孩子节点的“节点总数”和“值的加和”
+//        public void computeTree(TreeNode node) {
+//            node.sum = node.value;
+//            node.num = 1;
+//
+//            for(TreeNode child : node.children) {
+//                computeTree(child);
+//                node.sum += child.sum;
+//                node.num += child.num;
+//            }
+//        }
+//
+//        // 计算该节点及其孩子节点会被移除的节点总数
+//        public int removeZeroTreeNode(TreeNode node) {
+//            int removeNum = 0;
+//
+//            for(int i = 0; i < node.children.size(); i++) {
+//                TreeNode child = node.children.get(i);
+//                if (child.sum == 0) {
+//                    removeNum += child.num;
+//                } else {
+//                    removeNum += removeZeroTreeNode(child);
+//                }
+//            }
+//            return removeNum;
+//        }
+//    }
 
 }
