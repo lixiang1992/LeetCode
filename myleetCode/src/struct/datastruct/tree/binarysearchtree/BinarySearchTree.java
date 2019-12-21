@@ -387,6 +387,40 @@ public class BinarySearchTree {
     }
 
     /**
+     * 285. 二叉搜索树中的顺序后继
+     * 1.p存在右子树，那么p的后继就是p.right子树的最左节点
+     * 2.p不存在右子树，那么p的后继就是p所在子树的第一个左孩子的父节点
+     * 怎么找父节点，用栈来找，二叉搜索树找节点的方式
+     * 也可以利用二叉搜索树的性质，来找比p大的第一个节点
+     * @param root
+     * @param p
+     * @return
+     */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        // 存在右子树，就是右子树的最左节点
+        if (p.right != null){
+            p = p.right;
+            while (p.left != null){
+                p = p.left;
+            }
+            return p;
+        }
+        TreeNode node = root;
+        TreeNode res = null;
+        while (p != node){
+            if (node.val > p.val){
+                // node比p大，表示node在p的后继路径上
+                res = node;// 左孩子的父节点
+                node = node.left;
+            }else {
+                // node比p小，表示node在p的前驱路径上
+                node = node.right;
+            }
+        }
+        return res;
+    }
+
+    /**
      * 530. 二叉搜索树的最小绝对差
      *
      * @param root 根节点
