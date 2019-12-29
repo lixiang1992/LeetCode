@@ -387,14 +387,167 @@ public class BinarySearchTree {
     }
 
     /**
+     * 270. 最接近的二叉搜索树值
+     * 其实完全可以把target看成是在TreeNode中要查找的点
+     * target如果大于root.val，那么最接近target的值，肯定在root.right的子树中，我们只要进入右子树去查找就行
+     * 反之就去root.left的子树中查找
+     * 每次都计算一下node.val和target的差的绝对值
+     * 遍历的同时，使用找最小值的思想，log(N)的时间复杂度就能找到最接近的值，空间复杂度是O(1)，还避免的递归中栈的消耗。
+     * @param root root节点
+     * @param target target目标值
+     * @return 最接近的值
+     */
+    public int closestValue(TreeNode root, double target) {
+        double minDiff = Double.MAX_VALUE;
+        TreeNode closestNode = root;// 最接近的节点
+        TreeNode node = root;
+        while (node != null){
+            double diff = Math.abs(node.val - target);// node.val和target差的绝对值
+            if (diff < minDiff){// 比之前的最小值还小，记录下最小值和最接近的节点
+                minDiff = diff;
+                closestNode = node;
+            }
+            if (node.val > target){// target在node.left中
+                node = node.left;
+            }else if (node.val < target){// target在node.right中
+                node = node.right;
+            }else {// 这时候差是0，肯定不可能还有比0大的绝对值了，直接返回
+                return node.val;
+            }
+        }
+        return closestNode.val;
+    }
+
+    /**
+     * 272.给定一个不为空的二叉搜索树和一个目标值 target，请在该二叉搜索树中找到最接近目标值 target 的 k 个值。
+     *
+     * 注意：
+     *
+     * 给定的目标值 target 是一个浮点数
+     * 你可以默认 k 值永远是有效的，即 k ≤ 总结点数
+     * 题目保证该二叉搜索树中只会存在一种 k 个值集合最接近目标值
+     * 先和270一样，找到最接近的节点，然后以最接近节点为中心，分别往前往后找K个节点
+     * @param root
+     * @param target
+     * @param k
+     * @return
+     */
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        double minDiff = Double.MAX_VALUE;
+        TreeNode closestNode = root;// 最接近的节点
+        TreeNode node = root;
+        while (node != null){
+            double diff = Math.abs(node.val - target);// node.val和target差的绝对值
+            if (diff < minDiff){// 比之前的最小值还小，记录下最小值和最接近的节点
+                minDiff = diff;
+                closestNode = node;
+            }
+            if (node.val > target){// target在node.left中
+                node = node.left;
+            }else if (node.val < target){// target在node.right中
+                node = node.right;
+            }else {
+                closestNode = node;
+                break;
+            }
+        }
+        // 此时closestNode是最接近target的节点
+        List<Integer> result = new ArrayList<>(k);
+        result.add(closestNode.val);// 最接近的节点加入
+
+        TreeNode precursorNode = getPredecessor(root,closestNode.val);// 第一个前驱节点
+        TreeNode successorNode = getSuccessor(root,closestNode.val);// 第一个后继节点
+        while (result.size() < k){// 结果集不满
+            if (precursorNode != null && successorNode != null){
+                if (Math.abs(precursorNode.val - target) < Math.abs(successorNode.val - target)){
+                    result.add(precursorNode.val);
+                    precursorNode = getPredecessor(root,precursorNode.val);
+                }else {
+                    result.add(successorNode.val);
+                    successorNode = getSuccessor(root,successorNode.val);
+                }
+            }else if (successorNode != null){
+                result.add(successorNode.val);
+                // 寻找后继节点的后继
+                successorNode = getSuccessor(root,successorNode.val);
+            }else if(precursorNode != null){
+                result.add(precursorNode.val);
+                // 寻找前驱节点的前驱
+                precursorNode = getPredecessor(root,precursorNode.val);
+            }else {
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 寻找target节点的前驱
+     * @param root root节点
+     * @param target 目标值
+     * @return 前驱节点
+     */
+    private TreeNode getPredecessor(TreeNode root,int target){
+        TreeNode curNode = root;
+        TreeNode preParentNode = null;// 前驱父节点
+        while (curNode.val != target){
+            if (curNode.val > target){
+                curNode = curNode.left;
+            }else {
+                preParentNode = curNode;
+                curNode = curNode.right;
+            }
+        }
+        if (curNode.left != null){
+            curNode = curNode.left;
+            while (curNode.right != null){
+                curNode = curNode.right;
+            }
+            return curNode;
+        }else {
+            return preParentNode;
+        }
+    }
+
+    /**
+     * 寻找target节点的后继
+     * @param root root
+     * @param target 目标值
+     * @return 后继节点
+     */
+    private TreeNode getSuccessor(TreeNode root,int target){
+        TreeNode curNode = root;
+        TreeNode successParentNode = null;// 后继父节点
+        while (curNode.val != target){
+            if (curNode.val > target){
+                successParentNode = curNode;
+                curNode = curNode.left;
+            }else {
+                curNode = curNode.right;
+            }
+        }
+        // curNode.right不空，那么curNode的后继节点就是curNode.right的最左子树节点
+        if (curNode.right != null){
+            curNode = curNode.right;
+            while (curNode.left != null){
+                curNode = curNode.left;
+            }
+            return curNode;
+        }else {
+            return successParentNode;
+        }
+    }
+
+
+    /**
      * 285. 二叉搜索树中的顺序后继
      * 1.p存在右子树，那么p的后继就是p.right子树的最左节点
      * 2.p不存在右子树，那么p的后继就是p所在子树的第一个左孩子的父节点
      * 怎么找父节点，用栈来找，二叉搜索树找节点的方式
      * 也可以利用二叉搜索树的性质，来找比p大的第一个节点
-     * @param root
-     * @param p
-     * @return
+     * @param root root
+     * @param p 需要寻找的节点
+     * @return p的顺序后继
      */
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
         // 存在右子树，就是右子树的最左节点
@@ -584,8 +737,8 @@ public class BinarySearchTree {
      *
      * 1.x存在右子树，那么x的后继就是x.right子树的最左节点
      * 2.x不存在右子树，那么x的后继就是x所在子树的第一个左孩子的父节点
-     * @param x
-     * @return
+     * @param x 当前节点
+     * @return x的后继节点
      */
     public Node inorderSuccessor(Node x) {
         Node node = x.right;
@@ -823,10 +976,10 @@ public class BinarySearchTree {
 
     /**
      * 938. 二叉搜索树的范围和
-     * @param root
-     * @param L
-     * @param R
-     * @return
+     * @param root root
+     * @param L 范围的开始
+     * @param R 范围的结束
+     * @return sum
      */
     public int rangeSumBST(TreeNode root, int L, int R) {
         if (root == null){
@@ -1125,7 +1278,7 @@ public class BinarySearchTree {
      * @param root1 第一颗二叉搜索树root
      * @param root2 第二颗二叉搜索树root
      * @param target 目标值
-     * @return
+     * @return 是否存在这个target
      */
     public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target) {
         if (root1 == null || root2 == null){
