@@ -14,21 +14,18 @@ public class BinaryTree {
      * @return
      */
     public List<Integer> inorderTraversal(TreeNode root) {
-        List<Integer> resultList = new LinkedList<>();
-        if (root == null) {
-            return resultList;
-        }
-        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> resultList = new ArrayList<>();
         TreeNode node = root;
-        while (node != null || !stack.isEmpty()) {
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()) {
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
                 node = stack.pop();
                 resultList.add(node.val);
                 node = node.right;
             }
-
         }
         return resultList;
     }
@@ -40,17 +37,15 @@ public class BinaryTree {
      * @return
      */
     public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> resultList = new LinkedList<>();
-        if (root == null) {
-            return resultList;
-        }
-        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> resultList = new ArrayList<>();
         TreeNode node = root;
-        while (node != null || !stack.isEmpty()) {
-            resultList.add(node.val);
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()) {
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                resultList.add(node.val);
+                stack.push(node);
+                node = node.left;
+            }else {
                 node = stack.pop();
                 node = node.right;
             }
@@ -1326,6 +1321,63 @@ public class BinaryTree {
     }
 
     /**
+     * 663.均等树的划分
+     * 给定一棵有 n 个结点的二叉树，你的任务是检查是否可以通过去掉树上的一条边将树分成两棵，且这两棵树结点之和相等
+     *
+     * 思路 ： 先后序遍历，记录下每个节点孩子节点值的集合
+     * @param root root
+     * @return
+     */
+    public boolean checkEqualTree(TreeNode root) {
+        Map<TreeNode,Integer> nodeSumChildValue = sumTreeNodeChildValue(root);
+        // 节点遍历开始，开始偏移计算
+        int rootSum = nodeSumChildValue.get(root);
+        if ((rootSum & 1) == 1){
+            return false;// 奇数不行
+        }
+
+        return false;
+    }
+
+    private boolean findTreeNode(TreeNode node,int sum,Map<TreeNode,Integer> nodeSumChildValue){
+        return false;
+    }
+
+    /**
+     * 记录下所有节点，node.val+leftValue+rightValue的和
+     * @param root
+     * @return
+     */
+    private Map<TreeNode,Integer> sumTreeNodeChildValue(TreeNode root){
+        if (root == null){
+            return null;
+        }
+        Map<TreeNode,Integer> nodeSumChildValue = new HashMap<>();
+        TreeNode node = root;
+        TreeNode tempNode = null;// 记录上一个被访问的节点
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null){
+            while (node.left != null){
+                stack.push(node);
+                node = node.left;
+            }
+            while (node != null && (node.right == null || node.right == tempNode)){
+                tempNode = node;// 当前节点被访问
+                Integer leftSumValue = nodeSumChildValue.getOrDefault(node.left,0);
+                Integer rightSumValue = nodeSumChildValue.getOrDefault(node.right,0);
+                nodeSumChildValue.put(node,node.val + leftSumValue + rightSumValue);
+                if (stack.isEmpty()){
+                    return nodeSumChildValue;
+                }
+                node = stack.pop();// 节点出栈
+            }
+            stack.push(node);
+            node = node.right;
+        }
+        return nodeSumChildValue;
+    }
+
+    /**
      * 742.二叉树最近叶节点
      * 给定一个 每个结点的值互不相同 的二叉树，和一个目标值 k，找出树中与目标值 k 最近的叶结点。 
      *
@@ -2535,6 +2587,37 @@ public class BinaryTree {
     }
 
     /**
+     * 1120.子树的最大平均值
+     * @param root
+     * @return
+     */
+    public double maximumAverageSubtree(TreeNode root) {
+        if (root == null){
+            return 0.0;
+        }
+        // 可以用后序遍历来做
+        return averageSubTree(root)[2];
+    }
+
+    private double[] averageSubTree(TreeNode node){
+        // 0 节点总和，1节点数，2节点和左右子树最大平均值
+        double[] arr = new double[3];
+        if (node == null){
+            return arr;
+        }
+        double[] left = averageSubTree(node.left);
+        double[] right = averageSubTree(node.right);
+        double nodeSum = node.val + left[0] + right[0];
+        double nodeCount = left[1] + right[1] + 1;
+        double nodeAvg = (nodeSum)/nodeCount;
+        double nodeMaxAvg = Math.max(Math.max(left[2],right[2]),nodeAvg);
+        arr[0] = nodeSum;
+        arr[1] = nodeCount;
+        arr[2] = nodeMaxAvg;
+        return arr;
+    }
+
+    /**
      * 1123.最深叶节点的最近公共祖先
      *
      * 思路：最深叶子节点的公共祖先的左右子树高度相同，也就是最深叶子节点的深度一定相同。
@@ -2666,5 +2749,89 @@ public class BinaryTree {
             return 0;
         }
         return 1 + nodeCount(node.left) + nodeCount(node.right);
+    }
+
+    /**
+     * 1302.层数最深叶子节点之和
+     * 二叉树层次遍历，每一层都累加叶子节点值，进入下一层累计值就清空sum值
+     * @param root root
+     * @return 层数最深叶子节点之和
+     */
+    public int deepestLeavesSum(TreeNode root) {
+        if (root == null){
+            return 0;
+        }
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        int front = 0;
+        int rear = queue.size();
+        int sum = 0;
+        while (true){
+            node = queue.poll();
+            front++;
+            if (node.left == null && node.right == null){
+                sum += node.val;// 叶子节点值累加
+            }else {
+                if (node.left != null){
+                    queue.offer(node.left);
+                }
+                if (node.right != null){
+                    queue.offer(node.right);
+                }
+            }
+            if (queue.isEmpty()){
+                break;// 队列空表示所有节点都遍历结束
+            }
+            // 进入下一层了，之前累加的节点清空
+            if (front == rear){
+                front = 0;
+                rear = queue.size();
+                sum = 0;
+            }
+        }
+        return sum;
+    }
+
+    /**
+     * 1305.两棵二叉搜索树中的所有元素
+     * 转为链表，然后合并
+     * @param root1 root1
+     * @param root2 root2
+     * @return
+     */
+    public List<Integer> getAllElements(TreeNode root1, TreeNode root2) {
+        List<Integer> list1 = inorderTraversal(root1);
+        List<Integer> list2 = inorderTraversal(root2);
+        return mergeTwoList(list1,list2);
+    }
+
+    /**
+     * 合并两个有序数组
+     * @param list1 list1
+     * @param list2 list2
+     * @return
+     */
+    private List<Integer> mergeTwoList(List<Integer> list1,List<Integer> list2){
+        List<Integer> result = new ArrayList<>(list1.size() + list2.size());
+        int i  = 0, j = 0;
+        while (i < list1.size() && j < list2.size()){
+            Integer num1 = list1.get(i);
+            Integer num2 = list2.get(j);
+            if (num1 <= num2){
+                result.add(num1);
+                i++;
+            }else {
+                result.add(num2);
+                j++;
+            }
+        }
+        while (i < list1.size()){
+            result.add(list1.get(i++));
+        }
+        while (j < list2.size()){
+            result.add(list2.get(j++));
+        }
+        return result;
     }
 }
