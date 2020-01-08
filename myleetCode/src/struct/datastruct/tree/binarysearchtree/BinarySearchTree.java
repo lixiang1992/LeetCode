@@ -347,11 +347,12 @@ public class BinarySearchTree {
         TreeNode node = root;
         Stack<TreeNode> stack = new Stack<>();
         while (node != null || !stack.isEmpty()) {
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()) {
-                i++;
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
                 node = stack.pop();
+                i++;
                 if (i == k) {
                     return node.val;
                 }
@@ -574,6 +575,51 @@ public class BinarySearchTree {
     }
 
     /**
+     * 333.最大的BST树
+     * 如果左右子树都是BST，只要判断root比左子树最大节点大，root比右子树最小节点小就行了
+     * @param root root
+     * @return 最大BST树的节点数
+     */
+    public int largestBSTSubtree(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        if (isBST(root,Integer.MIN_VALUE,Integer.MAX_VALUE)){
+            return nodeCount(root);
+        }
+        int left = largestBSTSubtree(root.left);
+        int right = largestBSTSubtree(root.right);
+        return Math.max(left,right);
+    }
+
+    /**
+     * 判断root为根节点的树是否是二叉搜索树
+     * @param root root节点
+     * @param min 最小值
+     * @param max 最大值
+     * @return 是否是二叉搜索树
+     */
+    private boolean isBST(TreeNode root,int min,int max){
+        if (root == null){
+            return true;
+        }
+        // 这里不建立备忘录是因为，一个节点第一次进来的时候，可能是root节点的子树，而不是以root为根节点的判断，判断BST是其root节点，不是节点本身，所以备忘录是没有用的
+        return min < root.val && root.val < max && isBST(root.left,min,root.val) && isBST(root.right,root.val,max);
+    }
+
+    /**
+     * 节点数统计
+     * @param node 当前节点
+     * @return 这个节点的子树有多少个节点数
+     */
+    private int nodeCount(TreeNode node){
+        if (node == null){
+            return 0;
+        }
+        return 1 + nodeCount(node.left) + nodeCount(node.right);
+    }
+
+    /**
      * 530. 二叉搜索树的最小绝对差
      *
      * @param root 根节点
@@ -585,11 +631,12 @@ public class BinarySearchTree {
         Stack<TreeNode> stack = new Stack<>();
         int min = Integer.MAX_VALUE;
         while (node != null || !stack.isEmpty()) {
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()) {
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
                 node = stack.pop();
-                if (prevNode != null) {
+                if (prevNode != null){
                     min = Math.min(min, Math.abs(prevNode.val - node.val));
                 }
                 prevNode = node;
@@ -1286,11 +1333,12 @@ public class BinarySearchTree {
         }
         TreeNode node = root1;
         Deque<TreeNode> stack = new LinkedList<>();// 双端队列模拟栈
-        while(node != null || !stack.isEmpty()){
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()){
-                node = stack.pop();// 中序遍历出栈
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            } else {
+                node = stack.pop();
                 int value = target - node.val;// 目标value值
                 // 从另一个二叉搜索树中寻找value所在的节点
                 TreeNode node2 = searchBST(root2,value);
