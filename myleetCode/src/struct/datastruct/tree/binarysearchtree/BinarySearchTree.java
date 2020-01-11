@@ -1303,14 +1303,15 @@ public class BinarySearchTree {
         Deque<TreeNode> stack = new LinkedList<>();
         int sumValue = 0;
         while (node != null || !stack.isEmpty()){
-            while (node != null){
+            if(node != null){
                 stack.push(node);
                 node = node.right;
+            }else {
+                node = stack.pop();
+                node.val += sumValue;// 节点加上之前node.val的和
+                sumValue = node.val;// 之前node.val值的和更新
+                node = node.left;// 左子树遍历
             }
-            node = stack.pop();
-            node.val += sumValue;// 节点加上之前node.val的和
-            sumValue = node.val;// 之前node.val值的和更新
-            node = node.left;// 左子树遍历
         }
         return root;
     }
