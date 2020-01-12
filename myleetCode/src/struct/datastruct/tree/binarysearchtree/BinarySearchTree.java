@@ -774,6 +774,48 @@ public class BinarySearchTree {
     }
 
     /**
+     * 501.二叉搜索树中的众数
+     * @param root root
+     * @return 众数集合
+     */
+    public int[] findMode(TreeNode root) {
+        TreeNode node = root;
+        int maxCount = 0;
+        List<Integer> count = new ArrayList<>();
+        int lastValue = Integer.MIN_VALUE;
+        int curCount = 0;// 当前相同数计数
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                if (node.val == lastValue){
+                    curCount++;
+                }else {
+                    curCount = 1;
+                }
+                if (maxCount == curCount){
+                    count.add(node.val);
+                }else if (maxCount < curCount){
+                    // 众数变化了
+                    maxCount = curCount;
+                    count.clear();
+                    count.add(node.val);
+                }
+                lastValue = node.val;// 记录上一个访问节点的值
+                node = node.right;
+            }
+        }
+        int[] res = new int[count.size()];
+        for (int i = 0 ; i < count.size() ; i++){
+            res[i] = count.get(i);
+        }
+        return res;
+    }
+
+    /**
      * 510. 二叉搜索树中的中序后继 II
      * 给定一棵二叉搜索树和其中的一个节点，找到该节点在树中的中序后继。
      *
