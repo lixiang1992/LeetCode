@@ -20,7 +20,7 @@ package struct.datastruct.tree.segmenttree;
  *
  * 采用segment tree来处理
  */
-public class NumArray {
+public class NumArray_307 {
 
     // 线段树的root节点
     private SegmentTree root;
@@ -48,7 +48,7 @@ public class NumArray {
         }
     }
 
-    public NumArray(int[] nums) {
+    public NumArray_307(int[] nums) {
         this.root = buildSegmentTree(nums,0,nums.length - 1);
     }
 
