@@ -312,6 +312,125 @@ public class BinaryTree {
     }
 
     /**
+     * 114.二叉树原地展开为链表，都在右孩子节点上
+     * 另类的先序遍历，只是每次压入栈的都是当前节点的右孩子（前提是右孩子不为空）
+     * 一直往左孩子遍历
+     * @param root
+     */
+    public void flatten(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeNode curNode = root;
+        TreeNode leftNode;
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (curNode != null) {// 这个条件其实就是while(true)
+            while (curNode.left != null) {
+                if (curNode.right != null) {
+                    stack.offer(curNode.right);
+                }
+                leftNode = curNode.left;
+                curNode.right = leftNode;
+                curNode.left = null;
+                curNode = leftNode;
+            }
+            if (curNode.right != null) {
+                curNode = curNode.right;
+            } else {
+                if (stack.isEmpty()) {
+                    break;
+                }
+                curNode.right = stack.pollLast();
+                curNode = curNode.right;
+            }
+        }
+    }
+
+    /**
+     * 116.使用O(1)的空间复杂度层次遍历二叉树,
+     * 完全二叉树的算法
+     *
+     * @param root
+     */
+    public void connect(TreeLinkNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeLinkNode start = root;
+        TreeLinkNode cur;
+        while (start.left != null) {
+            cur = start;
+            while (cur != null) {
+                cur.left.next = cur.right;
+                if (cur.next != null) {
+                    cur.right.next = cur.next.left;
+                }
+                cur = cur.next;
+            }
+            start = start.left;
+        }
+    }
+
+    /**
+     * 117.使用O(1)的空间复杂度层次遍历二叉树,自己写的通用算法
+     * 通用算法
+     *
+     * @param root
+     */
+    public void connectByGeneral(TreeLinkNode root) {
+        if (root == null) {
+            return;
+        }
+        TreeLinkNode parent = root;
+        TreeLinkNode start;
+        TreeLinkNode cur;
+        if (parent.left != null) {
+            start = parent.left;
+        } else if (parent.right != null) {
+            start = parent.right;
+        } else {
+            return;
+        }
+        while (start != null) {
+            cur = start;
+            while (parent != null) {
+                if (cur == parent.left) {
+                    if (parent.right != null) {
+                        cur.next = parent.right;
+                        cur = cur.next;
+                    } else {
+                        parent = parent.next;
+                    }
+                } else if (cur == parent.right) {
+                    parent = parent.next;
+                } else {
+                    if (parent.left != null) {
+                        cur.next = parent.left;
+                        cur = cur.next;
+                    } else if (parent.right != null) {
+                        cur.next = parent.right;
+                        cur = cur.next;
+                    } else {
+                        parent = parent.next;
+                    }
+                }
+            }
+            parent = start;
+            while (start != null) {
+                if (start.left != null) {
+                    start = start.left;
+                    break;
+                } else if (start.right != null) {
+                    start = start.right;
+                    break;
+                } else {
+                    start = start.next;
+                }
+            }
+        }
+    }
+
+    /**
      * 124. 二叉树中的最大路径和
      * 思路：二叉树中某一个节点为根结点的最大路径和，
      * 等于该节点的节点值，加上左子树的最大路径和（若为负，直接取0，不要这子树了），
@@ -404,6 +523,40 @@ public class BinaryTree {
     }
 
     /**
+     * 156.上下翻转二叉树
+     * 先翻转左子树的链表，反转后左孩子的右子树指针，赋值给当前节点的右子树，再交换左右子树
+     * @param root root
+     * @return 上下反转后的root
+     */
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        if (root == null){
+            return null;
+        }
+        // 1.树沿着左子树反转
+        TreeNode curNode = root;
+        TreeNode prevNode = null;
+        // 开始反转
+        while (curNode != null){
+            TreeNode nextNode = curNode.left;// 缓存原来的左孩子
+            curNode.left = prevNode;// 左孩子反转
+            prevNode = curNode;// 前置指针后移
+            curNode = nextNode;// 当前指针后移
+        }
+        root = prevNode;
+        // 这时候curNode是反转完之后的头节点了
+        curNode = root;
+        while (curNode.left != null){
+            // 2.现在左孩子的右子树，变成自己的右子树
+            curNode.right = curNode.left.right;
+            curNode.left.right = null;// 之前的指针置空
+            // 3.交换左右子树
+            changeChild(curNode);
+            curNode = curNode.right;// 这里为什么是right呢，因为左右节点被交换了
+        }
+        return root;
+    }
+
+    /**
      * 199.二叉树的右视图
      * 层次遍历，取最后一个
      * @param root
@@ -464,92 +617,6 @@ public class BinaryTree {
         }
         return root;
     }
-
-    /**
-     * 116.使用O(1)的空间复杂度层次遍历二叉树,
-     * 完全二叉树的算法
-     *
-     * @param root
-     */
-    public void connect(TreeLinkNode root) {
-        if (root == null) {
-            return;
-        }
-        TreeLinkNode start = root;
-        TreeLinkNode cur;
-        while (start.left != null) {
-            cur = start;
-            while (cur != null) {
-                cur.left.next = cur.right;
-                if (cur.next != null) {
-                    cur.right.next = cur.next.left;
-                }
-                cur = cur.next;
-            }
-            start = start.left;
-        }
-    }
-
-    /**
-     * 117.使用O(1)的空间复杂度层次遍历二叉树,自己写的通用算法
-     * 通用算法
-     *
-     * @param root
-     */
-    public void connectByGeneral(TreeLinkNode root) {
-        if (root == null) {
-            return;
-        }
-        TreeLinkNode parent = root;
-        TreeLinkNode start;
-        TreeLinkNode cur;
-        if (parent.left != null) {
-            start = parent.left;
-        } else if (parent.right != null) {
-            start = parent.right;
-        } else {
-            return;
-        }
-        while (start != null) {
-            cur = start;
-            while (parent != null) {
-                if (cur == parent.left) {
-                    if (parent.right != null) {
-                        cur.next = parent.right;
-                        cur = cur.next;
-                    } else {
-                        parent = parent.next;
-                    }
-                } else if (cur == parent.right) {
-                    parent = parent.next;
-                } else {
-                    if (parent.left != null) {
-                        cur.next = parent.left;
-                        cur = cur.next;
-                    } else if (parent.right != null) {
-                        cur.next = parent.right;
-                        cur = cur.next;
-                    } else {
-                        parent = parent.next;
-                    }
-                }
-            }
-            parent = start;
-            while (start != null) {
-                if (start.left != null) {
-                    start = start.left;
-                    break;
-                } else if (start.right != null) {
-                    start = start.right;
-                    break;
-                } else {
-                    start = start.next;
-                }
-            }
-        }
-    }
-
-
 
     /**
      * 给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，
@@ -648,41 +715,6 @@ public class BinaryTree {
     }
 
     /**
-     * 114.二叉树原地展开为链表，都在右孩子节点上
-     * 另类的先序遍历，只是每次压入栈的都是当前节点的右孩子（前提是右孩子不为空）
-     * 一直往左孩子遍历
-     * @param root
-     */
-    public void flatten(TreeNode root) {
-        if (root == null) {
-            return;
-        }
-        TreeNode curNode = root;
-        TreeNode leftNode;
-        Deque<TreeNode> stack = new LinkedList<>();
-        while (curNode != null) {// 这个条件其实就是while(true)
-            while (curNode.left != null) {
-                if (curNode.right != null) {
-                    stack.offer(curNode.right);
-                }
-                leftNode = curNode.left;
-                curNode.right = leftNode;
-                curNode.left = null;
-                curNode = leftNode;
-            }
-            if (curNode.right != null) {
-                curNode = curNode.right;
-            } else {
-                if (stack.isEmpty()) {
-                    break;
-                }
-                curNode.right = stack.pollLast();
-                curNode = curNode.right;
-            }
-        }
-    }
-
-    /**
      * 222.完全二叉树的节点个数
      * 层次遍历肯定能搞定，但是这里采用二分查找，提高效率
      * @param root 根节点
@@ -765,49 +797,65 @@ public class BinaryTree {
     }
 
     /**
-     * 623.二叉树中添加一行
-     * @param root 根节点
-     * @param v value 节点value
-     * @param d 层数
-     * @return 树的根节点
+     * 250.统计同值的子树
+     * 给定一个二叉树，统计该二叉树数值相同的子树个数。
+     *
+     * 同值子树是指该子树的所有节点都拥有相同的数值。
+     * @param root
+     * @return
      */
-    public TreeNode addOneRow(TreeNode root, int v, int d) {
-        if(d == 1){
-            TreeNode newRoot = new TreeNode(v);
-            newRoot.left = root;
-            return newRoot;
+    public int countUnivalSubtrees(TreeNode root) {
+
+        return 0;
+    }
+
+    private boolean isUnivalSubtree(TreeNode root) {
+        if (root == null){
+            return true;
         }
-        TreeNode node = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(node);
-        int k = 1;
-        int front = 0;
-        int rear = queue.size();
-        while (!queue.isEmpty() && k < d - 1){
-            node = queue.poll();
-            front++;
-            if(node.left != null){
-                queue.offer(node.left);
-            }
-            if(node.right != null){
-                queue.offer(node.right);
-            }
-            if(front == rear){// 进入下一层
-                front = 0;
-                rear = queue.size();
-                k++;
-            }
+        boolean leftValueEquals = true;
+        if (root.left != null){
+            leftValueEquals = root.val == root.left.val && isUnivalTree(root.left);
         }
-        while (!queue.isEmpty()){
-            node = queue.poll();
-            TreeNode newLeftNode = new TreeNode(v);
-            newLeftNode.left = node.left;
-            node.left = newLeftNode;
-            TreeNode newRightNode = new TreeNode(v);
-            newRightNode.right = node.right;
-            node.right = newRightNode;
+        boolean rightValueEquals = true;
+        if (root.right != null){
+            rightValueEquals = root.val == root.right.val && isUnivalTree(root.right);
         }
-        return root;
+        return leftValueEquals && rightValueEquals;
+    }
+
+    /**
+     * 255.验证前序遍历序列二叉搜索树
+     * 单调栈->单调递减栈存储preorder的思路
+     * 二叉搜索树是left < root < right的，先序遍历又是root->left->right的，基于这样的性质和遍历方式，我们知道越往左越小，这样，就可以构造一个单调递减的栈，来记录遍历的元素。
+     *
+     * 为什么要用单调栈呢，因为往左子树遍历的过程，value是越来越小的，一旦出现了value大于栈顶元素value的时候，就表示要开始进入右子树了（如果不是，就应该继续进入左子树，不理解的请看下二叉搜索树的定义），但是这个右子树是从哪个节点开始的呢？
+     *
+     * 单调栈帮我们记录了这些节点，只要栈顶元素还比当前节点小，就表示还是左子树，要移除，因为我们要找到这个右孩子节点直接连接的父节点，也就是找到这个子树的根，只要栈顶元素还小于当前节点，就要一直弹出，直到栈顶元素大于节点，或者栈为空。栈顶的上一个元素就是子树节点的根。
+     *
+     * 接下来，数组继续往后遍历，之后的右子树的每个节点，都要比子树的根要大，才能满足，否则就不是二叉搜索树
+     *
+     * @param preorder 先序遍历数组
+     * @return 是否是先序遍历二叉搜索树
+     */
+    public boolean verifyPreorder(int[] preorder) {
+        // 单调栈使用，单调递减的单调栈
+        Deque<Integer> stack = new LinkedList<>();
+        int prevElement = Integer.MIN_VALUE;
+        for (int i = 0;i<preorder.length;i++){
+            // 右子树元素必须要大于递减栈被peek访问的元素，否则就不是二叉搜索树
+            if (preorder[i] < prevElement){
+                return false;
+            }
+            while (!stack.isEmpty() && preorder[i] > stack.peek()){
+                // 数组元素大于单调栈的元素了，表示往右子树走了，记录下上个根节点
+                // 找到这个右子树对应的根节点，之前左子树全部弹出，不在记录，因为不可能在往根节点的左子树走了
+                prevElement = stack.pop();
+            }
+            // 这个新元素还是要进去
+            stack.push(preorder[i]);
+        }
+        return true;
     }
 
     /**
@@ -866,15 +914,68 @@ public class BinaryTree {
         return Math.max(exclude,include);
     }
 
-//    private int robHelper(TreeNode root,int[] leftValue,int[] rightValue){
-//        if (root == null){
-//            return 0;
-//        }
-//        int[] ll = new int[]{0},lr = new int[]{0},rl = new int[]{0},rr = new int[]{0};
-//        leftValue[0] = robHelper(root.left,ll,lr);
-//        rightValue[0] = robHelper(root.right,rl,rr);
-//        return Math.max(root.val + ll[0]+lr[0]+rl[0]+rr[0],leftValue[0]+rightValue[0]);
-//    }
+    /**
+     * 366.寻找完全二叉树的叶子节点
+     * 这个完全二叉树的概念呢不对，骗老子
+     * 重点：完全二叉树
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> findLeaves(TreeNode root){
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null){
+            return result;
+        }
+        List<TreeNode> levelNodeList = new ArrayList<>();// 每一层的节点
+        Deque<List<TreeNode>> levelQueue = new LinkedList<>();// 层次队列
+        Queue<TreeNode> queue = new LinkedList<>();// 遍历用的队列
+        TreeNode node = root;
+        queue.offer(node);
+        int front = 0;
+        int rear = queue.size();
+        // 层次遍历分层
+        while (!queue.isEmpty()){
+            node = queue.poll();
+            front++;
+            levelNodeList.add(node);
+            if (node.left != null){
+                queue.offer(node.left);
+            }
+            if (node.right != null){
+                queue.offer(node.right);
+            }
+            if (front == rear){
+                // 当前层结束，队头队尾重新初始化
+                front = 0;
+                rear = queue.size();
+                // 节点层进入层级双端队列
+                levelQueue.push(levelNodeList);
+                levelNodeList = new ArrayList<>();
+            }
+        }
+        levelNodeList = levelQueue.pop();// 当前层
+        while (true){
+            List<Integer> tempResult = new ArrayList<>();
+            for (TreeNode tempNode : levelNodeList){
+                tempResult.add(tempNode.val);// 当前层全部加入
+            }
+            result.add(tempResult);
+            int currentLength = levelNodeList.size();// 当前层节点数
+            if (levelQueue.isEmpty()){
+                break;
+            }
+            List<TreeNode> lastList = levelQueue.peek();// 上一层
+            int lastLeavesStart = ((currentLength + 1) >> 1) - 1;// 上一层叶子节点开始的位置
+            if (lastLeavesStart < lastList.size() - 1){
+                for (int i = lastList.size() - 1;i > lastLeavesStart;i--){
+                    tempResult.add(lastList.get(i).val);
+                    lastList.remove(i);
+                }
+            }
+            levelNodeList = levelQueue.pop();
+        }
+        return result;
+    }
 
     /**
      * 508. 出现次数最多的子树元素和
@@ -1056,6 +1157,98 @@ public class BinaryTree {
     }
 
     /**
+     * 572.另一个树的子树
+     * 给定两个非空二叉树 s 和 t，检验 s 中是否包含和 t 具有相同结构和节点值的子树。s 的一个子树包括 s 的一个节点和这个节点的所有子孙。s 也可以看做它自身的一棵子树。
+     *
+     * @param s
+     * @param t
+     * @return
+     */
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        // 从s中找到t，先序遍历找到全部满足条件的t
+        Deque<TreeNode> stack = new LinkedList<>();
+        TreeNode node = s;
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                if (node.val == t.val){
+                    // 每一个直接判断就行，可以就返回了，不用继续遍历
+                    if (isSub(node,t)){
+                        return true;
+                    }
+                }
+                stack.push(node);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                node = node.right;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 两棵树是否相同结构
+     * @param root1 root1
+     * @param root2 root2
+     * @return 是否相同结构
+     */
+    private boolean isSub(TreeNode root1,TreeNode root2){
+        if (root1 == null && root2 == null){
+            return true;
+        }else if (root1 == null || root2 == null){
+            return false;
+        }else {
+            return root1.val == root2.val && isSub(root1.left,root2.left) && isSub(root1.right,root2.right);
+        }
+    }
+
+    /**
+     * 623.二叉树中添加一行
+     * @param root 根节点
+     * @param v value 节点value
+     * @param d 层数
+     * @return 树的根节点
+     */
+    public TreeNode addOneRow(TreeNode root, int v, int d) {
+        if(d == 1){
+            TreeNode newRoot = new TreeNode(v);
+            newRoot.left = root;
+            return newRoot;
+        }
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        int k = 1;
+        int front = 0;
+        int rear = queue.size();
+        while (!queue.isEmpty() && k < d - 1){
+            node = queue.poll();
+            front++;
+            if(node.left != null){
+                queue.offer(node.left);
+            }
+            if(node.right != null){
+                queue.offer(node.right);
+            }
+            if(front == rear){// 进入下一层
+                front = 0;
+                rear = queue.size();
+                k++;
+            }
+        }
+        while (!queue.isEmpty()){
+            node = queue.poll();
+            TreeNode newLeftNode = new TreeNode(v);
+            newLeftNode.left = node.left;
+            node.left = newLeftNode;
+            TreeNode newRightNode = new TreeNode(v);
+            newRightNode.right = node.right;
+            node.right = newRightNode;
+        }
+        return root;
+    }
+
+    /**
      * 637. 二叉树的层平均值
      * @param root root
      * @return 每一层的平均值
@@ -1180,92 +1373,6 @@ public class BinaryTree {
             }
         }
         return root;
-    }
-
-    /**
-     * 655.输出二叉树构建的类，记录树节点，树下标，当前树为root的左右子树下标
-     */
-    private class My655Pair{
-        TreeNode node;// 树节点
-        int index;// 节点的下标
-        int leftLimit;// 当前node为root的左界限
-        int rightLimit;// 当前node为root的右界限
-
-        My655Pair(TreeNode node, int index,int leftLimit,int rightLimit){
-            this.node = node;
-            this.index = index;
-            this.leftLimit = leftLimit;
-            this.rightLimit = rightLimit;
-        }
-    }
-
-    /**
-     * 655.输出二叉树
-     * @param root
-     * @return
-     */
-    public List<List<String>> printTree(TreeNode root) {
-        // 返回的结果用arrayList
-        List<List<String>> printList = new ArrayList<>();
-        // 先获取高度
-        int depth = depth(root);// 二叉树高度
-        int width = (1 << depth) - 1;// 二叉树宽度
-
-        Queue<My655Pair> queue = new LinkedList<>();// 队列遍历
-        // root的index
-        int rootIndex = width >> 1;
-        // root入队列
-        queue.offer(new My655Pair(root,rootIndex,0,width));
-        // 每一层的打印列表
-        List<String> everyFloor = getNewFloorList(width);
-
-        int front = 0;// 记录层数，队头
-        int tail = queue.size();// 记录层数，队尾
-        // 层次遍历
-        while (!queue.isEmpty()){
-            My655Pair pair = queue.poll();// 出队列
-            front++;// 每出一个元素，队列头部后移
-            // 改变当前pair所在list下标的值
-            everyFloor.set(pair.index,String.valueOf(pair.node.val));
-            if (pair.node.left != null){
-                // 左子树不空的处理
-                int leftLimit = pair.leftLimit;
-                int rightLimit = pair.index;
-                int leftIndex = (leftLimit + rightLimit) >> 1;
-                // 获取左孩子下标
-                My655Pair leftPair = new My655Pair(pair.node.left,leftIndex,leftLimit,rightLimit);
-                queue.offer(leftPair);
-            }
-            if (pair.node.right != null){
-                // 右子树不空的处理
-                int leftLimit = pair.index;
-                int rightLimit = pair.rightLimit;
-                int rightIndex = (leftLimit + rightLimit) >> 1;
-                My655Pair rightPair = new My655Pair(pair.node.right,rightIndex,leftLimit,rightLimit);
-                queue.offer(rightPair);
-            }
-            // 当前层遍历结束，层数+1，打印数组记录，重新初始化
-            if (front == tail){
-                printList.add(everyFloor);// 打印数组记录
-                everyFloor = getNewFloorList(width);// 获取新的数组
-                front = 0;// 进入下一层，初始化
-                tail = queue.size();// 进入下一层，初始化
-            }
-        }
-        return printList;
-    }
-
-    /**
-     * 获取新的初始化打印List
-     * @param width
-     * @return
-     */
-    private List<String> getNewFloorList(int width){
-        List<String> everyFloor = new ArrayList<>(width);
-        for(int i = 0;i<width;i++){
-            everyFloor.add("");
-        }
-        return everyFloor;
     }
 
     /**
@@ -1910,94 +2017,6 @@ public class BinaryTree {
         return true;
     }
 
-    /**
-     * 968.监控二叉树
-     * 给定一个二叉树，我们在树的节点上安装摄像头。
-     * 节点上的每个摄影头都可以监视其父对象、自身及其直接子对象。
-     * 计算监控树的所有节点所需的最小摄像头数量。
-     * @param root 根节点
-     * @return 最小监控的数量
-     */
-    public int minCameraCover(TreeNode root) {
-        if(root == null){
-            return 0;
-        }
-        int sumValue = 0;
-        Deque<TreeNode> stack = new LinkedList<>();
-        TreeNode node = root;
-        TreeNode tempNode = node;// 上一个遍历到的节点
-        // 采用后续遍历
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
-                stack.push(node);
-                if (isLeaf(node.left) || isLeaf(node.right)){
-                    sumValue++;
-                    node.val = 1;// 1表示监控器节点
-                    if (node.left != null){
-                        node.left.val = 2;// 2表示被监控到
-                    }
-                    if (node.right != null){
-                        node.right.val = 2;// 2表示被监控到
-                    }
-                }
-                node = node.left;
-            }else {
-                node = stack.peek();
-                if (node.right == null || node.right == tempNode){
-                    // 当前节点出栈，出栈判断子树和自身是否在监控中
-                    if (!isControlNode(node.left) || !isControlNode(node.right)){
-                        // 左右孩子有一个没有被监控了
-                        node.val = 1;
-                        sumValue++;// 当前节点是监控器
-                    }else if (isCameraNode(node.left) || isCameraNode(node.right)){
-                        // 左右孩子有一个是监控器节点
-                        if (node.val == 0){
-                            node.val = 2;// 当前节点被监控
-                        }
-                    }
-                    tempNode = stack.pop();
-                    node = null;
-                }else {
-                    // 进入右子树
-                    node = node.right;
-                }
-            }
-        }
-        if (tempNode.val == 0){// 最后一个节点可能漏掉
-            tempNode.val = 1;// 标记为监控节点
-            sumValue++;
-        }
-        return sumValue;
-    }
-
-    /**
-     * 是叶子节点
-     * @param node 节点
-     * @return 是否叶子节点
-     */
-    private boolean isLeaf(TreeNode node){
-        return node != null && (node.left == null && node.right == null);
-    }
-
-    /**
-     * 是监控器节点
-     * node.val = 1表示该节点是监控器
-     * @param node 节点
-     * @return 节点是否监控器
-     */
-    private boolean isCameraNode(TreeNode node){
-        return node != null && node.val == 1;
-    }
-
-    /**
-     * 是被监控节点
-     * node.val 是1或2都表示被监控了
-     * @param node 节点
-     * @return 节点是否被监控
-     */
-    private boolean isControlNode(TreeNode node){
-        return node == null || node.val > 0;
-    }
 
     /**
      * 965.单值二叉树
