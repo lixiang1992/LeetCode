@@ -1485,6 +1485,76 @@ public class BinaryTree {
     }
 
     /**
+     * 669.修剪二叉搜索树
+     * @param root root
+     * @param L 下限值
+     * @param R 上限值
+     * @return 修剪后的二叉搜索树
+     */
+    public TreeNode trimBST(TreeNode root, int L, int R) {
+        TreeNode newRoot = null;
+        TreeNode node = root;
+        while (node != null){
+            if (L <= node.val && node.val <= R){
+                newRoot = node;// 找到剪枝后的根节点
+                break;
+            }else if(node.val < L){
+                node = node.right;
+            }else {
+                node = node.left;
+            }
+        }
+        if (newRoot == null){
+            return null;
+        }
+        // L处理
+        TreeNode tempNode = newRoot;
+        node = newRoot.left;
+        while (node != null){
+            if (node.val > L){
+                // 左指针接上
+                tempNode.left = node;
+                // 临时指针左移
+                tempNode = node;
+                node = node.left;
+            }else if (node.val < L){
+                // 数值小的，不要了
+                tempNode.left = null;
+                node = node.right;
+            }else {
+                // 左指针接上
+                tempNode.left = node;
+                // 最小值匹配到，比他小的都不要了
+                node.left = null;
+                break;
+            }
+        }
+        // R值处理
+        tempNode = newRoot;
+        node = newRoot.right;
+        while (node != null){
+            if (node.val > R){
+                // node.val比最大值还大的，不要了
+                tempNode.right = null;
+                node = node.left;
+            }else if (node.val < R){
+                // 右指针接上
+                tempNode.right = node;
+                // 临时指针右移
+                tempNode = node;
+                node = node.right;
+            }else {
+                // 右指针接上
+                tempNode.right = node;
+                // 最大值匹配到，比他大的都不管了
+                node.right = null;
+                break;
+            }
+        }
+        return newRoot;
+    }
+
+    /**
      * 742.二叉树最近叶节点
      * 给定一个 每个结点的值互不相同 的二叉树，和一个目标值 k，找出树中与目标值 k 最近的叶结点。 
      *
