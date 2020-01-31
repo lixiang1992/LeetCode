@@ -1,4 +1,4 @@
-package struct.datastruct.tree.segmenttree;
+package struct.datastruct.tree.trie;
 
 /**
  * 676.实现一个魔法字典
