@@ -859,6 +859,33 @@ public class BinaryTree {
     }
 
     /**
+     * 257.二叉树所有路径
+     * @param root root
+     * @return 路径list
+     */
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> res = new ArrayList<>();
+        preOrderTree_257(root,"",res);
+        return res;
+    }
+
+    private void preOrderTree_257(TreeNode node,String prev,List<String> res){
+        if (node == null){
+            return;
+        }
+        // 路径加入前缀
+        prev += node.val;
+        if (node.left == null && node.right == null){
+            res.add(prev);// 叶子节点是路径终点
+        }else {
+            // 进入左右子树，加上连接符
+            prev += "->";
+            preOrderTree_257(node.left,prev,res);
+            preOrderTree_257(node.right,prev,res);
+        }
+    }
+
+    /**
      * 337.打家劫舍 III
      *
      * 动态规划算法思想：以node为根节点的最优解要氛围两种状态
@@ -1200,6 +1227,23 @@ public class BinaryTree {
         }else {
             return root1.val == root2.val && isSub(root1.left,root2.left) && isSub(root1.right,root2.right);
         }
+    }
+
+    /**
+     * 536.从字符串中生成二叉树
+     * @param s s
+     * @return
+     */
+    public TreeNode str2tree(String s) {
+        TreeNode root = null;
+        if (s.length() == 0){
+            return null;
+        }
+        char c = s.charAt(0);
+        if (c != '-'){
+
+        }
+        return null;
     }
 
     /**
