@@ -6,21 +6,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 给你一棵二叉树，它的根为 root 。请你删除 1 条边，使二叉树分裂成两棵子树，且它们子树和的乘积尽可能大。
+ * 1343.分裂二叉树的最大乘积
  *
+ * 给你一棵二叉树，它的根为 root 。请你删除 1 条边，使二叉树分裂成两棵子树，且它们子树和的乘积尽可能大。
  * 由于答案可能会很大，请你将结果对 10^9 + 7 取模后再返回。
  *
  * 来源：力扣（LeetCode）
  * 链接：https://leetcode-cn.com/problems/maximum-product-of-splitted-binary-tree
  * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
  */
-public class MaxProduct_5330 {
+public class MaxProduct_1343 {
 
     // 以TreeNode为root的树节点之和
     private Map<TreeNode,Long> nodeValueMap = new HashMap<>();
     private long max = Integer.MIN_VALUE;
-    private int mod = 1000000007;
+    private int mod = 1000000007;// 结果取模数
 
+    /**
+     * 分裂二叉树的最大乘积
+     * @param root root
+     * @return 最大乘积
+     */
     public int maxProduct(TreeNode root) {
 //        nodeValueMap.put(null,0L);// 缓存null的value值
         maxProduct(root,0L);
