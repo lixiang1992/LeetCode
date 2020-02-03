@@ -13,7 +13,7 @@ import java.util.TreeMap;
  * 每次调用 MyCalendar.book方法时，如果可以将日程安排成功添加到日历中而不会导致重复预订，返回 true。否则，返回 false 并且不要将该日程安排添加到日历中。
  */
 public class MyCalendar {
-
+    // key: start value : end
     private TreeMap<Integer,Integer> tm;
 
     public MyCalendar() {
