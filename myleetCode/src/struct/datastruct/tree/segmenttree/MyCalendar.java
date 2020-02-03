@@ -44,7 +44,7 @@ public class MyCalendar {
      * @param root 线段树节点
      * @param start 新插入的开始时间
      * @param end 新插入的结束时间
-     * @return
+     * @return 是否合法
      */
     private boolean updateSegment(SegmentTreeNode root,int start,int end){
         // 新节点，要么只能全在node.start往左，要么只能全在node.end往右
