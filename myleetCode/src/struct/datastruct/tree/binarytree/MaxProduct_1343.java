@@ -28,32 +28,30 @@ public class MaxProduct_1343 {
      * @return 最大乘积
      */
     public int maxProduct(TreeNode root) {
-//        nodeValueMap.put(null,0L);// 缓存null的value值
-        maxProduct(root,0L);
+        maxProduct(root,nodeValueSum(root));
         return (int) (max % mod);
     }
 
     /**
      * 子树最大乘积
      * @param root root
-     * @param parentSum 父节点所在树的全部节点之和
+     * @param sum 树的全部节点之和
      */
-    private void maxProduct(TreeNode root,long parentSum){
+    private void maxProduct(TreeNode root,long sum){
         if (root == null){
             return;
         }
-        parentSum += root.val;
-        // 递归左树
+        // 左子树节点之和
         long leftSum = nodeValueSum(root.left);
-        // 递归右树
+        // 右子树节点之和
         long rightSum = nodeValueSum(root.right);
-        long maxSum = Math.max((leftSum+parentSum)*rightSum,(rightSum+parentSum)*leftSum);
+        long maxSum = Math.max((sum-leftSum)*leftSum,(sum-rightSum)*rightSum);
         if (maxSum > max){
             max = maxSum;
-            // 进入 左子树，原 右 子树的节点和要累加到父节点所在树节点之和中
-            maxProduct(root.left,parentSum + nodeValueMap.getOrDefault(root.right,0L));
-            // 进入 右子树，原 左 子树的节点和要累加到父节点所在树节点之和中
-            maxProduct(root.right,parentSum + nodeValueMap.getOrDefault(root.left,0L));
+            // 进入左子树
+            maxProduct(root.left,sum);
+            // 进入右子树
+            maxProduct(root.right,sum);
         }
         // 小于就不再递归了，因为左右子树节点之和本身是一个定制，|a-b|的值是一个从大到小，然后又从小到大的。
         // 那么就是在|a-b|最小的时候，a*b最大,（均值不等式），如果maxCount不在大于max了，就没有继续递归的必要了
