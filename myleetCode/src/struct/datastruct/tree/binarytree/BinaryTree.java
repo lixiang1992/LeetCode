@@ -1184,6 +1184,88 @@ public class BinaryTree {
     }
 
     /**
+     * 536.从字符串中生成二叉树
+     * @param s s
+     * @return
+     */
+    public TreeNode str2tree(String s) {
+        TreeNode root = null;
+        if (s.length() == 0){
+            return null;
+        }
+        char c = s.charAt(0);
+        if (c != '-'){
+
+        }
+        return null;
+    }
+
+    /**
+     * 543.二叉树的直径
+     * @param root root
+     * @return 直径
+     */
+    public int diameterOfBinaryTree(TreeNode root) {
+        int[] diameter = new int[]{0};
+        diameterNode(diameter,root);
+        return diameter[0];
+    }
+
+    /**
+     * 543.最大直径累计
+     * @param diameter 直径
+     * @param node node
+     * @return 节点的最长直径
+     */
+    private int diameterNode(int[] diameter,TreeNode node){
+        if (node == null){
+            return 0;
+        }
+        int leftPath = diameterNode(diameter, node.left);
+        int rightPath = diameterNode(diameter, node.right);
+        int sum = leftPath + rightPath;
+        diameter[0] = Math.max(diameter[0],sum);
+        // 节点本身的最长路径，左右的最大值 带上自己
+        return Math.max(leftPath,rightPath) + 1;
+    }
+
+    /**
+     * 563. 二叉树的坡度
+     * 给定一个二叉树，计算整个树的坡度。
+     *
+     * 一个树的节点的坡度定义即为，该节点左子树的结点之和和右子树结点之和的差的绝对值。空结点的的坡度是0。
+     *
+     * 整个树的坡度就是其所有节点的坡度之和。
+     *
+     * @param root root
+     * @return tilt
+     */
+    public int findTilt(TreeNode root) {
+        int[] tilt = new int[]{0};
+        sumNodeTilt(tilt,root);
+        return tilt[0];
+    }
+
+    /**
+     * 563.坡度累计
+     * @param tilt 坡度引用
+     * @param node 节点
+     * @return 节点之和
+     */
+    private int sumNodeTilt(int[] tilt, TreeNode node){
+        if (node == null){
+            return 0;
+        }
+        int leftSum = sumNodeTilt(tilt,node.left);
+        int rightSum = sumNodeTilt(tilt,node.right);
+        // 节点坡度累加
+        tilt[0] = tilt[0] + Math.abs(leftSum - rightSum);
+        // 节点之和
+        return node.val + leftSum + rightSum;
+    }
+
+
+    /**
      * 572.另一个树的子树
      * 给定两个非空二叉树 s 和 t，检验 s 中是否包含和 t 具有相同结构和节点值的子树。s 的一个子树包括 s 的一个节点和这个节点的所有子孙。s 也可以看做它自身的一棵子树。
      *
@@ -1230,20 +1312,22 @@ public class BinaryTree {
     }
 
     /**
-     * 536.从字符串中生成二叉树
-     * @param s s
-     * @return
+     * 617.合并二叉树
+     * @param t1 root1
+     * @param t2 root2
+     * @return new root
      */
-    public TreeNode str2tree(String s) {
-        TreeNode root = null;
-        if (s.length() == 0){
-            return null;
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if (t1 == null){
+            return t2;
         }
-        char c = s.charAt(0);
-        if (c != '-'){
-
+        if (t2 == null){
+            return t1;
         }
-        return null;
+        t1.val += t2.val;
+        t1.left = mergeTrees(t1.left,t2.left);
+        t1.right = mergeTrees(t1.right,t2.right);
+        return t1;
     }
 
     /**
@@ -1866,6 +1950,7 @@ public class BinaryTree {
             return findNode(root.right);
         }
     }
+
     /**
      * 865. 具有所有最深结点的最小子树
      * 自己想的广度优先遍历，但是这个思路并不是太好，多遍历了节点，空间复杂度还增加了
@@ -1915,6 +2000,55 @@ public class BinaryTree {
         }
         return subNode.poll();
     }
+
+    /**
+     * 872. 叶子相似的树
+     * @param root1
+     * @param root2
+     * @return
+     */
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        if (root1 == null || root2 == null){
+            return false;
+        }
+        Deque<TreeNode> stack = new LinkedList<>();
+        List<TreeNode> leaf1 = new ArrayList<>();
+        List<TreeNode> leaf2 = new ArrayList<>();
+        TreeNode node = root1;
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                if (node.left == null && node.right == null){
+                    leaf1.add(node);
+                }
+                node = node.right;
+            }
+        }
+        node = root2;
+        stack.clear();
+        boolean similar = true;
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                if (node.left == null && node.right == null){
+                    leaf2.add(node);
+                    if (leaf2.size() > leaf1.size() || node.val != leaf1.get(leaf2.size() - 1).val){
+                        similar = false;
+                        break;
+                    }
+                }
+                node = node.right;
+            }
+        }
+        return similar && leaf1.size() == leaf2.size();
+    }
+
 
     /**
      * 894.所有的满二叉树
