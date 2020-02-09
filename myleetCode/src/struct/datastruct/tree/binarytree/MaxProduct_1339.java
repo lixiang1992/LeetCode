@@ -37,6 +37,7 @@ public class MaxProduct_1339 {
         if (root == null){
             return 0L;
         }
+        // 后序遍历，取节点之和，获取最大值
         long nodeSum = root.val + maxProduct(root.left,sum) +  maxProduct(root.right,sum);
         max = Math.max(max,(sum-nodeSum)*nodeSum);
         return nodeSum;// 节点和
