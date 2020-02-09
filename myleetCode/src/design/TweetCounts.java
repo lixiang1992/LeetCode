@@ -33,11 +33,7 @@ public class TweetCounts {
      */
     public void recordTweet(String tweetName, int time) {
         // 发布推文
-        TreeMap<Integer,Integer> tweetMap = userTweetMap.get(tweetName);// 当前用户推文集合
-        if (tweetMap == null){
-            tweetMap = new TreeMap<>();
-            userTweetMap.put(tweetName,tweetMap);
-        }
+        TreeMap<Integer, Integer> tweetMap = userTweetMap.computeIfAbsent(tweetName, k -> new TreeMap<>());// 当前用户推文集合
         // 推文时间记录，比之前次数多1
         tweetMap.put(time,tweetMap.getOrDefault(time,0) + 1);// 推文加入
     }
@@ -58,6 +54,7 @@ public class TweetCounts {
             res.add(0);
             return res;
         }
+        // 单位是秒
         int freqTime = 1;
         if ("minute".equals(freq)){
             freqTime = 60;
@@ -70,7 +67,7 @@ public class TweetCounts {
         TreeMap<Integer,Integer> tweetMap = userTweetMap.get(tweetName);
         int start = startTime;
         int end = Math.min(start + freqTime,endTime + 1);
-        while (start <= endTime){
+        while (start <= endTime){// 最后的endTime是一个闭区间，而end如果超过了endTime，就被会重新设置为endTime+1的开区间
             int count = 0;
             // 找到发文时间大于等于start的推文
             Map.Entry<Integer,Integer> entry = tweetMap.ceilingEntry(start);
