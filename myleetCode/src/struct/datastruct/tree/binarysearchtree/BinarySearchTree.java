@@ -89,25 +89,24 @@ public class BinarySearchTree {
         if (root == null) {
             return;
         }
-        Stack<TreeNode> stack = new Stack<>();
+        Deque<TreeNode> stack = new LinkedList<>();
         TreeNode node = root;
-        TreeNode preNode = null;
+        TreeNode preNode = null;// 当前节点的前驱节点
         TreeNode bigNode = null;
         TreeNode smallNode = null;
         while (node != null || !stack.isEmpty()) {
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()) {
+            if (node != null) {
+                stack.push(node);
+                node = node.left;
+            } else {
                 node = stack.pop();
-                if (preNode != null) {
-                    if (preNode.val >= node.val && bigNode == null) {
+                if (preNode != null && preNode.val > node.val){
+                    if (bigNode == null){// 只有第一次出现preNode>node，才是大节点
                         bigNode = preNode;
-                        smallNode = node;
-                    } else if (smallNode != null && node.val < smallNode.val) {
-                        smallNode = node;
                     }
+                    smallNode = node;// node较小，赋值给smallNode
                 }
-                preNode = node;
+                preNode = node;// 记录前驱节点
                 node = node.right;
             }
         }
@@ -269,7 +268,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 有序链表转二叉搜索树
+     * 109.有序链表转二叉搜索树
      *
      * @param head 链表的头节点
      * @return 二叉搜索树的根节点
@@ -280,6 +279,7 @@ public class BinarySearchTree {
 
     /**
      * 链表转二叉树的核心算法
+     * 快慢指针找中间节点，作为root，然后递归左右
      * @param head
      * @param tail
      * @return
@@ -291,15 +291,19 @@ public class BinarySearchTree {
         if (head.next == tail) {
             return new TreeNode(head.val);
         }
+        // 快慢指针找中间节点
         ListNode midNode = head;
         ListNode rear = head;
         while (rear != tail && rear.next != tail) {
             midNode = midNode.next;
             rear = rear.next.next;
         }
+        // 中间节点为root
         TreeNode node = new TreeNode(midNode.val);
+        // 递归进入左右子树
         node.left = sortedTreeNode(head, midNode);
         node.right = sortedTreeNode(midNode.next, tail);
+        // 返回root
         return node;
     }
 
@@ -365,10 +369,10 @@ public class BinarySearchTree {
     /**
      * 235.二叉搜索树最近公共祖先
      *
-     * @param root
-     * @param p
-     * @param q
-     * @return
+     * @param root root
+     * @param p p
+     * @param q q
+     * @return 公共祖先
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         TreeNode node = root;
@@ -428,10 +432,10 @@ public class BinarySearchTree {
      * 你可以默认 k 值永远是有效的，即 k ≤ 总结点数
      * 题目保证该二叉搜索树中只会存在一种 k 个值集合最接近目标值
      * 先和270一样，找到最接近的节点，然后以最接近节点为中心，分别往前往后找K个节点
-     * @param root
-     * @param target
-     * @param k
-     * @return
+     * @param root root
+     * @param target 目标截止
+     * @param k k个节点数
+     * @return 最接近的k的节点
      */
     public List<Integer> closestKValues(TreeNode root, double target, int k) {
         double minDiff = Double.MAX_VALUE;
@@ -443,9 +447,9 @@ public class BinarySearchTree {
                 minDiff = diff;
                 closestNode = node;
             }
-            if (node.val > target){// target在node.left中
+            if (target < node.val){// target在node.left中
                 node = node.left;
-            }else if (node.val < target){// target在node.right中
+            }else if (target > node.val){// target在node.right中
                 node = node.right;
             }else {
                 closestNode = node;
@@ -459,6 +463,7 @@ public class BinarySearchTree {
         TreeNode precursorNode = getPredecessor(root,closestNode.val);// 第一个前驱节点
         TreeNode successorNode = getSuccessor(root,closestNode.val);// 第一个后继节点
         while (result.size() < k){// 结果集不满
+            // 寻找前驱和后继
             if (precursorNode != null && successorNode != null){
                 if (Math.abs(precursorNode.val - target) < Math.abs(successorNode.val - target)){
                     result.add(precursorNode.val);
@@ -476,6 +481,7 @@ public class BinarySearchTree {
                 // 寻找前驱节点的前驱
                 precursorNode = getPredecessor(root,precursorNode.val);
             }else {
+                // 已经找不到前驱和后继了，跳出
                 break;
             }
         }
@@ -491,14 +497,16 @@ public class BinarySearchTree {
     private TreeNode getPredecessor(TreeNode root,int target){
         TreeNode curNode = root;
         TreeNode preParentNode = null;// 前驱父节点
-        while (curNode.val != target){
-            if (curNode.val > target){
+        while (curNode.val != target){// 默认curNode != null
+            if (target < curNode.val){
                 curNode = curNode.left;
             }else {
+                // 往右子树找target，这时候current比target小了，记录parent
                 preParentNode = curNode;
                 curNode = curNode.right;
             }
         }
+        // curNode.left不空，那么curNode的前驱节点就是curNode.left的最右子树节点
         if (curNode.left != null){
             curNode = curNode.left;
             while (curNode.right != null){
@@ -506,6 +514,7 @@ public class BinarySearchTree {
             }
             return curNode;
         }else {
+            // curNode.left为空，
             return preParentNode;
         }
     }
@@ -520,10 +529,10 @@ public class BinarySearchTree {
         TreeNode curNode = root;
         TreeNode successParentNode = null;// 后继父节点
         while (curNode.val != target){
-            if (curNode.val > target){
+            if (target < curNode.val) {
                 successParentNode = curNode;
                 curNode = curNode.left;
-            }else {
+            } else {
                 curNode = curNode.right;
             }
         }
@@ -551,7 +560,7 @@ public class BinarySearchTree {
      * @return p的顺序后继
      */
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
-        // 存在右子树，就是右子树的最左节点
+        // p存在右子树，直接后继就是右子树的最左节点
         if (p.right != null){
             p = p.right;
             while (p.left != null){
@@ -559,10 +568,11 @@ public class BinarySearchTree {
             }
             return p;
         }
+        // p不存在右子树
         TreeNode node = root;
         TreeNode res = null;
         while (p != node){
-            if (node.val > p.val){
+            if (p.val < node.val){
                 // node比p大，表示node在p的后继路径上
                 res = node;// 左孩子的父节点
                 node = node.left;
@@ -1002,67 +1012,6 @@ public class BinarySearchTree {
             prevNode.right = newNode;
         }
     }
-
-//    /**
-//     * 699.方块类
-//     */
-//    private class Block implements Comparable<Block>{
-//
-//        int left;
-//        int right;
-//
-//        Block(int left, int right) {
-//            this.left = left;
-//            this.right = right;
-//        }
-//
-//        @Override
-//        public int compareTo(Block o) {
-//            if (this.left == o.left){
-//                return this.right - o.right;
-//            }
-//            return this.left - o.left;
-//        }
-//    }
-//
-//    /**
-//     * 699.掉落的方块
-//     * @param positions
-//     * @return
-//     */
-//    public List<Integer> fallingSquares(int[][] positions) {
-//        TreeMap<Block,Integer> segmentMap = new TreeMap<>();
-//        List<Integer> result = new ArrayList<>();
-//        // 加入第一个元素
-//        Block first = new Block(positions[0][0],positions[0][0] + positions[0][1]);
-//        segmentMap.put(first,positions[0][1]);
-//        int maxHigh = positions[0][1];
-//        result.add(maxHigh);
-//        for (int i = 1; i < positions.length;i++){
-//            int left = positions[i][0];
-//            int right = positions[i][0] + positions[i][1];
-//            int high = positions[i][1];
-//            Block temp = new Block(right,Integer.MAX_VALUE);
-//            Block floor = segmentMap.floorKey(temp);
-//            if (floor == null){// 没有比temp小的，说明新进来的位置是横坐标最小的
-//                // 记录block和其对应的高度
-//                segmentMap.put(new Block(left,right),high);
-//                // 求最大高度
-//                maxHigh = Math.max(maxHigh,high);
-//                result.add(maxHigh);
-//            } else {
-//              // 存在比temp小的block
-//                if (left < floor.right){
-//                    // 新的方块左侧和旧方块的右侧有交叉
-//                    int blockHigh = segmentMap.get(floor);
-//                    blockHigh += high;
-//                    segmentMap.remove(floor);
-//                    segmentMap.put(new Block(floor.left,positions[i][0]+positions[i][1]),blockHigh);
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     /**
      * 846.一手顺子
