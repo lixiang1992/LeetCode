@@ -60,16 +60,17 @@ public class BinarySearchTree {
         if (root == null) {
             return true;
         }
-        Stack<TreeNode> stack = new Stack<>();
+        Deque<TreeNode> stack = new LinkedList<>();
         TreeNode node = root;
         TreeNode preNode = null;
         while (node != null || !stack.isEmpty()) {
-            stack.push(node);
-            node = node.left;
-            while (node == null && !stack.isEmpty()) {
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            } else {
                 node = stack.pop();
-                if (preNode != null) {
-                    if (preNode.val >= node.val) return false;
+                if (preNode != null && preNode.val >= node.val) {
+                    return false;
                 }
                 preNode = node;
                 node = node.right;
@@ -118,7 +119,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 二叉搜索树插入
+     * 701.二叉搜索树插入
      *
      * @param root 根节点
      * @param val  需要查找的节点值
@@ -129,22 +130,21 @@ public class BinarySearchTree {
             return new TreeNode(val);
         }
         TreeNode node = root;
-        TreeNode preNode = root;
-        boolean flag = true;// true表示左孩子，false表示右孩子
-        while (node != null) {
+        int cmp;
+        TreeNode preNode;// 上一个访问的节点
+        do {
             preNode = node;
-            if (val < node.val) {
-                flag = true;
+            cmp = val - node.val;
+            if (cmp < 0){
                 node = node.left;
-            } else if (val > node.val) {
-                flag = false;
+            }else if (cmp > 0){
                 node = node.right;
             } else {
                 return root;
             }
-        }
+        } while (node != null);
         TreeNode newNode = new TreeNode(val);
-        if (flag) {
+        if (cmp < 0) {
             preNode.left = newNode;
         } else {
             preNode.right = newNode;
@@ -153,7 +153,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 二叉搜索树节点删除
+     * 450.二叉搜索树节点删除
      *
      * @param root
      * @param key
@@ -376,13 +376,14 @@ public class BinarySearchTree {
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         TreeNode node = root;
+        // 当p<=node<=q或者p>=node>=q的时候，node就是公共祖先
         while (node != null) {
             if (node == p || node == q) {
                 return node;
             }
-            if (node.val > p.val && node.val > q.val) {
+            if (p.val < node.val && q.val < node.val){
                 node = node.left;
-            } else if (node.val < p.val && node.val < q.val) {
+            }else if (p.val > node.val && q.val > node.val) {
                 node = node.right;
             } else {
                 return node;
@@ -571,14 +572,18 @@ public class BinarySearchTree {
         // p不存在右子树
         TreeNode node = root;
         TreeNode res = null;
-        while (p != node){
+        // 按理来说，p不会不在root的树中
+        while (node != null){
             if (p.val < node.val){
-                // node比p大，表示node在p的后继路径上
+                // p比node小，表示node在p的后继路径上
                 res = node;// 左孩子的父节点
                 node = node.left;
-            }else {
-                // node比p小，表示node在p的前驱路径上
+            }else if(p.val > node.val){
+                // p比node大，表示node在p的前驱路径上
                 node = node.right;
+            }else {
+                // 相等退出
+                break;
             }
         }
         return res;
@@ -1160,4 +1165,96 @@ public class BinarySearchTree {
         }
         return false;
     }
+
+    /**
+     * 面试17.12 BiNode BST转链表
+     * @param root root节点
+     * @return 链表头指针
+     */
+    public TreeNode convertBiNode(TreeNode root) {
+        TreeNode head = new TreeNode(0);// 单链表的头指针哨兵
+        TreeNode prev = head;// 移动的链表前置指针
+        // 开始中序遍历
+        TreeNode node = root;
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
+                node = stack.pop();
+                // ---链表处理
+                node.left = null;// 左指针置空
+                prev.right = node;// 右指针作为链表的next指针
+                prev = node;// 指针后移
+                // ---链表处理
+                // 中序遍历进入右子树
+                node = node.right;
+            }
+        }
+        return head.right;
+    }
+
+    /**
+     * 面试17.12 BiNode BST转链表 递归写法
+     * @param root root节点
+     * @return 链表头指针
+     */
+    public TreeNode convertRecursionBiNode(TreeNode root) {
+        TreeNode head = new TreeNode(0);// 单链表的头指针哨兵
+        // 开始中序遍历
+        inorder(root,head);
+        return head.right;
+    }
+
+    private TreeNode inorder(TreeNode root,TreeNode prev){
+        if (root != null){
+            prev = inorder(root.left,prev);
+            root.left = null;
+            prev.right = root;
+            prev = root;
+            prev = inorder(root.right,prev);
+        }
+        return prev;
+    }
+
+//    public List<List<Integer>> BSTSequences(TreeNode root) {
+//        List<List<Integer>> res = new ArrayList<>();
+//
+//
+//        return BSTSequencesProcess(root);
+//    }
+//
+//    public List<List<Integer>> BSTSequencesProcess(TreeNode node){
+//        if (node == null){
+//            return new ArrayList<>();
+//        }
+//        // 分别获取左右结果集
+//        List<List<Integer>> leftRes = BSTSequencesProcess(node.left);
+//        List<List<Integer>> rightRes = BSTSequencesProcess(node.right);
+//        // 只要保证根节点在最前面，左子树往右子树插空即可
+//        List<List<Integer>> res = new ArrayList<>();
+//        if (leftRes.size() == 0 && rightRes.size() == 0){
+//            List<Integer> oneRes = new LinkedList<>();
+//            oneRes.add(node.val);
+//            res.add(oneRes);
+//        }else {
+//            for (List<Integer> left : leftRes){
+//                for (List<Integer> right : rightRes){
+//                    List<Integer> oneRes = new LinkedList<>();
+//                    oneRes.add(node.val);
+//                    int i = 0;
+//                    int length = right.size();
+//                    while (i < length){
+//                        right.addAll(i,left);
+//                        i++;
+//                    }
+//                    right.addAll(left);
+//                    oneRes.addAll(right);
+//                    res.add(oneRes);
+//                }
+//            }
+//        }
+//        return res;
+//    }
 }

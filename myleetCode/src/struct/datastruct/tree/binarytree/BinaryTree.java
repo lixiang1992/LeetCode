@@ -1,5 +1,6 @@
 package struct.datastruct.tree.binarytree;
 
+import struct.pub.list.ListNode;
 import struct.pub.tree.TreeLinkNode;
 import struct.pub.tree.TreeNode;
 
@@ -10,8 +11,8 @@ public class BinaryTree {
     /**
      * 94.中序遍历二叉树
      *
-     * @param root
-     * @return
+     * @param root root
+     * @return 中序遍历顺序
      */
     public List<Integer> inorderTraversal(TreeNode root) {
         List<Integer> resultList = new ArrayList<>();
@@ -33,8 +34,8 @@ public class BinaryTree {
     /**
      * 144.先序遍历二叉树
      *
-     * @param root
-     * @return
+     * @param root root
+     * @return 先序遍历顺序
      */
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> resultList = new ArrayList<>();
@@ -56,30 +57,49 @@ public class BinaryTree {
     /**
      * 145.二叉树后序遍历
      *
-     * @param root
-     * @return
+     * @param root root
+     * @return 后序遍历顺序
      */
     public List<Integer> postorderTraversal(TreeNode root) {
         List<Integer> resultList = new LinkedList<>();
         TreeNode node = root;
         TreeNode tempNode = node;
         Stack<TreeNode> stack = new Stack<>();
-        while (node != null) {
-            while (node.left != null) {
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                // 左子树压栈
                 stack.push(node);
                 node = node.left;
-            }
-            while (node != null && (node.right == null || node.right == tempNode)) {
-                resultList.add(node.val);
-                tempNode = node;// 上一个已经输出的节点
-                if (stack.isEmpty()) {
-                    return resultList;
+            }else {
+                // node为空了，获取栈顶元素
+                node = stack.peek();
+                if (node.right == null || node.right == tempNode){
+                    // node没有右子树，或者右子树已经被访问过，则表示当前节点被访问，并弹出
+                    tempNode = stack.pop();
+                    resultList.add(node.val);
+                    node = null;
+                } else {
+                    // 右子树还没有被访问，进入右子树
+                    node = node.right;
                 }
-                node = stack.pop();
             }
-            stack.push(node);
-            node = node.right;
         }
+//        while (node != null) {
+//            while (node.left != null) {
+//                stack.push(node);
+//                node = node.left;
+//            }
+//            while (node != null && (node.right == null || node.right == tempNode)) {
+//                resultList.add(node.val);
+//                tempNode = node;// 上一个已经输出的节点
+//                if (stack.isEmpty()) {
+//                    return resultList;
+//                }
+//                node = stack.pop();
+//            }
+//            stack.push(node);
+//            node = node.right;
+//        }
         return resultList;
     }
 
@@ -194,33 +214,31 @@ public class BinaryTree {
      */
     public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
         if (root == null) {
-            return new LinkedList<>();
+            return new ArrayList<>();
         }
-        List<List<Integer>> level = new LinkedList<>();
-        List<Integer> everyLevel = new LinkedList<>();
+        List<List<Integer>> level = new ArrayList<>();
+        LinkedList<Integer> everyLevel = new LinkedList<>();
         TreeNode node = root;
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(node);
         int rear = queue.size();
-        int index = 0;
         boolean flag = true;// true表示正向，false表示反向
         while (!queue.isEmpty()) {
             node = queue.poll();
             if (flag)
                 everyLevel.add(node.val);
             else
-                ((LinkedList<Integer>) everyLevel).addFirst(node.val);
-            index++;
+                everyLevel.addFirst(node.val);
+            rear--;
             if (node.left != null) {
                 queue.offer(node.left);
             }
             if (node.right != null) {
                 queue.offer(node.right);
             }
-            if (index == rear) {
+            if (rear == 0){
                 level.add(everyLevel);
                 everyLevel = new LinkedList<>();
-                index = 0;
                 rear = queue.size();
                 flag = !flag;
             }
@@ -442,21 +460,21 @@ public class BinaryTree {
      * @param root
      * @return
      */
-    private int max = Integer.MIN_VALUE;
 
     public int maxPathSum(TreeNode root) {
         if (root == null) return 0;
-        maxPathHelper(root);
-        return max;
+        int[] res = new int[]{Integer.MIN_VALUE};
+        maxPathHelper(res,root);
+        return res[0];
     }
 
-    private int maxPathHelper(TreeNode root){
+    private int maxPathHelper(int[] res,TreeNode root){
         if (root == null) return 0;
-        int leftMaxPathSum = maxPathHelper(root.left);
-        int rightMaxPathSum = maxPathHelper(root.right);
+        int leftMaxPathSum = maxPathHelper(res,root.left);
+        int rightMaxPathSum = maxPathHelper(res,root.right);
         leftMaxPathSum = Math.max(leftMaxPathSum,0);
         rightMaxPathSum = Math.max(rightMaxPathSum,0);
-        max = Math.max(max , root.val+leftMaxPathSum+rightMaxPathSum);
+        res[0] = Math.max(res[0] , root.val+leftMaxPathSum+rightMaxPathSum);
         return Math.max(root.val,Math.max(root.val + leftMaxPathSum,root.val + rightMaxPathSum));
     }
 
@@ -588,34 +606,6 @@ public class BinaryTree {
             }
         }
         return result;
-    }
-
-    /**
-     * 226.翻转二叉树
-     * 层次遍历，交换每个左右子树
-     * @param root
-     * @return
-     */
-    public TreeNode invertTree(TreeNode root) {
-        if(root == null){
-            return null;
-        }
-        TreeNode node = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(node);
-        while(!queue.isEmpty()){
-            node = queue.poll();
-            TreeNode tempNode = node.left;
-            node.left = node.right;
-            node.right = tempNode;
-            if(node.left != null){
-                queue.offer(node.left);
-            }
-            if(node.right != null){
-                queue.offer(node.right);
-            }
-        }
-        return root;
     }
 
     /**
@@ -805,21 +795,26 @@ public class BinaryTree {
      * @return
      */
     public int countUnivalSubtrees(TreeNode root) {
-
-        return 0;
+        int[] res = new int[]{0};
+        isUnivalSubtree(res,root);
+        return res[0];
     }
 
-    private boolean isUnivalSubtree(TreeNode root) {
+    private boolean isUnivalSubtree(int[] res,TreeNode root) {
         if (root == null){
             return true;
         }
-        boolean leftValueEquals = true;
-        if (root.left != null){
-            leftValueEquals = root.val == root.left.val && isUnivalTree(root.left);
+        boolean leftValueEquals = isUnivalSubtree(res,root.left);
+        if (leftValueEquals && root.left != null){
+            leftValueEquals = root.val == root.left.val;
         }
-        boolean rightValueEquals = true;
-        if (root.right != null){
-            rightValueEquals = root.val == root.right.val && isUnivalTree(root.right);
+        boolean rightValueEquals = isUnivalSubtree(res,root.right);
+        if (rightValueEquals && root.right != null){
+            rightValueEquals = root.val == root.right.val;
+        }
+        // 左右同值，同值子树+1
+        if (leftValueEquals && rightValueEquals){
+            res[0]++;
         }
         return leftValueEquals && rightValueEquals;
     }
@@ -883,6 +878,79 @@ public class BinaryTree {
             preOrderTree_257(node.left,prev,res);
             preOrderTree_257(node.right,prev,res);
         }
+    }
+
+    /**
+     * 298.二叉树最长连续序列
+     * 给你一棵指定的二叉树，请你计算它最长连续序列路径的长度。
+     *
+     * 该路径，可以是从某个初始结点到树中任意结点，通过「父 - 子」关系连接而产生的任意路径。
+     *
+     * 这个最长连续的路径，必须从父结点到子结点，反过来是不可以的。
+     *
+     * @param root root
+     * @return 最长连续路径
+     */
+    public int longestConsecutive_298(TreeNode root) {
+        int[] res = new int[]{0};
+        longestConsecutiveHelper(res,root);
+        return res[0];
+    }
+
+    private int longestConsecutiveHelper(int[] res,TreeNode root){
+        if (root == null){
+            return 0;
+        }
+        // 左孩子为root的最长连续序列，累加上自己
+        int leftLongest = longestConsecutiveHelper(res,root.left) + 1;
+        // 右孩子为root的最长连续序列，累加上自己
+        int rightLongest = longestConsecutiveHelper(res,root.right) + 1;
+        // 不满足最长连续，只记录自己
+        if (root.left != null && root.val + 1 != root.left.val){
+            leftLongest = 1;
+        }
+        // 不满足最长连续，只记录自己
+        if (root.right != null && root.val + 1 != root.right.val){
+            rightLongest = 1;
+        }
+        // 最长连续序列获取，当前最长序列为左右序列中较大的那一个
+        int max = Math.max(leftLongest,rightLongest);
+        res[0] = Math.max(res[0],max);
+        return max;
+    }
+
+    /**
+     * 549.二叉树中最长的连续路径，不一定要父子，可以子父子
+     * @param root
+     * @return
+     */
+    public int longestConsecutive(TreeNode root){
+        int[] res1 = {0};
+        int[] res2 = {0};
+        // 正向连续
+        getLongestConsecutive(res1,root,-1);
+        // 逆向连续
+        getLongestConsecutive(res2,root,1);
+        return Math.max(res1[0],res2[0]);
+    }
+
+    private int getLongestConsecutive(int[] res,TreeNode root,int sub){
+        if (root == null){
+            return 0;
+        }
+        // 经过left节点的最长连续长度
+        int left = getLongestConsecutive(res, root.left, sub) + 1;
+        // 经过right节点的最长连续长度
+        int right = getLongestConsecutive(res, root.right, -sub) + 1;
+        if (root.left != null && root.val + sub != root.left.val){
+            left = 1;
+        }
+        if (root.right != null && root.val - sub != root.right.val){
+            right = 1;
+        }
+        int max = Math.max(left,right);
+        res[0] = Math.max(res[0],left + right - 1);// 因为左右两边都计算了一次root
+        return max;
     }
 
     /**
@@ -1189,15 +1257,42 @@ public class BinaryTree {
      * @return
      */
     public TreeNode str2tree(String s) {
-        TreeNode root = null;
-        if (s.length() == 0){
+        if (s == null ||s.length() == 0){
             return null;
         }
-        char c = s.charAt(0);
-        if (c != '-'){
-
+        // 处理根节点
+        int index = s.indexOf('(');
+        if (index < 0){
+            return new TreeNode(Integer.valueOf(s));
         }
-        return null;
+        // 根节点
+        TreeNode root = new TreeNode(Integer.parseInt(s.substring(0,index)));
+        StringBuilder prefix = new StringBuilder();
+        Deque<TreeNode> stack = new LinkedList<>();// 栈
+        stack.push(root);// 根节点入栈
+        for (int i = index + 1; i < s.length(); i++){
+            char c = s.charAt(i);
+            if ((c >= '0' && c <= '9') || c == '-'){
+                prefix.append(c);
+            }else {
+                if (prefix.length() > 0){
+                    // 新元素入栈
+                    stack.push(new TreeNode(Integer.parseInt(prefix.toString())));
+                    prefix.setLength(0);
+                }
+                if (c == ')'){
+                    // 反括号表示栈顶节点生成结束，没有子树了，要出栈
+                    TreeNode node = stack.pop();
+                    TreeNode parent = stack.peek();
+                    if (parent.left == null){
+                        parent.left = node;
+                    }else {
+                        parent.right = node;
+                    }
+                }
+            }
+        }
+        return root;
     }
 
     /**
@@ -2075,28 +2170,79 @@ public class BinaryTree {
             // N为偶数，无法构成满二叉树
             return new ArrayList<>();
         }
+        // 缓存，避免重复计算，因为左右对称，只需要求一半就行了
+        Map<Integer,List<TreeNode>> cache = new HashMap<>();
+        List<TreeNode> res = getAllFBT(N,cache);
+        return res;
+    }
+
+    private List<TreeNode> getAllFBT(int N,Map<Integer,List<TreeNode>> cache){
+        List<TreeNode> res = new ArrayList<>();
         if (N == 1){
             TreeNode node = new TreeNode(0);
-            result.add(node);
-            return result;
+            res.add(node);
+            return res;
         }
-        TreeNode root = new TreeNode(0);
-        return null;
+        for (int i = 1; i < N ;i = i+2) {
+            int rightN = N - 1 - i;
+            List<TreeNode> leftRes = cache.get(i);
+            if (leftRes == null){
+                // 计算得出，计入缓存中
+                leftRes = getAllFBT(i,cache);
+                cache.put(i,leftRes);
+            }
+            List<TreeNode> rightRes = cache.get(rightN);
+            if (rightRes == null){
+                // 计算得出，计入缓存中
+                rightRes = getAllFBT(rightN,cache);
+                cache.put(rightN,rightRes);
+            }
+            for (TreeNode left : leftRes){
+                for (TreeNode right : rightRes){
+                    TreeNode node = new TreeNode(0);
+                    node.left = left;
+                    node.right = right;
+                    res.add(node);
+                }
+            }
+        }
+        return res;
     }
 
     /**
-     * 给定一个无向、连通的树。树中有 N 个标记为 0...N-1 的节点以及 N-1 条边 。
-     *
-     * 第 i 条边连接节点 edges[i][0] 和 edges[i][1] 。
-     *
-     * 返回一个表示节点 i 与其他所有节点距离之和的列表 ans。
-     *
+     * 894.所有可能的满二叉树
+     * 非递归
      * @param N
-     * @param edges
      * @return
      */
-    public int[] sumOfDistancesInTree(int N, int[][] edges) {
-        return null;
+    public List<TreeNode> allPossibleFBT_FDG(int N) {
+        Map<Integer, List<TreeNode>> cache = new HashMap<>();
+        List<TreeNode> res = new ArrayList<>();
+        if (N % 2 == 0) {
+            return res;
+        }
+        TreeNode root = new TreeNode(0);
+        res.add(root);
+        cache.put(1, res);// 1的结果集
+        // 偶数无法构成满二叉树，所以每次都+2
+        for(int i=3; i<=N; i+=2){
+            // 树的root求解
+            res = new ArrayList<>();
+            // 一侧子树数量从少到多加入结果集
+            for(int j=1; j<=i-2; j+=2){
+                // 每个 left 左子树， 对应 cache.get(i-j-1) 个右子树，一共有cache.get(j)个左子树
+                for(TreeNode left : cache.get(j)){// 左侧树节点列表
+                    for(TreeNode right: cache.get(i-j-1)){// 对应的右侧树的集合
+                        TreeNode node = new TreeNode(0);
+                        node.left = left;
+                        node.right = right;
+                        res.add(node);
+                    }
+                }
+            }
+            cache.put(i, res);
+        }
+        return cache.get(N);
     }
 
     /**
@@ -2106,26 +2252,24 @@ public class BinaryTree {
      */
     public TreeNode increasingBST(TreeNode root) {
         TreeNode node = root;
-        TreeNode prevNode = null;
-        TreeNode newNode = null;// 新的root
+        TreeNode newNode = new TreeNode(-1);// 新的root
+        TreeNode prevNode = newNode;
         Deque<TreeNode> stack = new LinkedList<>();
         while(node != null || !stack.isEmpty()){
-            stack.push(node);
-            node = node.left;
-            while(node == null && !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
                 node = stack.pop();
-                if (newNode == null){
-                    newNode = node;
-                    prevNode = newNode;
-                }else {
-                    prevNode.right = node;
-                    node.left = null;
-                    prevNode = node;
-                }
+
+                prevNode.right = node;
+                node.left = null;
+                prevNode = node;
+
                 node = node.right;
             }
         }
-        return newNode;
+        return newNode.right;
     }
 
     /**
@@ -2373,98 +2517,20 @@ public class BinaryTree {
      * @return
      */
     public int distributeCoins(TreeNode root) {
-        getDepth979(root);
-        return m_979_res;
+        int[] res = new int[]{0};
+        getDepth979(res,root);
+        return res[0];
     }
 
-    private int m_979_res = 0;
-
-    private int getDepth979(TreeNode root){
+    private int getDepth979(int[] res,TreeNode root){
         if (root == null){
             return 0;
         }
-        int left = getDepth979(root.left);
-        int right = getDepth979(root.right);
-        m_979_res = Math.abs(left) + Math.abs(right);
+        int left = getDepth979(res,root.left);
+        int right = getDepth979(res,root.right);
+        // 移动次数累加
+        res[0] += Math.abs(left) + Math.abs(right);
         return left + right + root.val - 1;
-    }
-
-    /**
-     * 坐标
-     */
-    private static class Coordinate implements Comparable<Coordinate>{
-
-        private int x;
-        private int y;
-        private int value;
-
-        Coordinate(int x,int y,int value){
-            this.x = x;
-            this.y = y;
-            this.value = value;
-        }
-
-        @Override
-        public int compareTo(Coordinate o) {
-            if (this.x == o.x && this.y == o.y) {
-                return this.value - o.value;
-            }else if(this.x == o.x){
-                return o.y - this.y;// 纵坐标大的在前面
-            }
-            return this.x - o.x;
-        }
-    }
-
-    /**
-     * 987.二叉树的垂序遍历
-     * @param root root
-     * @return 遍历结果集
-     */
-    public List<List<Integer>> verticalTraversal(TreeNode root) {
-        if (root == null){
-            return new ArrayList<>();
-        }
-        List<List<Integer>> result = new ArrayList<>();
-        // key 横坐标
-        Map<Integer,Set<Coordinate>> orderNumValueMap = new TreeMap<>();
-        orderNumValueMap.put(0,new TreeSet<>());
-        Coordinate coordinate = new Coordinate(0,0,root.val);
-        orderNumValueMap.get(0).add(coordinate);
-        Map<TreeNode,Coordinate> nodeNumMap = new HashMap<>();
-        nodeNumMap.put(root,coordinate);
-        TreeNode node = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.offer(node);
-        while (!queue.isEmpty()){
-            node = queue.poll();
-            coordinate = nodeNumMap.get(node);
-            if (node.left != null){
-                queue.offer(node.left);
-                int left_x = coordinate.x - 1;
-                int left_y = coordinate.y - 1;
-                Set<Coordinate> oneResult = orderNumValueMap.computeIfAbsent(left_x, k -> new TreeSet<>());
-                Coordinate leftCoordinate = new Coordinate(left_x,left_y,node.left.val);
-                oneResult.add(leftCoordinate);
-                nodeNumMap.put(node.left,leftCoordinate);
-            }
-            if (node.right != null){
-                queue.offer(node.right);
-                int right_x = coordinate.x + 1;
-                int right_y = coordinate.y - 1;
-                Set<Coordinate> oneResult = orderNumValueMap.computeIfAbsent(right_x, k -> new TreeSet<>());
-                Coordinate rightCoordinate = new Coordinate(right_x,right_y,node.right.val);
-                oneResult.add(rightCoordinate);
-                nodeNumMap.put(node.right,rightCoordinate);
-            }
-        }
-        for (Map.Entry<Integer,Set<Coordinate>> entry : orderNumValueMap.entrySet()){
-            List<Integer> oneList = new ArrayList<>();
-            for (Coordinate c: entry.getValue()){
-                oneList.add(c.value);
-            }
-            result.add(oneList);
-        }
-        return result;
     }
 
     /**
@@ -2545,9 +2611,19 @@ public class BinaryTree {
 
     /**
      * 998.最大二叉树II
-     * @param root
-     * @param val
-     * @return
+     *
+     * 新来的节点在数组的最右侧，那么这个节点肯定要往右子树添加。
+     * 因为新节点加在数组的末尾，其他节点在方位上，都应该在新节点的左侧。
+     * 也就是说，比新节点大的点，新节点应该是它的右孩子，比新节点小的点，它是新节点的左孩子。
+     *
+     * 1.如果他是最大的，直接改变root,整个树都是他的左孩子。
+     * 2.往右子树迭代，只要当前node.val >= val，就需要往右子树迭代，同时记录下最近一个大于val的节点(bigNode)，便于后续节点加入，交换指针。
+     * 3.如果发现node.right为空，则新节点直接加入到node.right即可。代码完成
+     * 4.迭代中，如果node.val < val了，这时候新的newNode就是bigNode的右孩子(取代之前node的位置)，node.val < newNode.val，则node就是newNode的左孩子。
+     *
+     * @param root root
+     * @param val 新节点的值
+     * @return 新的二叉树
      */
     public TreeNode insertIntoMaxTree(TreeNode root, int val) {
         if (root == null){
@@ -2558,26 +2634,25 @@ public class BinaryTree {
             newNode.left = root;// 当前值最大，小于当前值的节点都在数组左侧
             return newNode;
         }
-        Map<TreeNode,TreeNode> parentMap = new HashMap<>();
+        // 不需要使用Map来缓存了，因为不需要往父节点遍历，只需要记录一个
+        TreeNode bigNode = root;// 记录最近一个比val大的node节点
         TreeNode node = root;
-        while (node != null && node.val >= val){
+        // node不会是null,如果node.right是null的时候，就直接返回了，不会继续往右子树遍历了
+        while (node.val >= val){
             if (node.right == null){
                 node.right = new TreeNode(val);// 新的节点都在右侧
-                return root;
+                return root;// 直接返回了
             }else {
+                // 记录下最近较大的元素
+                bigNode = node;
                 // 只能往右侧查找，新加入的值在右边
-                parentMap.put(node.right,node);
                 node = node.right;
             }
         }
         TreeNode newNode = new TreeNode(val);
-        TreeNode parentNode = parentMap.get(node);
-        while (newNode.val > parentNode.val){
-            node = parentNode;
-            parentNode = parentMap.get(node);
-        }
+        // bigNode比newNode大，newNode要取代之前node所在的位置
         // 旧的节点比新节点大，肯定在新节点的左边，所以新节点为旧节点的右孩子
-        parentNode.right = newNode;
+        bigNode.right = newNode;
         // 原来的节点比新节点小，新节点加在右侧，那旧节点就为他的左孩子
         newNode.left = node;
         return root;
@@ -2653,7 +2728,7 @@ public class BinaryTree {
     public int maxAncestorDiff(TreeNode root) {
         int left = maxAncestorDiff(root.left, root.val, root.val);
         int right = maxAncestorDiff(root.right, root.val, root.val);
-        return left > right ? left : right;
+        return Math.max(left,right);
     }
 
     private int maxAncestorDiff(TreeNode root, int max, int min){
@@ -2671,7 +2746,7 @@ public class BinaryTree {
         }
         int left = maxAncestorDiff(root.left, max, min);
         int right = maxAncestorDiff(root.right, max, min);
-        return left > right ? left : right;
+        return Math.max(left,right);
     }
 
     /**
@@ -3100,5 +3175,92 @@ public class BinaryTree {
             result.add(list2.get(j++));
         }
         return result;
+    }
+
+    /**
+     * 剑指offer26.树的子结构 B是A的子结构
+     * 思路.遍历A树，每个节点当做root开始确认是否是子树
+     * @param A 树A
+     * @param B 树B
+     * @return
+     */
+    public boolean isSubStructure(TreeNode A, TreeNode B) {
+        if (A == null || B == null){
+            return false;
+        }
+        TreeNode node = A;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        // 层次遍历每个节点，去比较
+        while (!queue.isEmpty()){
+            node = queue.poll();
+            if (isSonTree(node,B)){
+                return true;
+            }
+            if (node.left != null){
+                queue.offer(node.left);
+            }
+            if (node.right != null){
+                queue.offer(node.right);
+            }
+        }
+        return false;// 最后都没找到，就是false
+    }
+
+    private boolean isSonTree(TreeNode node1,TreeNode node2){
+        // 都是空，相同
+        if (node2 == null){
+            return true;
+        }
+        // node1空了，不是子结构，节点值不等，不是子结构
+        if (node1 == null || node1.val != node2.val){
+            return false;
+        }
+        // 节点值相等，进入左右子树继续判断
+        return isSonTree(node1.left,node2.left) && isSonTree(node1.right,node2.right);
+    }
+
+    /**
+     * 面试04.03 特定深度节点链表
+     * 给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为 D，则会创建出 D 个链表）。返回一个包含所有深度的链表的数组。
+     * @param tree tree
+     * @return 链表节点
+     */
+    public ListNode[] listOfDepth(TreeNode tree) {
+        if (tree == null){
+            return new ListNode[]{};
+        }
+        TreeNode tNode = tree;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(tNode);
+        int rear = queue.size();
+
+        List<ListNode> res = new ArrayList<>();
+        ListNode head = new ListNode(0);
+        ListNode LNode = head;
+        while (!queue.isEmpty()){
+            tNode = queue.poll();
+            rear--;// 当前层-1
+
+            // listNode节点处理
+            LNode.next = new ListNode(tNode.val);
+            LNode = LNode.next;// list节点后移
+
+            if (tNode.left != null){
+                queue.offer(tNode.left);
+            }
+            if (tNode.right != null){
+                queue.offer(tNode.right);
+            }
+            if (rear == 0){
+                // 当前层遍历结束，全部ListNode加入
+                res.add(head.next);
+                // 链表节点重置到头部
+                LNode = head;
+                // 新一层的数量
+                rear = queue.size();
+            }
+        }
+        return res.toArray(new ListNode[res.size()]);
     }
 }
