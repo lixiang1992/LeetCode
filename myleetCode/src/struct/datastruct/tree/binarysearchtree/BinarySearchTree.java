@@ -11,10 +11,10 @@ import java.util.*;
 public class BinarySearchTree {
 
     /**
-     * 95.不同的二叉搜索树
+     * 95.不同的二叉搜索树2
      * 给定一个整数 n，生成所有由 1 ... n 为节点所组成的二叉搜索树
-     * @param n
-     * @return
+     * @param n n个节点
+     * @return 不同的树的根节点
      */
     public List<TreeNode> generateTrees(int n) {
         if (n == 0){
@@ -25,9 +25,9 @@ public class BinarySearchTree {
 
     /**
      * 递归左右子树
-     * @param start
-     * @param end
-     * @return
+     * @param start 开始下标
+     * @param end 结束下标
+     * @return 结果集
      */
     private List<TreeNode> constructTrees(int start,int end){
         List<TreeNode> result = new LinkedList<>();
@@ -36,10 +36,12 @@ public class BinarySearchTree {
             return result;
         }
         for (int i = start;i <= end;i++){
+            // i为root的左右子树集合
             List<TreeNode> leftTrees = constructTrees(start,i-1);
             List<TreeNode> rightTrees = constructTrees(i+1,end);
             for (TreeNode left:leftTrees){
                 for (TreeNode right:rightTrees){
+                    // 根节点i
                     TreeNode node = new TreeNode(i);
                     node.right = right;
                     node.left = left;
@@ -48,6 +50,35 @@ public class BinarySearchTree {
             }
         }
         return result;
+    }
+
+    /**
+     * 96.不同的二叉搜索树
+     * 思路
+     * 标签：动态规划
+     * 假设n个节点存在二叉排序树的个数是G(n)，令f(i)为以i为根的二叉搜索树的个数，则
+     * G(n) = f(1) + f(2) + f(3) + f(4) + ... + f(n)
+     *
+     * 当i为根节点时，其左子树节点个数为i-1个，右子树节点为n-i，则
+     * f(i) = G(i-1)*G(n-i)
+     *
+     * 综合两个公式可以得到 卡特兰数 公式
+     * G(n) = G(0)*G(n-1)+G(1)*G(n-2)+...+G(n-1)*G(0)
+     *
+     * @param n n
+     * @return 二叉搜索树树个数
+     */
+    public int numTrees(int n) {
+        int[] dp = new int[n+1];
+
+        dp[0] = 1;
+        dp[1] = 1;
+        for(int i = 2;i<=n;i++){
+            for(int j = 0;j<i;j++){
+                dp[i] = dp[j]*dp[i-j-1] + dp[i];
+            }
+        }
+        return dp[n];
     }
 
     /**
@@ -155,9 +186,9 @@ public class BinarySearchTree {
     /**
      * 450.二叉搜索树节点删除
      *
-     * @param root
-     * @param key
-     * @return
+     * @param root root
+     * @param key 删除的key
+     * @return 删除节点后的root节点
      */
     public TreeNode deleteNode(TreeNode root, int key) {
         TreeNode node = root;
@@ -216,8 +247,8 @@ public class BinarySearchTree {
     /**
      * 找到node节点的后继节点的值
      * 走到这个方法里来的node节点，都是左右子树存在的节点
-     * @param node
-     * @return
+     * @param node node
+     * @return 后继节点val
      */
     private int findDelNodeSuccessorVal(TreeNode node) {
         TreeNode preNode = node;
@@ -268,7 +299,27 @@ public class BinarySearchTree {
     }
 
     /**
-     * 109.有序链表转二叉搜索树
+     * 有序数组生成平衡二叉搜索树
+     * @param nums 数组
+     * @return 平衡二叉树root
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return sortedArrayToBST(nums,0,nums.length-1);
+    }
+
+    private TreeNode sortedArrayToBST(int[] nums,int start,int end){
+        if (start > end){
+            return null;
+        }
+        int mid = start + (end - start >> 1);
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = sortedArrayToBST(nums,start,mid-1);
+        root.right = sortedArrayToBST(nums,mid+1,end);
+        return root;
+    }
+
+    /**
+     * 109.有序链表转平衡二叉搜索树
      *
      * @param head 链表的头节点
      * @return 二叉搜索树的根节点
@@ -280,9 +331,9 @@ public class BinarySearchTree {
     /**
      * 链表转二叉树的核心算法
      * 快慢指针找中间节点，作为root，然后递归左右
-     * @param head
-     * @param tail
-     * @return
+     * @param head 头结点
+     * @param tail 尾节点
+     * @return 根节点
      */
     private TreeNode sortedTreeNode(ListNode head, ListNode tail) {
         if (head == tail) {
@@ -310,10 +361,10 @@ public class BinarySearchTree {
     /**
      * 220.给定一个整数数组，判断数组中是否有两个不同的索引 i 和 j，
      * 使得 nums [i] 和 nums [j] 的差的绝对值最大为 t，并且 i 和 j 之间的差的绝对值最大为 ķ。
-     * @param nums
-     * @param k
-     * @param t
-     * @return
+     * @param nums nums
+     * @param k 索引k
+     * @param t 索引t
+     * @return 是否有两个不同的索引
      */
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
         if (k <= 0) {
@@ -339,12 +390,12 @@ public class BinarySearchTree {
     }
 
     /**
-     * 二叉搜索树第K小节点
+     * 230.二叉搜索树第K小节点
      * 中序遍历到第k个节点
      *
      * @param root 根节点
-     * @param k 第K个节点
-     * @return 第K个节点的值
+     * @param k 第K小节点
+     * @return 第K小节点的值
      */
     public int kthSmallest(TreeNode root, int k) {
         int i = 0;
@@ -354,13 +405,40 @@ public class BinarySearchTree {
             if (node != null){
                 stack.push(node);
                 node = node.left;
-            }else {
+            } else {
                 node = stack.pop();
                 i++;
                 if (i == k) {
                     return node.val;
                 }
                 node = node.right;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 二叉搜索树的第K大节点
+     * 逆向中序遍历，right->root->left
+     * @param root 根节点
+     * @param k 第K大节点
+     * @return 第K大节点的值
+     */
+    public int kthLargest(TreeNode root, int k) {
+        int i = 0;
+        TreeNode node = root;
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                stack.push(node);
+                node = node.right;
+            } else {
+              node = stack.pop();
+              i++;
+              if (i == k){
+                  return node.val;
+              }
+              node = node.left;
             }
         }
         return 0;
@@ -432,7 +510,7 @@ public class BinarySearchTree {
      * 后序遍历由left->right->root转化为root->right->left的翻转先序遍历
      * 构造一个单调递增的单调栈，因为right>root>left
      *
-     * @param postorder 有序遍历数组
+     * @param postorder 后序序遍历数组
      * @return 是否后序遍历二叉搜索树
      */
     public boolean verifyPostorder(int[] postorder) {
@@ -454,6 +532,30 @@ public class BinarySearchTree {
             stack.push(postorder[i]);
         }
         return true;
+    }
+
+    /**
+     * 二叉搜索树后序遍历序列递归写法
+     * @param postorder 后序遍历数组
+     * @return
+     */
+    public boolean verifyPostorderRecursion(int[] postorder) {
+        // 如果数组为空 说明满足后续遍历的题条件
+        if(postorder.length==0) return true;
+        // 找到根节点值 val 也就是后续的最后一个点
+        int mid = postorder[postorder.length-1];
+        int left;
+        // 找到满足后序遍历的情况下左子树的划分点
+        for(left=0;left<postorder.length-1;left++){
+            if(postorder[left]>mid) break;
+        }
+        // 看右子树是不是都满足大于root val 否则
+        for(int i=left+1;i<postorder.length-1;i++){
+            if(postorder[i]<mid) return false;
+        }
+        // 递归 看左右的内部是否满足
+        return verifyPostorderRecursion(Arrays.copyOfRange(postorder,0,left))&&
+                verifyPostorderRecursion(Arrays.copyOfRange(postorder,left,postorder.length-1));
     }
 
     /**
@@ -960,129 +1062,6 @@ public class BinarySearchTree {
     }
 
     /**
-     * 938. 二叉搜索树的范围和
-     * @param root root
-     * @param L 范围的开始
-     * @param R 范围的结束
-     * @return sum
-     */
-    public int rangeSumBST(TreeNode root, int L, int R) {
-        if (root == null){
-            return 0;
-        }
-        int sum = 0;
-        TreeNode node = root;
-        Deque<TreeNode> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
-                if(node.val >= L){
-                    // 剪枝操作，当前根节点比区间最小值大，才继续左孩子遍历，找到最小值
-                    stack.push(node);
-                    node = node.left;
-                } else {
-                    // 当前根节点比区间最小值还要小，则左孩子没有再遍历的必要，直接进入右子树
-                    node = node.right;
-                }
-            }else {
-                node = stack.pop();
-                if (node.val >= L && node.val <= R){
-                    sum+= node.val;
-                }else if (node.val > R){
-                    return sum;
-                }
-                node = node.right;
-            }
-        }
-        return sum;
-    }
-
-    private class My_493_TreeNode{
-        int val;// 节点值
-        My_493_TreeNode left;// 左孩子
-        My_493_TreeNode right;// 右孩子
-        int leftNodeCount = 0;// 当前时间该节点左节点个数
-        int leftNodeCond = 0;
-        int sameValueNode = 0;// 当前时间相同数目的节点数
-
-        public My_493_TreeNode(int val){
-            this.val = val;
-        }
-    }
-
-    /**
-     * 493.存在问题
-     * @param nums
-     * @return
-     */
-    public int reversePairs(int[] nums) {
-        if (nums.length <= 1){
-            return 0;
-        }
-        int count = 0;
-        My_493_TreeNode root = new My_493_TreeNode(nums[nums.length - 1]);
-        My_493_TreeNode preNode = root;
-        for (int i = nums.length - 2;i >= 0; i--){
-            int val = nums[i];
-            // 一定满足i<j的情况，因为是倒序的
-            My_493_TreeNode node = root;
-            boolean needAddNode = true;
-            while (node != null){
-                preNode = node;
-                long nodeVal = node.val;
-                if (val < nodeVal){
-                    if (val < (nodeVal>>1)){
-                        node.leftNodeCond++;// 左节点满足条件的+1
-                    }
-                    node.leftNodeCount++;// 左子树+1
-                    node = node.left;
-                }else if(val > nodeVal){
-                    if (val > (nodeVal<<1)){
-                        count = count+node.sameValueNode+node.leftNodeCount +1;
-                    }else {
-                        My_493_TreeNode tempNode = node;
-                        long tempVal = tempNode.val;
-                        while (tempNode != null && val < (tempVal<< 1)){
-                            tempNode = tempNode.left;
-                            if (tempNode != null){
-                                tempVal = tempNode.val;
-                            }
-                        }
-                        if (tempNode != null){
-                            if (tempVal == val){
-                                count = count + tempNode.leftNodeCount;
-                            }else {
-                                count = count+tempNode.sameValueNode+tempNode.leftNodeCount +1;
-                            }
-                        }
-                    }
-                    node = node.right;
-                }else {
-                    needAddNode = false;
-                    node.sameValueNode++;
-                    count = count + node.leftNodeCond;
-                    if (node.val<0){
-                        count = count + node.sameValueNode;
-                    }
-                    break;
-                }
-            }
-            if (needAddNode){
-                add493Node(preNode,nums[i]);
-            }
-        }
-        return count;
-    }
-
-    private void add493Node(My_493_TreeNode prevNode,int val){
-        My_493_TreeNode newNode = new My_493_TreeNode(val);
-        if (val < prevNode.val){
-            prevNode.left = newNode;
-        }else {
-            prevNode.right = newNode;
-        }
-    }
-
-    /**
      * 846.一手顺子
      * 爱丽丝有一手（hand）由整数数组给定的牌。 
      *
@@ -1090,9 +1069,9 @@ public class BinarySearchTree {
      *
      * 如果她可以完成分组就返回 true，否则返回 false。
      *
-     * @param hand
-     * @param W
-     * @return
+     * @param hand 整数数组给定的牌
+     * @param W 每个组的大小都是 W
+     * @return 是否能完成分组
      */
     public boolean isNStraightHand(int[] hand, int W){
         if (hand.length % W != 0){
@@ -1129,14 +1108,51 @@ public class BinarySearchTree {
     }
 
     /**
+     * 938. 二叉搜索树的范围和
+     * @param root root
+     * @param L 范围的开始
+     * @param R 范围的结束
+     * @return sum
+     */
+    public int rangeSumBST(TreeNode root, int L, int R) {
+        if (root == null){
+            return 0;
+        }
+        int sum = 0;
+        TreeNode node = root;
+        Deque<TreeNode> stack = new LinkedList<>();
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                if(node.val >= L){
+                    // 剪枝操作，当前根节点比区间最小值大，才继续左孩子遍历，找到最小值
+                    stack.push(node);
+                    node = node.left;
+                } else {
+                    // 当前根节点比区间最小值还要小，则左孩子没有再遍历的必要，直接进入右子树
+                    node = node.right;
+                }
+            }else {
+                node = stack.pop();
+                if (node.val >= L && node.val <= R){
+                    sum+= node.val;
+                }else if (node.val > R){
+                    return sum;
+                }
+                node = node.right;
+            }
+        }
+        return sum;
+    }
+
+    /**
      * 975.奇偶跳
      *
      * 奇数次跳跃时，在右边找比它大的数中最小的数
      * 偶数次跳跃时，在右边找比它小的树中最大的数
      * TreeMap  刚好有满足上面数据结构的方法
      *
-     * @param A
-     * @return
+     * @param A 数组A
+     * @return 几次跳跃
      */
     public int oddEvenJumps(int[] A) {
         int size = A.length;
