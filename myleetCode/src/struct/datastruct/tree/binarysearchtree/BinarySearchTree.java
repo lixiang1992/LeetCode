@@ -537,7 +537,7 @@ public class BinarySearchTree {
     /**
      * 二叉搜索树后序遍历序列递归写法
      * @param postorder 后序遍历数组
-     * @return
+     * @return 是否二叉搜索树后序遍历
      */
     public boolean verifyPostorderRecursion(int[] postorder) {
         // 如果数组为空 说明满足后续遍历的题条件

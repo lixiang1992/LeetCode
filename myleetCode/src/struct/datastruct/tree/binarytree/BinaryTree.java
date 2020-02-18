@@ -6,6 +6,9 @@ import struct.pub.tree.TreeNode;
 
 import java.util.*;
 
+/**
+ * 二叉树类型题目
+ */
 public class BinaryTree {
 
     /**
@@ -119,6 +122,34 @@ public class BinaryTree {
     }
 
     /**
+     * 101.对称二叉树，递归解法
+     * @param root root
+     * @return 是否对称二叉树
+     */
+    public boolean isSymmetricRecursion(TreeNode root) {
+        if(root == null){
+            return true;
+        }
+        return isSymmetricRecursion(root.left,root.right);
+    }
+
+    /**
+     * 对称二叉树
+     * @param node1 node1
+     * @param node2 node2
+     * @return 是否对称
+     */
+    private boolean isSymmetricRecursion(TreeNode node1,TreeNode node2){
+        if (node1 == null && node2 == null){
+            return true;
+        }
+        if (node1 == null || node2 == null || node1.val != node2.val){
+            return false;
+        }
+        return isSymmetricRecursion(node1.left,node2.right) && isSymmetricRecursion(node1.right,node2.left);
+    }
+
+    /**
      * 104.二叉树最大深度，层次遍历或者递归都可以
      * @param root
      * @return
@@ -170,6 +201,37 @@ public class BinaryTree {
     }
 
     /**
+     * 从上到下打印二叉树
+     * @param root
+     * @return
+     */
+    public int[] levelOrder1(TreeNode root) {
+        if(root == null){
+            return new int[]{};
+        }
+        List<Integer> res = new ArrayList<>();
+
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        while (!queue.isEmpty()) {
+            node = queue.poll();
+            res.add(node.val);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+        int[] resArr = new int[res.size()];
+        for (int i = 0; i < resArr.length; i++) {
+            resArr[i] = res.get(i);
+        }
+        return resArr;
+    }
+
+    /**
      * 102.层次遍历分层显示
      *
      * @param root
@@ -177,10 +239,10 @@ public class BinaryTree {
      */
     public List<List<Integer>> levelOrder(TreeNode root) {
         if (root == null) {
-            return new LinkedList<>();
+            return new ArrayList<>();
         }
-        List<List<Integer>> level = new LinkedList<>();
-        List<Integer> everyLevel = new LinkedList<>();
+        List<List<Integer>> level = new ArrayList<>();
+        List<Integer> everyLevel = new ArrayList<>();
         TreeNode node = root;
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(node);
@@ -198,7 +260,7 @@ public class BinaryTree {
             }
             if (index == rear) {
                 level.add(everyLevel);
-                everyLevel = new LinkedList<>();
+                everyLevel = new ArrayList<>();
                 index = 0;
                 rear = queue.size();
             }
@@ -247,7 +309,7 @@ public class BinaryTree {
     }
 
     /**
-     * 倒序层次遍历分层显示
+     * 107.倒序层次遍历分层显示
      *
      * @param root
      * @return
@@ -887,36 +949,70 @@ public class BinaryTree {
 
     /**
      * 549.二叉树中最长的连续路径，不一定要父子，可以子父子
-     * @param root
+     * @param root root
      * @return
      */
     public int longestConsecutive(TreeNode root){
-        int[] res1 = {0};
-        int[] res2 = {0};
-        // 正向连续
-        getLongestConsecutive(res1,root,-1);
-        // 逆向连续
-        getLongestConsecutive(res2,root,1);
-        return Math.max(res1[0],res2[0]);
+        int[] res = {0};
+        getLongestConsecutive(res,root);
+        return res[0];
     }
 
-    private int getLongestConsecutive(int[] res,TreeNode root,int sub){
+    /**
+     * 根节点有可能处于递增或递减位置，
+     * 所以创建一个数组，分别用来保存当前节点的递增数列的连续路径数和递减数列的连续路径数
+     * （这里路径长度是节点个数，所以数组要初始化为1），
+     * 最后返回这个数组
+     *
+     * 1.根节点能对结果造成什么影响：如果根节点处于左子树或右子树的递增或递减序列中，则结果为包括根节点的递增序列数+包括根节点的递减序列数-1（去除重复根节点）
+     *
+     * 2.对下次递归的贡献：求出当前节点的递增和递减序列数。
+     *
+     * 当当前根节点处于左子树的递增位置时，当前节点的递增序列数为左子树的递增序列数+1
+     * 当当前根节点处于左子树的递减位置时，当前节点的递减序列数为左子树的递减序列数+1
+     * 当当前根节点处于右子树的递增位置时，当前节点的递增序列数为左子树递增序列数+1和右子树递增序列数+1的最大值
+     * 当当前根节点处于右子树的递减位置时，当前节点的递减序列数为左子树递减序列数+1和右子树递减序列数+1的最大值
+     *
+     * @param res res结果
+     * @param root 节点
+     * @return 最长升序和最长降序节点数
+     */
+    private int[] getLongestConsecutive(int[] res,TreeNode root){
         if (root == null){
-            return 0;
+            return new int[]{0,0};
         }
-        // 经过left节点的最长连续长度
-        int left = getLongestConsecutive(res, root.left, sub) + 1;
-        // 经过right节点的最长连续长度
-        int right = getLongestConsecutive(res, root.right, -sub) + 1;
-        if (root.left != null && root.val + sub != root.left.val){
-            left = 1;
+        // 当前升降的最长序列，包括根节点自己
+        int asc = 1,desc = 1;
+        if (root.left != null){
+            // 0升序，1降序
+            // 左子树的升降序最长序列
+            int[] left = getLongestConsecutive(res,root.left);
+            // 左子树和root的关系不可能既升又降，对root进行一个判断，更新左子树升序降序的路径节点值
+            if (root.val - 1 == root.left.val){
+                // 升序，root比left多1
+                asc = left[0] + 1;
+            }else if(root.val + 1 == root.left.val){
+                // 降序，root比left少1
+                desc = left[1] + 1;
+            }
         }
-        if (root.right != null && root.val - sub != root.right.val){
-            right = 1;
+        if (root.right != null){
+            // 0升序，1降序
+            // 右子树的升降序最长序列
+            int[] right = getLongestConsecutive(res,root.right);
+            // 右子树和root的关系不可能既升又降，对root进行一个判断，更新右子树升序降序的路径节点值
+            if (root.val - 1 == root.right.val){
+                // 升序，root比right多1
+                asc = Math.max(asc,right[0] + 1);
+            }else if (root.val + 1 == root.right.val){
+                // 降序，root比right少1
+                desc = Math.max(desc,right[1] + 1);
+            }
         }
-        int max = Math.max(left,right);
-        res[0] = Math.max(res[0],left + right - 1);// 因为左右两边都计算了一次root
-        return max;
+        // 左到右的全升序是左升，右降的形式，所以两者相加去掉自身即可
+        // 左到右的全降序是左降，右升的形式，所以两者相加去掉自身即可
+        res[0] = Math.max(res[0],asc + desc - 1);
+        return new int[]{asc,desc};
     }
 
     /**
@@ -1477,7 +1573,7 @@ public class BinaryTree {
      * 652.寻找重复的子树
      * 序列化思维，记录下访问节点的后序遍历路径，序列化路径为node.val,leftPath,rightPath
      * 这里采用后序遍历来操作，用备忘录思想来存储左右节点之前的序列化路径
-     * @param root
+     * @param root root
      * @return
      */
     public List<TreeNode> findDuplicateSubtrees(TreeNode root) {
@@ -1851,7 +1947,7 @@ public class BinaryTree {
 
     /**
      * 814.二叉树剪枝 后续遍历删除节点
-     * @param root
+     * @param root root
      * @return
      */
     public TreeNode pruneTree(TreeNode root) {
@@ -2110,6 +2206,51 @@ public class BinaryTree {
         return similar && leaf1.size() == leaf2.size();
     }
 
+    /**
+     * 889. 根据前序和后序遍历构造二叉树
+     * 返回与给定的前序和后序遍历匹配的任何二叉树。
+     *
+     *  pre 和 post 遍历中的值是不同的正整数。
+     * @param pre 前序遍历数组
+     * @param post 后序遍历数组
+     * @return 构造的二叉树
+     */
+    public TreeNode constructFromPrePost(int[] pre, int[] post) {
+        // pre和post的长度总是相等的，
+        if (pre.length == 0){
+            return null;
+        }
+        if (pre.length == 1){
+            return new TreeNode(pre[0]);
+        }
+        // 正向先序root->left->right，逆向后序root->right->left
+        // pre的第一个，总是和post的最后一个相等
+        int length = pre.length;
+        TreeNode root = new TreeNode(pre[0]);
+        // left的分隔点
+        int postLeft = 1;
+        for (int i = length - 1 ; i >= 0;i--){
+            // 寻找后序遍历的左子树节点，前序的index为1的节点就是左子树的root，只要在后序遍历中找到相同的，从0->i就都是左子树
+            if (pre[1] == post[i]){
+                postLeft = i + 1;// 这个节点往前的（不包括postLeft，i才是真正的leftRootIndex），都是后序遍历的左子树
+                break;
+            }
+        }
+        // 左子树的前序遍历数组，前闭后开区间
+        int[] leftPre = Arrays.copyOfRange(pre,1,1 + postLeft);
+        // 左子树的后序遍历数组，前闭后开区间
+        int[] leftPost = Arrays.copyOfRange(post,0,postLeft);
+        // 递归构造左子树
+        root.left = constructFromPrePost(leftPre,leftPost);
+
+        // 右子树的前序遍历数组，前闭后开区间
+        int[] rightPre = Arrays.copyOfRange(pre,1 + postLeft,length);
+        // 右子树的后序遍历数组，前闭后开区间
+        int[] rightPost = Arrays.copyOfRange(post,postLeft,length - 1);
+        // 递归构造右子树
+        root.right = constructFromPrePost(rightPre,rightPost);
+        return root;
+    }
 
     /**
      * 894.所有的满二叉树
