@@ -671,6 +671,8 @@ public class BinaryTree {
     }
 
     /**
+     * 112.路径之和
+     *
      * 给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，
      * 这条路径上所有节点值相加等于目标和。
      *
@@ -684,86 +686,116 @@ public class BinaryTree {
         Stack<TreeNode> stack = new Stack<>();
         int tempSum = 0;
         TreeNode tempNode = root;// 表示上一个已经被访问的孩子
-        while (node != null) {
-            // 左子树入栈
-            while (node.left != null) {
-                tempSum += node.val;
+        while(node != null || !stack.isEmpty()){
+            if (node != null){
+                tempSum += node.val;// 路径和记录
+                // 后序遍历常规操作
                 stack.push(node);
                 node = node.left;
-            }
-            // 右子树处理
-            while (node != null && (node.right == null || node.right == tempNode)) {
-                tempSum += node.val;
-                if (node.left == null && node.right == null) {
-                    if (tempSum == sum) {
+            }else {
+                node = stack.peek();
+                if (node.right == null || node.right == tempNode){
+                    // 是叶子节点，且路径之和与目标值一致，加入结果集
+                    if(node.left == null && node.right == null && tempSum == sum) {
                         return true;
                     }
+                    // 当前节点处理，要出栈了，移除掉
+                    tempSum -= node.val;
+                    // 记录上个节点，后序遍历常规操作
+                    tempNode = stack.pop();
+                    node = null;
+                }else {
+                    // 进入右子树，不需要其他操作，当前node的处理，在之前的node != null的代码块中已经处理了
+                    node = node.right;
                 }
-                tempSum -= node.val;
-                tempNode = node;
-                if (stack.isEmpty()) {
-                    return false;
-                }
-                node = stack.pop();
-                tempSum -= node.val;
             }
-            // 右子树入栈
-            tempSum += node.val;
-            stack.push(node);
-            node = node.right;
         }
         return false;
     }
 
     /**
-     * 待优化
+     * 113.路径之和2，后序遍历的非递归解法
+     * 给定一个二叉树和一个目标和，找到所有从根节点到叶子节点路径总和等于给定目标和的路径。
      *
-     * @param root
-     * @param sum
-     * @return
+     * @param root root
+     * @param sum 目标sum
+     * @return res结果集
      */
-    public List<List<Integer>> PathSum(TreeNode root, int sum) {
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
         // 后序遍历二叉树，找到对应路径
         TreeNode node = root;
         Stack<TreeNode> stack = new Stack<>();
         LinkedList<Integer> everyResult = new LinkedList<>();
-        List<List<Integer>> resultList = new LinkedList<>();
+        List<List<Integer>> res = new LinkedList<>();
         int tempSum = 0;
         TreeNode tempNode = root;// 表示上一个已经被访问的孩子
-        while (node != null) {
-            // 左子树入栈
-            while (node.left != null) {
-                tempSum += node.val;
+        while(node != null || !stack.isEmpty()){
+            if (node != null){
+                tempSum += node.val;// 路径和记录
+                everyResult.add(node.val);// 当前路径记录
+                // 后序遍历常规操作
                 stack.push(node);
-                everyResult.add(node.val);
                 node = node.left;
-            }
-            // 右子树处理
-            while (node != null && (node.right == null || node.right == tempNode)) {
-                everyResult.add(node.val);
-                tempSum += node.val;
-                if (node.left == null && node.right == null) {
-                    if (tempSum == sum) {
-                        resultList.add(new ArrayList<>(everyResult));
+            }else {
+                node = stack.peek();
+                if (node.right == null || node.right == tempNode){
+                    // 是叶子节点，且路径之和与目标值一致，加入结果集
+                    if(node.left == null && node.right == null && tempSum == sum) {
+                        res.add(new ArrayList<>(everyResult));
                     }
+                    // 当前节点处理，要出栈了，移除掉，路径和去掉当前节点
+                    everyResult.removeLast();
+                    tempSum -= node.val;
+                    // 记录上个节点，后序遍历常规操作
+                    tempNode = stack.pop();
+                    node = null;
+                }else {
+                    // 进入右子树，不需要其他操作，当前node的处理，在之前的node != null的代码块中已经处理了
+                    node = node.right;
                 }
-                everyResult.removeLast();
-                tempSum -= node.val;
-                tempNode = node;
-                if (stack.isEmpty()) {
-                    return resultList;
-                }
-                node = stack.pop();
-                everyResult.removeLast();
-                tempSum -= node.val;
             }
-            // 右子树入栈
-            tempSum += node.val;
-            everyResult.add(node.val);
-            stack.push(node);
-            node = node.right;
         }
-        return resultList;
+        return res;
+    }
+
+    /**
+     * 113.路径之和2递归解法
+     * @param root root
+     * @param sum sum
+     * @return 路径
+     */
+    public List<List<Integer>> pathSumByRecursion(TreeNode root, int sum){
+        List<List<Integer>> res = new ArrayList<>();
+        pathSumRecursion(root,sum,0,new LinkedList<>(),res);
+        return res;
+    }
+
+    /**
+     * 递归求到叶子节点的路径和
+     * @param node node
+     * @param sum 目标sum
+     * @param pathSum 当前路径的sum
+     * @param currentPath 当前路径
+     * @param res 最终结果
+     */
+    private void pathSumRecursion(TreeNode node,int sum,int pathSum,Deque<Integer> currentPath,List<List<Integer>> res){
+        if (node == null){
+            return ;
+        }
+        // 路径sum和路径记录
+        pathSum += node.val;
+        currentPath.add(node.val);
+
+        if (node.left == null && node.right == null && pathSum == sum){
+            // 为叶子节点，sum相同加入
+            res.add(new ArrayList<>(currentPath));
+        }else {
+            // 递归进入左右子树
+            pathSumRecursion(node.left,sum,pathSum,currentPath,res);
+            pathSumRecursion(node.right,sum,pathSum,currentPath,res);
+        }
+        // 回到本层，移除这个节点
+        currentPath.pollLast();
     }
 
     /**
@@ -841,7 +873,7 @@ public class BinaryTree {
         }
         TreeNode leftNode = lowestCommonAncestor(root.left, p, q);
         TreeNode rightNode = lowestCommonAncestor(root.right, p, q);
-        //return leftNode == null ? rightNode : rightNode == null ? leftNode : root
+        //return leftNode == null ? rightNode : rightNode == null ? leftNode : root；
         if(leftNode != null && rightNode != null){
             return root;// p q 分别位于左右子树的情况
         }
