@@ -3402,4 +3402,34 @@ public class BinaryTree {
         }
         return res.toArray(new ListNode[res.size()]);
     }
+
+    /**
+     * 5170.验证二叉树
+     * @param n 节点数
+     * @param leftChild 左孩子下标
+     * @param rightChild 右孩子下标
+     * @return 是否为二叉树
+     */
+    public boolean validateBinaryTreeNodes(int n, int[] leftChild, int[] rightChild) {
+        Set<Integer> set = new HashSet<>(n);// 初始化，防止频繁扩容
+        set.add(0);// 加入根节点下标
+        for (int i = 0;i < leftChild.length ;i++){
+            if (!set.contains(i)){
+                return false;// 根节点要包含
+            }
+            if (leftChild[i] != -1){
+                if (set.contains(leftChild[i])){
+                    return false;
+                }
+                set.add(leftChild[i]);
+            }
+            if (rightChild[i] != -1){
+                if (set.contains(rightChild[i])){
+                    return false;
+                }
+                set.add(rightChild[i]);
+            }
+        }
+        return true;
+    }
 }
