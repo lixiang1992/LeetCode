@@ -3,7 +3,10 @@ package math;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Math {
+/**
+ * leetCode数学类型解题
+ */
+public class LcMath {
     /**
      * 整数反转
      *
@@ -124,5 +127,48 @@ public class Math {
         everyOne.add(min);
         everyOne.add(max);
         return everyOne;
+    }
+
+    /**
+     * 时针和分针的夹角
+     * @param hour 时
+     * @param minutes 分
+     * @return 小于180度的夹角
+     */
+    public double angleClock(int hour, int minutes) {
+        hour = hour % 12;
+        // 一个小时有30度
+        double hourPoint = 30 * hour;// 小时距离12点的角度
+        // 一分钟有6度
+        double minPoint = 6 * minutes;
+        // 时针在分针转动时候，移动的角度
+        hourPoint =  minPoint/12 + hourPoint;
+        double res = Math.abs(minPoint - hourPoint);
+        return Math.min(res,360-res);
+    }
+
+    /**
+     * 最接近的因子
+     * @param num
+     * @return
+     */
+    public int[] closestDivisors(int num) {
+        int sum1 = num + 1;
+        int sum2 = num + 2;
+        int[] res1 = getDivisors(sum1);
+        int[] res2 = getDivisors(sum2);
+        return Math.abs(res1[0] - res1[1]) < Math.abs(res2[0] - res2[1]) ? res1:res2;
+    }
+
+    private int[] getDivisors(int sum){
+        int num1 = (int) Math.sqrt(sum);
+        while (true){
+            if (sum % num1 == 0){
+                int num2 = sum / num1;
+                return new int[]{num1,num2};
+            }else {
+                num1--;
+            }
+        }
     }
 }
