@@ -3404,7 +3404,7 @@ public class BinaryTree {
     }
 
     /**
-     * 5170.验证二叉树
+     * 1361.验证二叉树
      * @param n 节点数
      * @param leftChild 左孩子下标
      * @param rightChild 右孩子下标
@@ -3431,5 +3431,57 @@ public class BinaryTree {
             }
         }
         return true;
+    }
+
+    /**
+     * 5346.二叉树中的列表
+     * 给你一棵以 root 为根的二叉树和一个 head 为第一个节点的链表。
+     *
+     * 如果在二叉树中，存在一条一直向下的路径，且每个点的数值恰好一一对应以 head 为首的链表中每个节点的值，那么请你返回 True ，否则返回 False 。
+     *
+     * 一直向下的路径的意思是：从树中某个节点开始，一直连续向下的路径。
+     *
+     * @param head ListNode
+     * @param root TreeNode
+     * @return 是否匹配
+     */
+    public boolean isSubPath(ListNode head, TreeNode root) {
+        if (root == null){
+            return false;
+        }
+        // 相等的匹配
+        if (root.val == head.val){
+            boolean isSub = matchSubPath(head.next,root.left) || matchSubPath(head.next,root.right);
+            if (isSub){
+                // 匹配上了，返回true
+                return true;
+            }
+            // 不匹配，要进入不等的匹配
+        }
+        // 匹配不上，ListNode不变，进入左右子树
+        return isSubPath(head,root.left) || isSubPath(head,root.right);
+    }
+
+    /**
+     * root.val == head.val的匹配,考虑剪枝
+     * @param head ListNode
+     * @param node TreeNode
+     * @return 是否匹配上
+     */
+    private boolean matchSubPath(ListNode head, TreeNode node){
+        // 链表匹配结束，匹配上
+        if (head == null){
+            return true;
+        }
+        // 树节点空了，无法匹配
+        if (node == null){
+            return false;
+        }
+        // 不相等的，无法匹配
+        if (head.val != node.val){
+            return false;
+        }
+        // 相等继续进入左右子树，和链表的next节点匹配
+        return matchSubPath(head.next,node.left) || matchSubPath(head.next,node.right);
     }
 }
