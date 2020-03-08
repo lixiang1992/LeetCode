@@ -3484,4 +3484,49 @@ public class BinaryTree {
         // 相等继续进入左右子树，和链表的next节点匹配
         return matchSubPath(head.next,node.left) || matchSubPath(head.next,node.right);
     }
+
+    /**
+     * 5338.二叉树中的最长交错路径
+     *
+     * 给你一棵以 root 为根的二叉树，二叉树中的交错路径定义如下：
+     *
+     * 选择二叉树中 任意 节点和一个方向（左或者右）。
+     * 如果前进方向为右，那么移动到当前节点的的右子节点，否则移动到它的左子节点。
+     * 改变前进方向：左变右或者右变左。
+     * 重复第二步和第三步，直到你在树中无法继续移动。
+     * 交错路径的长度定义为：访问过的节点数目 - 1（单个节点的路径长度为 0 ）。
+     *
+     * 请你返回给定树中最长 交错路径 的长度。
+     *
+     * @param root root
+     * @return 最长交错路径
+     */
+    public int longestZigZag(TreeNode root) {
+        int[] res = {0};
+        nodeZigZag(res,root,true);
+        return res[0];
+    }
+
+    /**
+     * 递归求左右孩子
+     * @param res res
+     * @param node node
+     * @param isLeft 当前node是否左孩子
+     * @return 经过node的锯齿最大路径
+     */
+    private int nodeZigZag(int[] res,TreeNode node,boolean isLeft){
+        if (node == null){
+            return 0;// 递归终止条件
+        }
+        // 左右子树锯齿情况
+        int lCount = nodeZigZag(res,node.left,true);
+        int rCount = nodeZigZag(res,node.right,false);
+        // node为根节点的最大值
+        // 左右子树取更大的
+        int max = Math.max(lCount,rCount);
+        // 路线的最大值
+        res[0] = Math.max(res[0],max);
+        // 当前节点是左孩子，走右边，否则走左边
+        return 1 + (isLeft ? rCount : lCount);
+    }
 }
