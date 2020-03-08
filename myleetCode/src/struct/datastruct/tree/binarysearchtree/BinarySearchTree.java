@@ -13,34 +13,36 @@ public class BinarySearchTree {
     /**
      * 95.不同的二叉搜索树2
      * 给定一个整数 n，生成所有由 1 ... n 为节点所组成的二叉搜索树
+     *
      * @param n n个节点
      * @return 不同的树的根节点
      */
     public List<TreeNode> generateTrees(int n) {
-        if (n == 0){
-            return new ArrayList<>() ;
+        if (n == 0) {
+            return new ArrayList<>();
         }
-        return constructTrees(1,n);
+        return constructTrees(1, n);
     }
 
     /**
      * 递归左右子树
+     *
      * @param start 开始下标
-     * @param end 结束下标
+     * @param end   结束下标
      * @return 结果集
      */
-    private List<TreeNode> constructTrees(int start,int end){
+    private List<TreeNode> constructTrees(int start, int end) {
         List<TreeNode> result = new LinkedList<>();
-        if (start > end){
+        if (start > end) {
             result.add(null);
             return result;
         }
-        for (int i = start;i <= end;i++){
+        for (int i = start; i <= end; i++) {
             // i为root的左右子树集合
-            List<TreeNode> leftTrees = constructTrees(start,i-1);
-            List<TreeNode> rightTrees = constructTrees(i+1,end);
-            for (TreeNode left:leftTrees){
-                for (TreeNode right:rightTrees){
+            List<TreeNode> leftTrees = constructTrees(start, i - 1);
+            List<TreeNode> rightTrees = constructTrees(i + 1, end);
+            for (TreeNode left : leftTrees) {
+                for (TreeNode right : rightTrees) {
                     // 根节点i
                     TreeNode node = new TreeNode(i);
                     node.right = right;
@@ -58,10 +60,10 @@ public class BinarySearchTree {
      * 标签：动态规划
      * 假设n个节点存在二叉排序树的个数是G(n)，令f(i)为以i为根的二叉搜索树的个数，则
      * G(n) = f(1) + f(2) + f(3) + f(4) + ... + f(n)
-     *
+     * <p>
      * 当i为根节点时，其左子树节点个数为i-1个，右子树节点为n-i，则
      * f(i) = G(i-1)*G(n-i)
-     *
+     * <p>
      * 综合两个公式可以得到 卡特兰数 公式
      * G(n) = G(0)*G(n-1)+G(1)*G(n-2)+...+G(n-1)*G(0)
      *
@@ -69,13 +71,13 @@ public class BinarySearchTree {
      * @return 二叉搜索树树个数
      */
     public int numTrees(int n) {
-        int[] dp = new int[n+1];
+        int[] dp = new int[n + 1];
 
         dp[0] = 1;
         dp[1] = 1;
-        for(int i = 2;i<=n;i++){
-            for(int j = 0;j<i;j++){
-                dp[i] = dp[j]*dp[i-j-1] + dp[i];
+        for (int i = 2; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                dp[i] = dp[j] * dp[i - j - 1] + dp[i];
             }
         }
         return dp[n];
@@ -95,7 +97,7 @@ public class BinarySearchTree {
         TreeNode node = root;
         TreeNode preNode = null;
         while (node != null || !stack.isEmpty()) {
-            if (node != null){
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
             } else {
@@ -132,8 +134,8 @@ public class BinarySearchTree {
                 node = node.left;
             } else {
                 node = stack.pop();
-                if (preNode != null && preNode.val > node.val){
-                    if (bigNode == null){// 只有第一次出现preNode>node，才是大节点
+                if (preNode != null && preNode.val > node.val) {
+                    if (bigNode == null) {// 只有第一次出现preNode>node，才是大节点
                         bigNode = preNode;
                     }
                     smallNode = node;// node较小，赋值给smallNode
@@ -166,9 +168,9 @@ public class BinarySearchTree {
         do {
             preNode = node;
             cmp = val - node.val;
-            if (cmp < 0){
+            if (cmp < 0) {
                 node = node.left;
-            }else if (cmp > 0){
+            } else if (cmp > 0) {
                 node = node.right;
             } else {
                 return root;
@@ -187,7 +189,7 @@ public class BinarySearchTree {
      * 450.二叉搜索树节点删除
      *
      * @param root root
-     * @param key 删除的key
+     * @param key  删除的key
      * @return 删除节点后的root节点
      */
     public TreeNode deleteNode(TreeNode root, int key) {
@@ -247,6 +249,7 @@ public class BinarySearchTree {
     /**
      * 找到node节点的后继节点的值
      * 走到这个方法里来的node节点，都是左右子树存在的节点
+     *
      * @param node node
      * @return 后继节点val
      */
@@ -274,8 +277,9 @@ public class BinarySearchTree {
     /**
      * 查询二叉搜索树的节点
      * left<root<right
+     *
      * @param root 根节点
-     * @param val 值
+     * @param val  值
      * @return val所在的节点
      */
     public TreeNode searchBST(TreeNode root, int val) {
@@ -300,21 +304,22 @@ public class BinarySearchTree {
 
     /**
      * 有序数组生成平衡二叉搜索树
+     *
      * @param nums 数组
      * @return 平衡二叉树root
      */
     public TreeNode sortedArrayToBST(int[] nums) {
-        return sortedArrayToBST(nums,0,nums.length-1);
+        return sortedArrayToBST(nums, 0, nums.length - 1);
     }
 
-    private TreeNode sortedArrayToBST(int[] nums,int start,int end){
-        if (start > end){
+    private TreeNode sortedArrayToBST(int[] nums, int start, int end) {
+        if (start > end) {
             return null;
         }
         int mid = start + (end - start >> 1);
         TreeNode root = new TreeNode(nums[mid]);
-        root.left = sortedArrayToBST(nums,start,mid-1);
-        root.right = sortedArrayToBST(nums,mid+1,end);
+        root.left = sortedArrayToBST(nums, start, mid - 1);
+        root.right = sortedArrayToBST(nums, mid + 1, end);
         return root;
     }
 
@@ -331,6 +336,7 @@ public class BinarySearchTree {
     /**
      * 链表转二叉树的核心算法
      * 快慢指针找中间节点，作为root，然后递归左右
+     *
      * @param head 头结点
      * @param tail 尾节点
      * @return 根节点
@@ -361,9 +367,10 @@ public class BinarySearchTree {
     /**
      * 220.给定一个整数数组，判断数组中是否有两个不同的索引 i 和 j，
      * 使得 nums [i] 和 nums [j] 的差的绝对值最大为 t，并且 i 和 j 之间的差的绝对值最大为 ķ。
+     *
      * @param nums nums
-     * @param k 索引k
-     * @param t 索引t
+     * @param k    索引k
+     * @param t    索引t
      * @return 是否有两个不同的索引
      */
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
@@ -394,7 +401,7 @@ public class BinarySearchTree {
      * 中序遍历到第k个节点
      *
      * @param root 根节点
-     * @param k 第K小节点
+     * @param k    第K小节点
      * @return 第K小节点的值
      */
     public int kthSmallest(TreeNode root, int k) {
@@ -402,7 +409,7 @@ public class BinarySearchTree {
         TreeNode node = root;
         Stack<TreeNode> stack = new Stack<>();
         while (node != null || !stack.isEmpty()) {
-            if (node != null){
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
             } else {
@@ -420,25 +427,26 @@ public class BinarySearchTree {
     /**
      * 二叉搜索树的第K大节点
      * 逆向中序遍历，right->root->left
+     *
      * @param root 根节点
-     * @param k 第K大节点
+     * @param k    第K大节点
      * @return 第K大节点的值
      */
     public int kthLargest(TreeNode root, int k) {
         int i = 0;
         TreeNode node = root;
         Deque<TreeNode> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.right;
             } else {
-              node = stack.pop();
-              i++;
-              if (i == k){
-                  return node.val;
-              }
-              node = node.left;
+                node = stack.pop();
+                i++;
+                if (i == k) {
+                    return node.val;
+                }
+                node = node.left;
             }
         }
         return 0;
@@ -448,8 +456,8 @@ public class BinarySearchTree {
      * 235.二叉搜索树最近公共祖先
      *
      * @param root root
-     * @param p p
-     * @param q q
+     * @param p    p
+     * @param q    q
      * @return 公共祖先
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
@@ -459,9 +467,9 @@ public class BinarySearchTree {
             if (node == p || node == q) {
                 return node;
             }
-            if (p.val < node.val && q.val < node.val){
+            if (p.val < node.val && q.val < node.val) {
                 node = node.left;
-            }else if (p.val > node.val && q.val > node.val) {
+            } else if (p.val > node.val && q.val > node.val) {
                 node = node.right;
             } else {
                 return node;
@@ -474,11 +482,11 @@ public class BinarySearchTree {
      * 255.验证前序遍历序列二叉搜索树
      * 单调栈->单调递减栈存储preorder的思路
      * 二叉搜索树是left < root < right的，先序遍历又是root->left->right的，基于这样的性质和遍历方式，我们知道越往左越小，这样，就可以构造一个单调递减的栈，来记录遍历的元素。
-     *
+     * <p>
      * 为什么要用单调栈呢，因为往左子树遍历的过程，value是越来越小的，一旦出现了value大于栈顶元素value的时候，就表示要开始进入右子树了（如果不是，就应该继续进入左子树，不理解的请看下二叉搜索树的定义），但是这个右子树是从哪个节点开始的呢？
-     *
+     * <p>
      * 单调栈帮我们记录了这些节点，只要栈顶元素还比当前节点小，就表示还是左子树，要移除，因为我们要找到这个右孩子节点直接连接的父节点，也就是找到这个子树的根，只要栈顶元素还小于当前节点，就要一直弹出，直到栈顶元素大于节点，或者栈为空。栈顶的上一个元素就是子树节点的根。
-     *
+     * <p>
      * 接下来，数组继续往后遍历，之后的右子树的每个节点，都要比子树的根要大，才能满足，否则就不是二叉搜索树
      *
      * @param preorder 先序遍历数组
@@ -488,12 +496,12 @@ public class BinarySearchTree {
         // 单调栈使用，单调递减的单调栈
         Deque<Integer> stack = new LinkedList<>();
         int prevElement = Integer.MIN_VALUE;
-        for (int i = 0;i<preorder.length;i++){
+        for (int i = 0; i < preorder.length; i++) {
             // 右子树元素必须要大于递减栈被peek访问的元素，否则就不是二叉搜索树
-            if (preorder[i] < prevElement){
+            if (preorder[i] < prevElement) {
                 return false;
             }
-            while (!stack.isEmpty() && preorder[i] > stack.peek()){
+            while (!stack.isEmpty() && preorder[i] > stack.peek()) {
                 // 数组元素大于单调栈的元素了，表示往右子树走了，记录下上个根节点
                 // 找到这个右子树对应的根节点，之前左子树全部弹出，不再记录，因为不可能在往根节点的左子树走了
                 prevElement = stack.pop();
@@ -518,12 +526,12 @@ public class BinarySearchTree {
         Deque<Integer> stack = new LinkedList<>();
         int pervElem = Integer.MAX_VALUE;
         // 逆向遍历，就是翻转的先序遍历
-        for (int i = postorder.length - 1;i>=0;i--){
+        for (int i = postorder.length - 1; i >= 0; i--) {
             // 左子树元素必须要小于递增栈被peek访问的元素，否则就不是二叉搜索树
-            if (postorder[i] > pervElem){
+            if (postorder[i] > pervElem) {
                 return false;
             }
-            while (!stack.isEmpty() && postorder[i] < stack.peek()){
+            while (!stack.isEmpty() && postorder[i] < stack.peek()) {
                 // 数组元素小于单调栈的元素了，表示往左子树走了，记录下上个根节点
                 // 找到这个左子树对应的根节点，之前右子树全部弹出，不再记录，因为不可能在往根节点的右子树走了
                 pervElem = stack.pop();
@@ -536,26 +544,27 @@ public class BinarySearchTree {
 
     /**
      * 二叉搜索树后序遍历序列递归写法
+     *
      * @param postorder 后序遍历数组
      * @return 是否二叉搜索树后序遍历
      */
     public boolean verifyPostorderRecursion(int[] postorder) {
         // 如果数组为空 说明满足后续遍历的题条件
-        if(postorder.length==0) return true;
+        if (postorder.length == 0) return true;
         // 找到根节点值 val 也就是后续的最后一个点
-        int mid = postorder[postorder.length-1];
+        int mid = postorder[postorder.length - 1];
         int left;
         // 找到满足后序遍历的情况下左子树的划分点
-        for(left=0;left<postorder.length-1;left++){
-            if(postorder[left]>mid) break;
+        for (left = 0; left < postorder.length - 1; left++) {
+            if (postorder[left] > mid) break;
         }
         // 看右子树是不是都满足大于root val 否则
-        for(int i=left+1;i<postorder.length-1;i++){
-            if(postorder[i]<mid) return false;
+        for (int i = left + 1; i < postorder.length - 1; i++) {
+            if (postorder[i] < mid) return false;
         }
         // 递归 看左右的内部是否满足
-        return verifyPostorderRecursion(Arrays.copyOfRange(postorder,0,left))&&
-                verifyPostorderRecursion(Arrays.copyOfRange(postorder,left,postorder.length-1));
+        return verifyPostorderRecursion(Arrays.copyOfRange(postorder, 0, left)) &&
+                verifyPostorderRecursion(Arrays.copyOfRange(postorder, left, postorder.length - 1));
     }
 
     /**
@@ -565,7 +574,8 @@ public class BinarySearchTree {
      * 反之就去root.left的子树中查找
      * 每次都计算一下node.val和target的差的绝对值
      * 遍历的同时，使用找最小值的思想，log(N)的时间复杂度就能找到最接近的值，空间复杂度是O(1)，还避免的递归中栈的消耗。
-     * @param root root节点
+     *
+     * @param root   root节点
      * @param target target目标值
      * @return 最接近的值
      */
@@ -573,17 +583,17 @@ public class BinarySearchTree {
         double minDiff = Double.MAX_VALUE;
         TreeNode closestNode = root;// 最接近的节点
         TreeNode node = root;
-        while (node != null){
+        while (node != null) {
             double diff = Math.abs(node.val - target);// node.val和target差的绝对值
-            if (diff < minDiff){// 比之前的最小值还小，记录下最小值和最接近的节点
+            if (diff < minDiff) {// 比之前的最小值还小，记录下最小值和最接近的节点
                 minDiff = diff;
                 closestNode = node;
             }
-            if (node.val > target){// target在node.left中
+            if (node.val > target) {// target在node.left中
                 node = node.left;
-            }else if (node.val < target){// target在node.right中
+            } else if (node.val < target) {// target在node.right中
                 node = node.right;
-            }else {// 这时候差是0，肯定不可能还有比0大的绝对值了，直接返回
+            } else {// 这时候差是0，肯定不可能还有比0大的绝对值了，直接返回
                 return node.val;
             }
         }
@@ -592,33 +602,34 @@ public class BinarySearchTree {
 
     /**
      * 272.给定一个不为空的二叉搜索树和一个目标值 target，请在该二叉搜索树中找到最接近目标值 target 的 k 个值。
-     *
+     * <p>
      * 注意：
-     *
+     * <p>
      * 给定的目标值 target 是一个浮点数
      * 你可以默认 k 值永远是有效的，即 k ≤ 总结点数
      * 题目保证该二叉搜索树中只会存在一种 k 个值集合最接近目标值
      * 先和270一样，找到最接近的节点，然后以最接近节点为中心，分别往前往后找K个节点
-     * @param root root
+     *
+     * @param root   root
      * @param target 目标截止
-     * @param k k个节点数
+     * @param k      k个节点数
      * @return 最接近的k的节点
      */
     public List<Integer> closestKValues(TreeNode root, double target, int k) {
         double minDiff = Double.MAX_VALUE;
         TreeNode closestNode = root;// 最接近的节点
         TreeNode node = root;
-        while (node != null){
+        while (node != null) {
             double diff = Math.abs(node.val - target);// node.val和target差的绝对值
-            if (diff < minDiff){// 比之前的最小值还小，记录下最小值和最接近的节点
+            if (diff < minDiff) {// 比之前的最小值还小，记录下最小值和最接近的节点
                 minDiff = diff;
                 closestNode = node;
             }
-            if (target < node.val){// target在node.left中
+            if (target < node.val) {// target在node.left中
                 node = node.left;
-            }else if (target > node.val){// target在node.right中
+            } else if (target > node.val) {// target在node.right中
                 node = node.right;
-            }else {
+            } else {
                 closestNode = node;
                 break;
             }
@@ -627,27 +638,27 @@ public class BinarySearchTree {
         List<Integer> result = new ArrayList<>(k);
         result.add(closestNode.val);// 最接近的节点加入
 
-        TreeNode precursorNode = getPredecessor(root,closestNode.val);// 第一个前驱节点
-        TreeNode successorNode = getSuccessor(root,closestNode.val);// 第一个后继节点
-        while (result.size() < k){// 结果集不满
+        TreeNode precursorNode = getPredecessor(root, closestNode.val);// 第一个前驱节点
+        TreeNode successorNode = getSuccessor(root, closestNode.val);// 第一个后继节点
+        while (result.size() < k) {// 结果集不满
             // 寻找前驱和后继
-            if (precursorNode != null && successorNode != null){
-                if (Math.abs(precursorNode.val - target) < Math.abs(successorNode.val - target)){
+            if (precursorNode != null && successorNode != null) {
+                if (Math.abs(precursorNode.val - target) < Math.abs(successorNode.val - target)) {
                     result.add(precursorNode.val);
-                    precursorNode = getPredecessor(root,precursorNode.val);
-                }else {
+                    precursorNode = getPredecessor(root, precursorNode.val);
+                } else {
                     result.add(successorNode.val);
-                    successorNode = getSuccessor(root,successorNode.val);
+                    successorNode = getSuccessor(root, successorNode.val);
                 }
-            }else if (successorNode != null){
+            } else if (successorNode != null) {
                 result.add(successorNode.val);
                 // 寻找后继节点的后继
-                successorNode = getSuccessor(root,successorNode.val);
-            }else if(precursorNode != null){
+                successorNode = getSuccessor(root, successorNode.val);
+            } else if (precursorNode != null) {
                 result.add(precursorNode.val);
                 // 寻找前驱节点的前驱
-                precursorNode = getPredecessor(root,precursorNode.val);
-            }else {
+                precursorNode = getPredecessor(root, precursorNode.val);
+            } else {
                 // 已经找不到前驱和后继了，跳出
                 break;
             }
@@ -657,30 +668,31 @@ public class BinarySearchTree {
 
     /**
      * 寻找target节点的前驱
-     * @param root root节点
+     *
+     * @param root   root节点
      * @param target 目标值
      * @return 前驱节点
      */
-    private TreeNode getPredecessor(TreeNode root,int target){
+    private TreeNode getPredecessor(TreeNode root, int target) {
         TreeNode curNode = root;
         TreeNode preParentNode = null;// 前驱父节点
-        while (curNode.val != target){// 默认curNode != null
-            if (target < curNode.val){
+        while (curNode.val != target) {// 默认curNode != null
+            if (target < curNode.val) {
                 curNode = curNode.left;
-            }else {
+            } else {
                 // 往右子树找target，这时候current比target小了，记录parent
                 preParentNode = curNode;
                 curNode = curNode.right;
             }
         }
         // curNode.left不空，那么curNode的前驱节点就是curNode.left的最右子树节点
-        if (curNode.left != null){
+        if (curNode.left != null) {
             curNode = curNode.left;
-            while (curNode.right != null){
+            while (curNode.right != null) {
                 curNode = curNode.right;
             }
             return curNode;
-        }else {
+        } else {
             // curNode.left为空，
             return preParentNode;
         }
@@ -688,14 +700,15 @@ public class BinarySearchTree {
 
     /**
      * 寻找target节点的后继
-     * @param root root
+     *
+     * @param root   root
      * @param target 目标值
      * @return 后继节点
      */
-    private TreeNode getSuccessor(TreeNode root,int target){
+    private TreeNode getSuccessor(TreeNode root, int target) {
         TreeNode curNode = root;
         TreeNode successParentNode = null;// 后继父节点
-        while (curNode.val != target){
+        while (curNode.val != target) {
             if (target < curNode.val) {
                 successParentNode = curNode;
                 curNode = curNode.left;
@@ -704,13 +717,13 @@ public class BinarySearchTree {
             }
         }
         // curNode.right不空，那么curNode的后继节点就是curNode.right的最左子树节点
-        if (curNode.right != null){
+        if (curNode.right != null) {
             curNode = curNode.right;
-            while (curNode.left != null){
+            while (curNode.left != null) {
                 curNode = curNode.left;
             }
             return curNode;
-        }else {
+        } else {
             return successParentNode;
         }
     }
@@ -722,15 +735,16 @@ public class BinarySearchTree {
      * 2.p不存在右子树，那么p的后继就是p所在子树的第一个左孩子的父节点
      * 怎么找父节点，用栈来找，二叉搜索树找节点的方式
      * 也可以利用二叉搜索树的性质，来找比p大的第一个节点
+     *
      * @param root root
-     * @param p 需要寻找的节点
+     * @param p    需要寻找的节点
      * @return p的顺序后继
      */
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
         // p存在右子树，直接后继就是右子树的最左节点
-        if (p.right != null){
+        if (p.right != null) {
             p = p.right;
-            while (p.left != null){
+            while (p.left != null) {
                 p = p.left;
             }
             return p;
@@ -739,15 +753,15 @@ public class BinarySearchTree {
         TreeNode node = root;
         TreeNode res = null;
         // 按理来说，p不会不在root的树中
-        while (node != null){
-            if (p.val < node.val){
+        while (node != null) {
+            if (p.val < node.val) {
                 // p比node小，表示node在p的后继路径上
                 res = node;// 左孩子的父节点
                 node = node.left;
-            }else if(p.val > node.val){
+            } else if (p.val > node.val) {
                 // p比node大，表示node在p的前驱路径上
                 node = node.right;
-            }else {
+            } else {
                 // 相等退出
                 break;
             }
@@ -758,43 +772,46 @@ public class BinarySearchTree {
     /**
      * 333.最大的BST树
      * 如果左右子树都是BST，只要判断root比左子树最大节点大，root比右子树最小节点小就行了
+     *
      * @param root root
      * @return 最大BST树的节点数
      */
     public int largestBSTSubtree(TreeNode root) {
-        if(root == null){
+        if (root == null) {
             return 0;
         }
-        if (isBST(root,Integer.MIN_VALUE,Integer.MAX_VALUE)){
+        if (isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
             return nodeCount(root);
         }
         int left = largestBSTSubtree(root.left);
         int right = largestBSTSubtree(root.right);
-        return Math.max(left,right);
+        return Math.max(left, right);
     }
 
     /**
      * 判断root为根节点的树是否是二叉搜索树
+     *
      * @param root root节点
-     * @param min 最小值
-     * @param max 最大值
+     * @param min  最小值
+     * @param max  最大值
      * @return 是否是二叉搜索树
      */
-    private boolean isBST(TreeNode root,int min,int max){
-        if (root == null){
+    private boolean isBST(TreeNode root, int min, int max) {
+        if (root == null) {
             return true;
         }
         // 这里不建立备忘录是因为，一个节点第一次进来的时候，可能是root节点的子树，而不是以root为根节点的判断，判断BST是其root节点，不是节点本身，所以备忘录是没有用的
-        return min < root.val && root.val < max && isBST(root.left,min,root.val) && isBST(root.right,root.val,max);
+        return min < root.val && root.val < max && isBST(root.left, min, root.val) && isBST(root.right, root.val, max);
     }
 
     /**
      * 节点数统计
+     *
      * @param node 当前节点
      * @return 这个节点的子树有多少个节点数
      */
-    private int nodeCount(TreeNode node){
-        if (node == null){
+    private int nodeCount(TreeNode node) {
+        if (node == null) {
             return 0;
         }
         return 1 + nodeCount(node.left) + nodeCount(node.right);
@@ -812,12 +829,12 @@ public class BinarySearchTree {
         Stack<TreeNode> stack = new Stack<>();
         int min = Integer.MAX_VALUE;
         while (node != null || !stack.isEmpty()) {
-            if (node != null){
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
-            }else {
+            } else {
                 node = stack.pop();
-                if (prevNode != null){
+                if (prevNode != null) {
                     min = Math.min(min, Math.abs(prevNode.val - node.val));
                 }
                 prevNode = node;
@@ -830,19 +847,20 @@ public class BinarySearchTree {
     /**
      * 426,510的Node节点
      */
-    private static class Node{
+    private static class Node {
         int val;
         Node left;
         Node right;
         Node parent;
 
-        Node() {}
+        Node() {
+        }
 
         Node(int _val) {
             val = _val;
         }
 
-        Node(int _val,Node _left,Node _right) {
+        Node(int _val, Node _left, Node _right) {
             val = _val;
             left = _left;
             right = _right;
@@ -857,7 +875,7 @@ public class BinarySearchTree {
      * @return BST转DoubleLink的头结点
      */
     public Node treeToDoublyList(Node root) {
-        if (root == null){
+        if (root == null) {
             return null;
         }
         Node head = new Node();// 哨兵
@@ -865,11 +883,11 @@ public class BinarySearchTree {
         // 中序遍历
         Node node = root;
         Deque<Node> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
-            }else {
+            } else {
                 // 中序遍历的节点出栈了
                 node = stack.pop();
                 // ---树节点接入链表中
@@ -889,6 +907,7 @@ public class BinarySearchTree {
 
     /**
      * 501.二叉搜索树中的众数
+     *
      * @param root root
      * @return 众数集合
      */
@@ -899,20 +918,20 @@ public class BinarySearchTree {
         int lastValue = Integer.MIN_VALUE;
         int curCount = 0;// 当前相同数计数
         Deque<TreeNode> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
-            }else {
+            } else {
                 node = stack.pop();
-                if (node.val == lastValue){
+                if (node.val == lastValue) {
                     curCount++;
-                }else {
+                } else {
                     curCount = 1;
                 }
-                if (maxCount == curCount){
+                if (maxCount == curCount) {
                     count.add(node.val);
-                }else if (maxCount < curCount){
+                } else if (maxCount < curCount) {
                     // 众数变化了
                     maxCount = curCount;
                     count.clear();
@@ -923,7 +942,7 @@ public class BinarySearchTree {
             }
         }
         int[] res = new int[count.size()];
-        for (int i = 0 ; i < count.size() ; i++){
+        for (int i = 0; i < count.size(); i++) {
             res[i] = count.get(i);
         }
         return res;
@@ -932,30 +951,31 @@ public class BinarySearchTree {
     /**
      * 510. 二叉搜索树中的中序后继 II
      * 给定一棵二叉搜索树和其中的一个节点，找到该节点在树中的中序后继。
-     *
+     * <p>
      * 一个结点 p 的中序后继是键值比 p.val大所有的结点中键值最小的那个。
-     *
+     * <p>
      * 你可以直接访问结点，但无法直接访问树。每个节点都会有其父节点的引用。
      * 思路：红黑树（TreeMap）是怎么找后继的，这个就怎么找就行了，不需要中序遍历。
-     *
+     * <p>
      * 1.x存在右子树，那么x的后继就是x.right子树的最左节点
      * 2.x不存在右子树，那么x的后继就是x所在子树的第一个左孩子的父节点
+     *
      * @param x 当前节点
      * @return x的后继节点
      */
     public Node inorderSuccessor(Node x) {
         Node node = x.right;
-        if (node != null){
+        if (node != null) {
             // 存在右子树，那么x的后继就是node的最左节点
-            while (node.left != null){
+            while (node.left != null) {
                 node = node.left;
             }
             return node;
-        }else {
+        } else {
             // 不存在右子树，那么x的后继就是x所在子树的第一个左孩子的父节点
             node = x;
             Node parent = node.parent;
-            while(parent != null && parent.right == node){
+            while (parent != null && parent.right == node) {
                 node = parent;
                 parent = parent.parent;
             }
@@ -966,29 +986,30 @@ public class BinarySearchTree {
     /**
      * 653. 两数之和 IV - 输入 BST
      * 给定一个二叉搜索树和一个目标结果，如果 BST 中存在两个元素且它们的和等于给定的目标结果，则返回 true。
+     *
      * @param root root
-     * @param k 目标k
+     * @param k    目标k
      * @return findTarget
      */
     public boolean findTarget(TreeNode root, int k) {
-        if (root == null){
+        if (root == null) {
             return false;
         }
         TreeNode node = root;
         Deque<TreeNode> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
             } else {
-              node = stack.pop();
-              int target = k - node.val;
-              if (target != node.val){
-                  if (searchBST(root,target) != null){
-                      return true;
-                  }
-              }
-              node = node.right;
+                node = stack.pop();
+                int target = k - node.val;
+                if (target != node.val) {
+                    if (searchBST(root, target) != null) {
+                        return true;
+                    }
+                }
+                node = node.right;
             }
         }
         return false;
@@ -997,15 +1018,15 @@ public class BinarySearchTree {
     /**
      * 776.拆分二叉搜索树
      * 给你一棵二叉搜索树（BST）、它的根结点 root 以及目标值 V。
-     *
+     * <p>
      * 请将该树按要求拆分为两个子树：其中一个子树结点的值都必须小于等于给定的目标值 V；另一个子树结点的值都必须大于目标值 V；树中并非一定要存在值为 V 的结点。
-     *
+     * <p>
      * 除此之外，树中大部分结构都需要保留，也就是说原始树中父节点 P 的任意子节点 C，假如拆分后它们仍在同一个子树中，那么结点 P 应仍为 C 的子结点
-     *
+     * <p>
      * 思路：利用二叉搜索树的查找元素的思想，来遍历root，小于等于V的node加入小树中，大于V的node加入到大树中，出现拐点的地方，往之前前进的反方向继续遍历，拐点和正方向的子树断开
      *
      * @param root root
-     * @param V 目标值
+     * @param V    目标值
      * @return 拆分的两棵树
      */
     public TreeNode[] splitBST(TreeNode root, int V) {
@@ -1019,13 +1040,13 @@ public class BinarySearchTree {
         TreeNode curSmallTreeNode = smallTreeNode;
         // node节点
         TreeNode node = root;
-        while (node != null){
-            if (node.val>V){
+        while (node != null) {
+            if (node.val > V) {
                 // node.val比V大，加入到bigTree中
                 // bigTree中操作
-                if (node.val <= curBigTreeNode.val){
+                if (node.val <= curBigTreeNode.val) {
                     curBigTreeNode.left = node;
-                }else {
+                } else {
                     curBigTreeNode.right = node;
                 }
                 // 当前大树指针移动
@@ -1035,15 +1056,15 @@ public class BinarySearchTree {
                 // 之前node比V大，下一个节点的值比V小了，拐点出现，原来的树要断开了,bigTree中存的是比V大的值
                 // 现在curBigTreeNode指向的node.parent节点，node.parent.left不能再加入到bigTree中，要断开
                 // 但是node.parent.right中还是有可能要加入到bigTree中，这个在接下来的遍历中在bigTree操作中会处理到
-                if (node != null && node.val <= V){
+                if (node != null && node.val <= V) {
                     curBigTreeNode.left = null;
                 }
-            }else {
+            } else {
                 // node.val比V小，加入到smallTree中
                 // smallTree中操作
-                if (node.val <= curSmallTreeNode.val){
+                if (node.val <= curSmallTreeNode.val) {
                     curSmallTreeNode.left = node;
-                }else {
+                } else {
                     curSmallTreeNode.right = node;
                 }
                 // 当前小树指针移动
@@ -1053,52 +1074,52 @@ public class BinarySearchTree {
                 // 之前node比V小，下一个节点的值比V大了，拐点出现，原来的树要断开了，smallTree中存的是比V小的值
                 // 现在curSmallTreeNode指向的node.parent节点，node.parent.right不能再加入到smallTree中，要断开
                 // 但是node.parent.left中还是有可能要加入到smallTree中，这个在接下来的遍历中在smallTree操作中会处理到
-                if (node != null && node.val > V){
+                if (node != null && node.val > V) {
                     curSmallTreeNode.right = null;
                 }
             }
         }
-        return new TreeNode[]{smallTreeNode.left,bigTreeNode.left};
+        return new TreeNode[]{smallTreeNode.left, bigTreeNode.left};
     }
 
     /**
      * 846.一手顺子
      * 爱丽丝有一手（hand）由整数数组给定的牌。 
-     *
+     * <p>
      * 现在她想把牌重新排列成组，使得每个组的大小都是 W，且由 W 张连续的牌组成。
-     *
+     * <p>
      * 如果她可以完成分组就返回 true，否则返回 false。
      *
      * @param hand 整数数组给定的牌
-     * @param W 每个组的大小都是 W
+     * @param W    每个组的大小都是 W
      * @return 是否能完成分组
      */
-    public boolean isNStraightHand(int[] hand, int W){
-        if (hand.length % W != 0){
+    public boolean isNStraightHand(int[] hand, int W) {
+        if (hand.length % W != 0) {
             return false;// 不能整除就不能重新排列为顺子
         }
-        TreeMap<Integer,Integer> orderMap = new TreeMap<>();
-        for (int i = 0;i<hand.length;i++){
-            int count = orderMap.getOrDefault(hand[i],0);
-            orderMap.put(hand[i],count+1);// 对原来的hand数组排序并且记录个数
+        TreeMap<Integer, Integer> orderMap = new TreeMap<>();
+        for (int i = 0; i < hand.length; i++) {
+            int count = orderMap.getOrDefault(hand[i], 0);
+            orderMap.put(hand[i], count + 1);// 对原来的hand数组排序并且记录个数
         }
         // map不为空，继续遍历
-        while (!orderMap.isEmpty()){
+        while (!orderMap.isEmpty()) {
             Integer currentKey = orderMap.firstKey();
             // 遍历
-            for(int i = 0;i < W;i++){
+            for (int i = 0; i < W; i++) {
                 Integer currentValue = orderMap.get(currentKey);
-                if (currentValue == null){
+                if (currentValue == null) {
                     // value为空，表示currentKey不存在
                     // 则说明在一个W的范围内，无法连续的生产W个元素，返回false
                     return false;
                 }
                 currentValue--;
                 // 如果数量等于0了，则表示map中没有这个数了，移除掉
-                if (currentValue == 0){
+                if (currentValue == 0) {
                     orderMap.remove(currentKey);
-                }else{
-                    orderMap.put(currentKey,currentValue);// 修改count值
+                } else {
+                    orderMap.put(currentKey, currentValue);// 修改count值
                 }
                 // key后移，因为顺子是连续的，只会差一个数
                 currentKey++;
@@ -1109,21 +1130,22 @@ public class BinarySearchTree {
 
     /**
      * 938. 二叉搜索树的范围和
+     *
      * @param root root
-     * @param L 范围的开始
-     * @param R 范围的结束
+     * @param L    范围的开始
+     * @param R    范围的结束
      * @return sum
      */
     public int rangeSumBST(TreeNode root, int L, int R) {
-        if (root == null){
+        if (root == null) {
             return 0;
         }
         int sum = 0;
         TreeNode node = root;
         Deque<TreeNode> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
-                if(node.val >= L){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
+                if (node.val >= L) {
                     // 剪枝操作，当前根节点比区间最小值大，才继续左孩子遍历，找到最小值
                     stack.push(node);
                     node = node.left;
@@ -1131,11 +1153,11 @@ public class BinarySearchTree {
                     // 当前根节点比区间最小值还要小，则左孩子没有再遍历的必要，直接进入右子树
                     node = node.right;
                 }
-            }else {
+            } else {
                 node = stack.pop();
-                if (node.val >= L && node.val <= R){
-                    sum+= node.val;
-                }else if (node.val > R){
+                if (node.val >= L && node.val <= R) {
+                    sum += node.val;
+                } else if (node.val > R) {
                     return sum;
                 }
                 node = node.right;
@@ -1146,7 +1168,7 @@ public class BinarySearchTree {
 
     /**
      * 975.奇偶跳
-     *
+     * <p>
      * 奇数次跳跃时，在右边找比它大的数中最小的数
      * 偶数次跳跃时，在右边找比它小的树中最大的数
      * TreeMap  刚好有满足上面数据结构的方法
@@ -1170,12 +1192,12 @@ public class BinarySearchTree {
             Integer floor = tm.floorKey(A[i]); // 不大于当前A[i]的key 数组的值
 
             // 找不到，表示没有这样的元素了，肯定就没法到达最后节点
-            if (ceil != null){
+            if (ceil != null) {
                 // 奇数次跳跃是找i之后(i<j)，数值A[i] <= A[j] 的最小A[j]->key所对应的index。
                 // 奇数跳跃的下一次肯定是偶数跳跃，所以从偶数跳跃的数组中获取index得到能否到达末尾节点。
                 odd[i] = even[tm.get(ceil)];
             }
-            if (floor != null){
+            if (floor != null) {
                 // 偶数次跳跃是找到i之后(i>j)，数值A[i] >= A[j] 的最大A[j]->key所对应的index。
                 // 偶数次跳跃的下一次肯定是奇数跳跃，所以从奇数跳跃的数组中获取index得到是否能到达末尾节点
                 even[i] = odd[tm.get(floor)];
@@ -1191,9 +1213,10 @@ public class BinarySearchTree {
 
     /**
      * 1038.从二叉搜索树到更大和树
-     *
+     * <p>
      * 给出二叉搜索树的根节点，该二叉树的节点值各不相同，修改二叉树，使每个节点 node 的新值等于原树中大于或等于 node.val 的值之和。
      * 反向中序遍历，前一个节点的值加在后一个节点上
+     *
      * @param root 根节点
      * @return 根节点
      */
@@ -1201,11 +1224,11 @@ public class BinarySearchTree {
         TreeNode node = root;
         Deque<TreeNode> stack = new LinkedList<>();
         int sumValue = 0;
-        while (node != null || !stack.isEmpty()){
-            if(node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.right;
-            }else {
+            } else {
                 node = stack.pop();
                 node.val += sumValue;// 节点加上之前node.val的和
                 sumValue = node.val;// 之前node.val值的和更新
@@ -1218,30 +1241,31 @@ public class BinarySearchTree {
     /**
      * 1214.查找两颗二叉搜索树之和
      * 给出两棵二叉搜索树，请你从两棵树中各找出一个节点，使得这两个节点的值之和等于目标值 Target。
-     *
+     * <p>
      * 如果可以找到返回 True，否则返回 False。
-     *
+     * <p>
      * 参考两数之和的做法来做这个，利用二叉搜索树的性质（left<root<right）来找另一个节点的值
-     * @param root1 第一颗二叉搜索树root
-     * @param root2 第二颗二叉搜索树root
+     *
+     * @param root1  第一颗二叉搜索树root
+     * @param root2  第二颗二叉搜索树root
      * @param target 目标值
      * @return 是否存在这个target
      */
     public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target) {
-        if (root1 == null || root2 == null){
+        if (root1 == null || root2 == null) {
             return false;
         }
         TreeNode node = root1;
         Deque<TreeNode> stack = new LinkedList<>();// 双端队列模拟栈
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
             } else {
                 node = stack.pop();
                 int value = target - node.val;// 目标value值
                 // 从另一个二叉搜索树中寻找value所在的节点
-                if (searchBST(root2,value) != null){
+                if (searchBST(root2, value) != null) {
                     // 节点不空则满足题意，否则继续遍历
                     return true;
                 }
@@ -1252,7 +1276,64 @@ public class BinarySearchTree {
     }
 
     /**
+     * 5339.二叉搜索子树的最大键值和
+     *  给你一棵以 root 为根的 二叉树 ，请你返回 任意 二叉搜索子树的最大键值和。
+     *
+     * 二叉搜索树的定义如下：
+     *
+     * 任意节点的左子树中的键值都 小于 此节点的键值。
+     * 任意节点的右子树中的键值都 大于 此节点的键值。
+     * 任意节点的左子树和右子树都是二叉搜索树。
+     *
+     * @param root root
+     * @return 二叉搜索子树的最大键值和
+     */
+    public int maxSumBST(TreeNode root) {
+        int[] res = {0};
+        // 求最大键值和
+        maxSumBST(res, root);
+        return res[0];
+    }
+
+    /**
+     * 求节点和的最大值
+     *
+     * @param res res结果集
+     * @param node node节点
+     * @return 这个返回没啥意义
+     */
+    private int maxSumBST(int[] res, TreeNode node) {
+        // 这个节点是BST，直接求和了
+        if (isBST(node, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
+            // 是二叉搜索树，求节点和，节点和的最优解，肯定在子节点求和的过程中
+            return sumNodeValue(res, node);
+        }
+        int left = maxSumBST(res, node.left);
+        int right = maxSumBST(res, node.right);
+        return Math.max(left, right);
+    }
+
+    /**
+     * 以node为root的节点和
+     *
+     * @param res  结果集
+     * @param node node
+     * @return 节点之和
+     */
+    private int sumNodeValue(int[] res, TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        // 二叉搜索树节点和的最大值，一定在子节点中会出现
+        int sum = node.val + sumNodeValue(res, node.left) + sumNodeValue(res, node.right);
+        // 这里记录结果的最大值
+        res[0] = Math.max(res[0], sum);
+        return sum;
+    }
+
+    /**
      * 面试17.12 BiNode BST转链表
+     *
      * @param root root节点
      * @return 链表头指针
      */
@@ -1262,11 +1343,11 @@ public class BinarySearchTree {
         // 开始中序遍历
         TreeNode node = root;
         Deque<TreeNode> stack = new LinkedList<>();
-        while (node != null || !stack.isEmpty()){
-            if (node != null){
+        while (node != null || !stack.isEmpty()) {
+            if (node != null) {
                 stack.push(node);
                 node = node.left;
-            }else {
+            } else {
                 node = stack.pop();
                 // ---链表处理
                 node.left = null;// 左指针置空
@@ -1282,23 +1363,24 @@ public class BinarySearchTree {
 
     /**
      * 面试17.12 BiNode BST转链表 递归写法
+     *
      * @param root root节点
      * @return 链表头指针
      */
     public TreeNode convertRecursionBiNode(TreeNode root) {
         TreeNode head = new TreeNode(0);// 单链表的头指针哨兵
         // 开始中序遍历
-        inorder(root,head);
+        inorder(root, head);
         return head.right;
     }
 
-    private TreeNode inorder(TreeNode root,TreeNode prev){
-        if (root != null){
-            prev = inorder(root.left,prev);
+    private TreeNode inorder(TreeNode root, TreeNode prev) {
+        if (root != null) {
+            prev = inorder(root.left, prev);
             root.left = null;
             prev.right = root;
             prev = root;
-            prev = inorder(root.right,prev);
+            prev = inorder(root.right, prev);
         }
         return prev;
     }
