@@ -13,7 +13,7 @@ import java.util.Queue;
  */
 public class BinaryTreeCodec {
 
-    private final String EMPTY_VALUE = "#";
+    private final String EMPTY_VALUE = "null";
     private final String DEPART_VALUE = ",";
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
