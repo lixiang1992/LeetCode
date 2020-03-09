@@ -6,7 +6,7 @@ import struct.pub.tree.TreeNode;
 import java.util.*;
 
 /**
- * leetCode二叉搜索树
+ * 力扣BST
  */
 public class BinarySearchTree {
 
@@ -1276,7 +1276,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 5339.二叉搜索子树的最大键值和
+     * 1373.二叉搜索子树的最大键值和
      *  给你一棵以 root 为根的 二叉树 ，请你返回 任意 二叉搜索子树的最大键值和。
      *
      * 二叉搜索树的定义如下：
@@ -1296,7 +1296,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 求节点和的最大值
+     * 1373.求节点和的最大值
      *
      * @param res res结果集
      * @param node node节点
@@ -1314,7 +1314,7 @@ public class BinarySearchTree {
     }
 
     /**
-     * 以node为root的节点和
+     * 1373.以node为root的节点和
      *
      * @param res  结果集
      * @param node node
