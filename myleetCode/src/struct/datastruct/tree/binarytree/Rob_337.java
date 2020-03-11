@@ -13,6 +13,12 @@ import struct.pub.tree.TreeNode;
  */
 public class Rob_337 {
 
+    /**
+     * 思路：自底向上递推，先处理左右子树情况，再决定是否选择当前节点的值，每次返回的都是两个值
+     * 0-选择当前节点的最优解，1-不选当前节点的最优解
+     * @param root 根节点
+     * @return 获取物品价值的最大值
+     */
     public int rob(TreeNode root) {
         int[] res = robRecursion(root);
         return Math.max(res[0],res[1]);
