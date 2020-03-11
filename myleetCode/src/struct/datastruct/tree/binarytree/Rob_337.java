@@ -49,4 +49,60 @@ public class Rob_337 {
         // 0-选择当前节点的最大情况，1-不选当前节点的最大情况
         return new int[]{choose,noChoose};
     }
+
+//    /**
+//     * 337.打家劫舍 III
+//     *
+//     * 动态规划算法思想：以node为根节点的最优解要氛围两种状态
+//     * 1.当前根节点node不取，则node的最优解为node.left的最优解+node.right的最优解。
+//     *  即->node.maxValue = node.left.maxValue + node.right.maxValue
+//     * 2.当前根节点node要取，则node的直接左右孩子都不能取，node的最优解是node.left的左右子树最优解之和+node.right的左右子树最优解之和
+//     * 即-> node.maxValue = node.value + node.left.left.maxValue + node.left.right.maxValue + node.right.left.maxValue + node.right.right.maxValue
+//     *
+//     * @param root 根节点
+//     * @return 最优解
+//     */
+//    public int rob(TreeNode root) {
+//        int[] res = dpRob(root);
+//        return Math.max(res[0],res[1]);
+//    }
+
+//    /**
+//     * 后序遍历的处理，不用再次重复计算左右子节点的最优值
+//     * TODO 考虑使用非递归的后序遍历解决，自底向上，同样可以避免重复计算
+//     * @param root
+//     * @return
+//     */
+//    private int[] dpRob(TreeNode root){
+//        // res[0]表示不选当前节点的最优解，res[1]表示选择当前节点的最优解
+//        int[] res = new int[]{0,0};
+//        if (root == null){
+//            return res;
+//        }
+//        int[] leftRes = dpRob(root.left);
+//        int[] rightRes = dpRob(root.right);
+//        // 左右子树可以随便抢，不一定非要从左右子树节点选择，所以要计算一下最优值，然后取和
+//        res[0] = Math.max(leftRes[0],leftRes[1]) + Math.max(rightRes[0],rightRes[1]);
+//        res[1] = root.val + leftRes[0] + rightRes[0];
+//        return res;
+//    }
+//
+//    // 这种算法产生了大量的重复计算
+//    private int robHelper(TreeNode root){
+//        if (root == null){
+//            return 0;
+//        }
+//        // 1.这里的 robHelper(root.left)和robHelper(root.right)已经计算过子节点的最优解的
+//        int exclude = robHelper(root.left) + robHelper(root.right);// 不取当前根节点的最优解
+//        int include = root.val;// 取当前根节点的最优解
+//        if (root.left!= null){
+//            // 2.这里又重新计算的左孩子节点的左右子树最优解，与1中的robHelper(root.left)计算重复
+//            include  +=robHelper(root.left.left) + robHelper(root.left.right);
+//        }
+//        if (root.right != null){
+//            // 3.同理，这里又重新计算的右孩子节点的左右子树最优解，与1中的robHelper(root.right)计算重复
+//            include  += robHelper(root.right.left) + robHelper(root.right.right);
+//        }
+//        return Math.max(exclude,include);
+//    }
 }
