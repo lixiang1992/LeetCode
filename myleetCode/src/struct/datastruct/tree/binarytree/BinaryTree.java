@@ -3473,4 +3473,62 @@ public class BinaryTree {
         // 当前节点是左孩子，走右边，否则走左边
         return 1 + (isLeft ? rCount : lCount);
     }
+
+    /**
+     * 1379.递归的先序遍历
+     * @param original 源头树
+     * @param cloned 复制树
+     * @param target 目标节点
+     * @return 复制树中对应的目标节点
+     */
+    public final TreeNode getTargetCopy(final TreeNode original, final TreeNode cloned, final TreeNode target) {
+        if (original == null){
+            return null;
+        }
+        if (original == target){
+            return cloned;
+        }
+        // 递归左子树
+        TreeNode res = getTargetCopy(original.left,cloned.left,target);
+        if (res != null){
+            return res;
+        }
+        res = getTargetCopy(original.right,cloned.right,target);
+        if (res != null){
+            return res;
+        }
+        return null;
+    }
+
+    /**
+     * 1379.先序遍历非递归实现
+     * @param original 源头树
+     * @param cloned 复制树
+     * @param target 目标节点
+     * @return 复制树中对应的目标节点
+     */
+    public final TreeNode getTargetCopyTraversals(final TreeNode original, final TreeNode cloned, final TreeNode target) {
+        Deque<TreeNode> stack = new LinkedList<>();
+        Deque<TreeNode> clonedStack = new LinkedList<>();
+        TreeNode node = original;
+        TreeNode cloneTarget = cloned;
+        while (node != null || !stack.isEmpty()){
+            if (node != null){
+                if (node == target){
+                    return cloneTarget;// 找到目标，返回
+                }
+                // 节点不空，走左子树
+                stack.push(node);
+                node = node.left;
+                clonedStack.push(cloneTarget);
+                cloneTarget = cloneTarget.left;
+            }else {
+                node = stack.pop();
+                node = node.right;
+                cloneTarget = clonedStack.pop();
+                cloneTarget = cloneTarget.right;
+            }
+        }
+        return null;
+    }
 }
