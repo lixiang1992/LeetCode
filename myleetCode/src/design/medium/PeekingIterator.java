@@ -1,4 +1,4 @@
-package design;
+package design.medium;
 
 import java.util.Iterator;
 
