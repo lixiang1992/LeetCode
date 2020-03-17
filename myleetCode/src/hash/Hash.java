@@ -161,4 +161,37 @@ public class Hash {
         }
         return cells;
     }
+
+    /**
+     * 1160. 拼写单词
+     * @param words 拼写单词列表
+     * @param chars 字典
+     * @return
+     */
+    public int countCharacters(String[] words, String chars) {
+        int[] wordNum = new int[26];// 只有小写的英文字母
+        int res = 0;
+        // 字典初始化
+        for (int i = 0; i < chars.length(); i++) {
+            // 每个单字的数量
+            wordNum[chars.charAt(i)-'a']++;
+        }
+        for (String word : words) {
+            int[] temp = new int[26];// 临时字典
+            boolean flag = true;
+            for (int j = 0; j < word.length(); j++) {
+                int index = word.charAt(j) - 'a';
+                temp[index]++;
+                // 单字数量超出了
+                if (temp[index] > wordNum[index]) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                res += word.length();
+            }
+        }
+        return res;
+    }
 }
