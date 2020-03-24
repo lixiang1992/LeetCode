@@ -116,8 +116,8 @@ public class BalanceBST_1382 {
             // 一样的节点，啥都没发生
             return node;
         }
-        // 获取当前节点高度
-        int height = Math.max(nodeHeight.getOrDefault(node.left,0),nodeHeight.getOrDefault(node.right,0)) + 1;
+        // 获取当前节点新高度
+        int height =  getCurNodeNewHeight(node,nodeHeight);
         // 更新当前节点高度
         nodeHeight.put(node,height);
         return node;
@@ -130,13 +130,19 @@ public class BalanceBST_1382 {
      * @return 旋转后的当前节点
      */
     private TreeNode rotateLeft(TreeNode node,Map<TreeNode,Integer> nodeHeight){
+        // ---指针调整
         TreeNode right = node.right;
         node.right = right.left;
         right.left = node;
-        // 右孩子高度+1
-        nodeHeight.put(right,nodeHeight.getOrDefault(right,0) + 1);
-        // 本身高度-1
-        nodeHeight.put(node,nodeHeight.getOrDefault(node,0) - 1);
+        // ---高度更新
+        // 先更新node节点的高度，这个时候node是right节点的左孩子
+        int newNodeHeight = getCurNodeNewHeight(node,nodeHeight);
+        // 更新node节点高度
+        nodeHeight.put(node,newNodeHeight);
+        // newNodeHeight是现在right节点左子树高度，原理一样，取现在right左右子树最大高度+1
+        int newRightHeight = Math.max(newNodeHeight,nodeHeight.getOrDefault(right.right,0)) + 1;
+        // 更新原right节点高度
+        nodeHeight.put(right,newRightHeight);
         return right;
     }
 
@@ -147,13 +153,30 @@ public class BalanceBST_1382 {
      * @return 旋转后的当前节点
      */
     private TreeNode rotateRight(TreeNode node,Map<TreeNode,Integer> nodeHeight){
+        // ---指针调整
         TreeNode left = node.left;
         node.left = left.right;
         left.right = node;
-        // 左孩子高度+1
-        nodeHeight.put(left,nodeHeight.getOrDefault(left,0) + 1);
-        // 本身高度-1
-        nodeHeight.put(node,nodeHeight.getOrDefault(node,0) - 1);
+        // ---高度更新
+        // 先更新node节点的高度，这个时候node是right节点的左孩子
+        int newNodeHeight = getCurNodeNewHeight(node,nodeHeight);
+        // 更新node节点高度
+        nodeHeight.put(node,newNodeHeight);
+        // newNodeHeight是现在left节点右子树高度，原理一样，取现在right左右子树最大高度+1
+        int newLeftHeight = Math.max(newNodeHeight,nodeHeight.getOrDefault(left.left,0)) + 1;
+        // 更新原left节点高度
+        nodeHeight.put(left,newLeftHeight);
         return left;
+    }
+
+    /**
+     * 获取当前节点的新高度
+     * @param node node
+     * @param nodeHeight node高度缓存
+     * @return 当前node的新高度
+     */
+    private int getCurNodeNewHeight(TreeNode node,Map<TreeNode,Integer> nodeHeight){
+        // node节点的高度，为现在node左右子树最大高度+1
+        return Math.max(nodeHeight.getOrDefault(node.left,0),nodeHeight.getOrDefault(node.right,0)) + 1;
     }
 }
