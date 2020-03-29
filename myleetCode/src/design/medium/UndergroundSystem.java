@@ -16,9 +16,7 @@ public class UndergroundSystem {
     private Map<String, int[]> stationTime = new HashMap<>();
 
     public UndergroundSystem() {
-//        manInStation = new HashMap<>();
-//        manInStationTime = new HashMap<>();
-//        stationTime = new HashMap<>();
+
     }
 
     // 进站
