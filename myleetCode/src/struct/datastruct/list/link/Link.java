@@ -371,6 +371,48 @@ public class Link {
     }
 
     /**
+     * 82. 删除排序链表中的重复元素 II
+     * 给定一个排序链表，删除所有含有重复数字的节点，只保留原始链表中 没有重复出现 的数字。
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        ListNode dummy = new ListNode(head.val-1);
+        dummy.next = head;
+        ListNode prev = dummy;
+        ListNode node = head;
+        while(true){
+            ListNode next = node.next;
+            if (next == null){
+                break;
+            }
+            if (node.val == next.val){
+                // 出现重复元素，前置链表断开
+                prev.next = null;
+//                // 这一步可以不要，
+                node.next = null;
+                // 后移，这一段都不要了
+                node = next;
+            }else {
+                // 两者不等了
+                // 之前存在相同元素，prev.next才会空
+                if (prev.next == null){
+                    // 指向下一个，但是prev不移动，无法确定next是不是重复元素
+                    prev.next = next;
+                    node.next = null;
+                }else {
+                    prev = prev.next;
+                }
+                node = next;
+            }
+        }
+        return dummy.next;
+    }
+
+    /**
      * 203.移除链表元素
      * @param head
      * @param val
@@ -492,5 +534,75 @@ public class Link {
 
         }
         return newHead;
+    }
+
+    /**
+     * 圆圈中最后留下的数字
+     * @param n
+     * @param m
+     * @return
+     */
+    public int lastRemaining(int n, int m) {
+        List<Integer> list = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            list.add(i);
+        }
+        int i = 1;
+        while (n > 1){
+            // 定位到下一个
+            i = (i + m - 1) % n;
+            list.remove(i);
+            n--;
+        }
+        return list.get(0);
+    }
+
+    /**
+     * 445.两数相加
+     * 给你两个 非空 链表来代表两个非负整数。数字最高位位于链表开始位置。
+     * 它们的每个节点只存储一位数字。将这两数相加会返回一个新的链表。
+     *
+     * 你可以假设除了数字 0 之外，这两个数字都不会以零开头。
+     *
+     * 进阶：
+     * 如果输入链表不能修改该如何处理？换句话说，你不能对列表中的节点进行翻转。
+     *
+     * @param l1 list1
+     * @param l2 list2
+     * @return 合并后的List
+     */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        Deque<ListNode> stack1 = new LinkedList<>();
+        Deque<ListNode> stack2 = new LinkedList<>();
+        // 栈初始化
+        initStack(l1,stack1);
+        initStack(l2,stack2);
+        // 哨兵头节点
+        ListNode head = new ListNode(-1);
+        int add = 0;
+        while (!stack1.isEmpty() || !stack2.isEmpty() || add > 0){
+            int val1 = stack1.isEmpty() ?  0 : stack1.pop().val;
+            int val2 = stack2.isEmpty() ?  0 : stack2.pop().val;
+            int val = val1 + val2 + add;
+            // 插入到head的屁股后面
+            insertNodeByHead(head,val % 10);
+            // 进位的地方
+            add = val / 10;
+        }
+
+        return head.next;
+    }
+
+    private void insertNodeByHead(ListNode head,int val){
+        ListNode node = new ListNode(val);
+        node.next = head.next;
+        head.next = node;
+    }
+
+    private void initStack(ListNode node,Deque<ListNode> stack){
+        while (node != null){
+            stack.push(node);
+            node = node.next;
+        }
     }
 }
