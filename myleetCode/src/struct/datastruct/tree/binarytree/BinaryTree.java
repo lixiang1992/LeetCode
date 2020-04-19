@@ -3531,4 +3531,45 @@ public class BinaryTree {
         }
         return null;
     }
+
+    /**
+     * LCP 10. 二叉树任务调度
+     * 任务调度优化是计算机性能优化的关键任务之一。在任务众多时，不同的调度策略可能会得到不同的总体执行时间，因此寻求一个最优的调度方案是非常有必要的。
+     *
+     * 通常任务之间是存在依赖关系的，即对于某个任务，你需要先完成他的前导任务（如果非空），才能开始执行该任务。
+     *
+     * 我们保证任务的依赖关系是一棵二叉树，其中 root 为根任务，root.left 和 root.right 为他的两个前导任务（可能为空），root.val 为其自身的执行时间。
+     * 在一个 CPU 核执行某个任务时，我们可以在任何时刻暂停当前任务的执行，并保留当前执行进度。
+     * 在下次继续执行该任务时，会从之前停留的进度开始继续执行。暂停的时间可以不是整数。
+     *
+     * 现在，系统有两个 CPU 核，即我们可以同时执行两个任务，但是同一个任务不能同时在两个核上执行。给定这颗任务树，请求出所有任务执行完毕的最小时间。
+     * @param root root
+     * @return 所有任务执行完毕的最小时间
+     */
+    public double minimalExecTime(TreeNode root) {
+        double[] res = execTime(root,2);
+        return res[0];
+    }
+
+    /**
+     * 获取node最小执行时间
+     * @param node node
+     * @param n 并行数
+     * @return [0]执行完当前节点最小耗时，[1]当前node为根的时间串行之和
+     */
+    private double[] execTime(TreeNode node,int n){
+        if (node == null){
+            // [0]执行完当前节点最小耗时，[1]当前node为根的时间串行之和
+            return new double[]{0.0D,0.0D};
+        }
+        // 获取左右子树的值
+        double[] leftTime = execTime(node.left,n);
+        double[] rightTime = execTime(node.right,n);
+        // 左右子树节点之和
+        double sum = leftTime[1] + rightTime[1];
+        // 当前节点执行完的最小消耗时间
+        // 当前节点全部的前置任务看成一个整体，进行双核执行，理想状态下的时间就是sum/2
+        double minTime = Math.max(Math.max(leftTime[0],rightTime[0]),sum/n) + node.val;
+        return new double[]{minTime,sum + node.val};
+    }
 }
