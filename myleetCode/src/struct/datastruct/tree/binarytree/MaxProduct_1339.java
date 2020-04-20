@@ -16,7 +16,6 @@ import struct.pub.tree.TreeNode;
 public class MaxProduct_1339 {
 
     private long max = 0;
-    private int mod = 1000000007;// 结果取模数
 
     /**
      * 分裂二叉树的最大乘积
@@ -25,6 +24,8 @@ public class MaxProduct_1339 {
      */
     public int maxProduct(TreeNode root) {
         maxProduct(root,nodeValueSum(root));
+        // 结果取模数
+        int mod = 1000000007;
         return (int) (max % mod);
     }
 
