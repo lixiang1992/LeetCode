@@ -3572,4 +3572,34 @@ public class BinaryTree {
         double minTime = Math.max(Math.max(leftTime[0],rightTime[0]),sum/n) + node.val;
         return new double[]{minTime,sum + node.val};
     }
+
+    /**
+     * 1430. Check If a String Is a Valid Sequence from Root to Leaves Path in a Binary Tree
+     * @param root root
+     * @param arr 顺序数组
+     * @return 是否有效
+     */
+    public boolean isValidSequence(TreeNode root, int[] arr) {
+        return checkValidSequence(root,arr,0);
+    }
+
+    /**
+     * 检验有效顺序
+     * @param root root
+     * @param arr 顺序数组
+     * @param index 层数
+     * @return 是否有效
+     */
+    private boolean checkValidSequence(TreeNode root,int[] arr,int index){
+        // 数值不相同，返回false
+        if (root == null || root.val != arr[index]){
+            return false;
+        }
+        // 最后一个元素的特判，必须是叶子节点
+        if (index == arr.length - 1){
+            return root.left == null && root.right == null;
+        }
+        // 递归判断左右子树
+        return checkValidSequence(root.left,arr,index+1) || checkValidSequence(root.right,arr,index+1);
+    }
 }
