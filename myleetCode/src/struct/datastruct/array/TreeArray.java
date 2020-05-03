@@ -1,11 +1,29 @@
 package struct.datastruct.array;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * 数组以及树状数组的应用
  */
 public class TreeArray {
+
+//    public int[] singleNumbers(int[] nums) {
+//        int[] copy = nums.clone();
+//        int num = nums[0];
+//        for (int i = 1;i<nums.length;i++){
+//            num = nums[i-1] ^ nums[i];
+//        }
+//
+//    }
 
     /**
      * 169.多数元素
@@ -67,13 +85,13 @@ public class TreeArray {
         Arrays.sort(A);
         int count = 0;
         for (int i = 1; i < A.length; i++) {
-            if (A[i-1] == A[i]){
+            if (A[i - 1] == A[i]) {
                 A[i]++;
                 count++;
-            } else if (A[i] < A[i-1]){
+            } else if (A[i] < A[i - 1]) {
                 int temp = A[i];
-                A[i] = A[i-1]+1;
-                count = count +(A[i] - temp);
+                A[i] = A[i - 1] + 1;
+                count = count + (A[i] - temp);
 
             }
         }
@@ -112,6 +130,49 @@ public class TreeArray {
         return 0;
     }
 
+    public void gameOfLife(int[][] board) {
+        int[][] clone = new int[board.length][board[0].length];
+        for (int i = 0; i < clone.length; i++) {
+            for (int j = 0; j < clone[i].length; j++) {
+                clone[i][j] = board[i][j];
+            }
+        }
+
+        for (int i = 0; i < clone.length; i++) {
+            for (int j = 0; j < clone[i].length; j++) {
+                board[i][j] = getStatus(clone, i, j);
+            }
+        }
+    }
+
+    private int getStatus(int[][] board, int i, int j) {
+        int[] dx = {-1, 0, 1};
+        int[] dy = {-1, 0, 1};
+        int count = 0;
+        for (int m = 0; m < dx.length; m++) {
+            for (int n = 0; n < dy.length; n++) {
+                // 边界跳过
+                int row = i + dx[m];
+                int col = j + dy[n];
+                if (row < 0 || row >= board.length || col < 0 || col >= board[i].length) {
+                    continue;
+                }
+                // 自己跳过
+                if (row == i && col == j) {
+                    continue;
+                }
+                if (board[row][col] == 1) {
+                    count++;
+                }
+            }
+        }
+        if (board[i][j] == 1) {
+            return 2 <= count && count <= 3 ? 1 : 0;
+        } else {
+            return count == 3 ? 1 : 0;
+        }
+    }
+
     /**
      * 1013. 将数组分成和相等的三个部分
      * 前缀和
@@ -143,5 +204,176 @@ public class TreeArray {
         }
         // 只要有一个满足条件即可
         return list1.get(0) < list2.get(list2.size() - 1);
+    }
+
+    /**
+     * 给你一个整数数组 nums 和一个整数 k。
+     *
+     * 如果某个 连续 子数组中恰好有 k 个奇数数字，我们就认为这个子数组是「优美子数组」。
+     *
+     * 请返回这个数组中「优美子数组」的数目。
+     *
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int numberOfSubarrays(int[] nums, int k) {
+        int totalCount = 0;// 全部的组合数
+        int oddCount = 0;
+        // {前缀的奇数个数，数量}
+        Map<Integer,Integer> cache = new HashMap<>();
+        for (int i = 0; i< nums.length;i++){
+            // 是奇数，数量+1
+            if ((nums[i] & 1) != 0){
+                oddCount++;
+                // 奇数所在位置的下标
+                cache.put(oddCount,i);
+            }
+        }
+        for (Map.Entry<Integer,Integer> entry : cache.entrySet()){
+            Integer key = entry.getKey() + k;
+            totalCount += (entry.getValue()+1) * cache.getOrDefault(key,0);
+        }
+        return totalCount;
+    }
+
+    /**
+     * 给你一个列表 nums ，里面每一个元素都是一个整数列表。请你依照下面各图的规则，按顺序返回 nums 中对角线上的整数。
+     * @param nums
+     * @return
+     */
+    public int[] findDiagonalOrder(List<List<Integer>> nums) {
+        List<Integer> resList = new ArrayList<>();
+        Map<Integer, Deque<Integer>> map = new TreeMap<>();
+        for (int i = 0;i< nums.size();i++){
+            for (int j = 0;j<nums.get(i).size();j++){
+                // 生成一个deque
+                Deque<Integer> deque = map.computeIfAbsent(i+j,k->new LinkedList<>());
+                deque.push(nums.get(i).get(j));
+            }
+        }
+        for (Deque<Integer> deque : map.values()){
+            resList.addAll(deque);
+        }
+        int[] res = new int[resList.size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = resList.get(i);
+        }
+        return res;
+    }
+
+    /**
+     * 山脉数组中查找目标值
+     * @param target
+     * @param mountainArr
+     * @return
+     */
+    public int findInMountainArray(int target, MountainArray mountainArr) {
+        int length = mountainArr.length();
+        // 查找最高点
+        int left = 0,right = length - 1;
+        int midIndex = getHighIndex(left,right,mountainArr);
+        if(mountainArr.get(midIndex) == target){
+            return midIndex;
+        }
+        // 左侧查找
+        right = midIndex;
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            int midArr = mountainArr.get(mid);
+            if(midArr == target){
+                return mid;
+            }else if(target < midArr){
+                right = mid - 1;
+            }else {
+                left = mid + 1;
+            }
+        }
+        // 往右侧查找
+        left = midIndex;
+        right = length - 1;
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            int midArr = mountainArr.get(mid);
+            if(midArr == target){
+                return mid;
+            }else if(target < midArr){
+                left = mid + 1;
+            }else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    private int getHighIndex(int left,int right,MountainArray mountainArr){
+        int length = right;
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            int midArr = mountainArr.get(mid);
+            int leftArr = mid == 0 ? Integer.MIN_VALUE : mountainArr.get(mid-1);
+            int rightArr = mid == length ? Integer.MAX_VALUE : mountainArr.get(mid+1);
+            if(midArr > rightArr && midArr > leftArr){
+                return mid;
+            }else if(midArr <= rightArr){
+                left = mid + 1;
+            }else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < candies.length; i++) {
+            max = Math.max(max,candies[i]);
+            candies[i] += extraCandies;
+        }
+        List<Boolean> res = new ArrayList<>(candies.length);
+        for (int candy : candies) {
+            res.add(candy >= max);
+        }
+        return res;
+    }
+
+    /**
+     * 绝对差不超过限制的最长连续子数组
+     * @param nums
+     * @param limit
+     * @return
+     */
+    public int longestSubarray(int[] nums, int limit) {
+        // 数值，数值对应的下标
+        TreeMap<Integer,Set<Integer>> treeMap = new TreeMap<>();
+        int max = 0;
+        int startIndex = 0;
+        for (int i = 0; i < nums.length; i++) {
+            // 进入treeMap
+            Set<Integer> set = treeMap.computeIfAbsent(nums[i], k->new HashSet<>());
+            set.add(i);
+            // 最大值和最小值的判断
+            while (startIndex <= i) {
+                // 用treeMap维护数值，可以快速得出最大最小值
+                if (treeMap.lastKey() - treeMap.firstKey() <= limit){
+                    // 记录
+                    max = Math.max(max, i - startIndex + 1);
+                    // 满足条件，继续遍历
+                    break;
+                }else {
+                    // 起始下标移除
+                    set = treeMap.get(nums[startIndex]);
+                    // 移除下标
+                    set.remove(startIndex);
+                    // 下标不存在了，移除这个元素
+                    if (set.isEmpty()){
+                        treeMap.remove(nums[startIndex]);
+                    }
+                    // 起始下标指针后移
+                    startIndex++;
+                }
+            }
+        }
+        return max;
     }
 }
