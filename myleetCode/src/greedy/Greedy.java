@@ -3,6 +3,7 @@ package greedy;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class Greedy {
     /**
@@ -51,7 +52,41 @@ public class Greedy {
         }
     }
 
-    public static boolean isPerfectSquare(int num) {
+    /**
+     * 45.跳跃游戏2
+     * @param nums
+     * @return
+     */
+    public int jump(int[] nums) {
+//        int length = nums.length - 1;
+//        int count = 0;
+//        while (length >0){
+//            for (int i = 0;i<= length;i++){
+//                // 找到第一个能跳到终点的，缩小length。继续从头找
+//                if (i + nums[i] >= length){
+//                    length = i;
+//                    break;
+//                }
+//            }
+//            ++count;
+//        }
+//        return count;
+        // O(N)贪心法则往后跳
+        int end = 0;
+        int maxPosition = 0;
+        int steps = 0;
+        for(int i = 0; i < nums.length - 1; i++){
+            //找能跳的最远的
+            maxPosition = Math.max(maxPosition, nums[i] + i);
+            if(i == end){ //遇到边界，就更新边界，并且步数加一
+                end = maxPosition;
+                steps++;
+            }
+        }
+        return steps;
+    }
+
+    public boolean isPerfectSquare(int num) {
         if (num == 1) {
             return true;
         }
@@ -89,7 +124,7 @@ public class Greedy {
         }
     }
 
-    public static List<List<Integer>> combine(int n, int k) {
+    public List<List<Integer>> combine(int n, int k) {
         if (n < k) {
             return new ArrayList<>();
         }
@@ -141,5 +176,49 @@ public class Greedy {
             }
         }
         return index;
+    }
+
+    /**
+     * 1057.校园自行车分配
+     * @param workers
+     * @param bikes
+     * @return
+     */
+    public int[] assignBikes(int[][] workers, int[][] bikes) {
+
+        return null;
+    }
+
+    /**
+     * 和为 K 的最少斐波那契数字数目
+     * @param k
+     * @return
+     */
+    public int findMinFibonacciNumbers(int k) {
+        if(k < 3){
+            return 1;
+        }
+        TreeSet<Integer> set = new TreeSet<>();
+        // 初始化，初始项加入set中
+        int a = 1,b = 1;
+        set.add(1);
+        // 斐波拉契数求和
+        int sum = 0;
+        while (sum < k){
+            sum = a + b;
+            // 加入有序集合中
+            set.add(sum);
+            a = b;
+            b = sum;
+        }
+        // 因为题目说一定有解，所以不用考虑空指针问题
+        int count = 0;
+        while (k > 0){
+            // 找到
+            int num = set.floor(k);
+            k = k - num;
+            count++;
+        }
+        return count;
     }
 }
