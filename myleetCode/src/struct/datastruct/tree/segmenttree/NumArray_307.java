@@ -96,7 +96,7 @@ public class NumArray_307 {
         while (node.start != node.end){
             int  mid = node.start + (node.end - node.start >> 1);
             // 左偏移可以等于，右边不行
-            if (mid >= i){
+            if (i <= mid){
                 // 左偏移
                 node = node.left;
             }else {
