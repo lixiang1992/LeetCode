@@ -3602,4 +3602,58 @@ public class BinaryTree {
         // 递归判断左右子树
         return checkValidSequence(root.left,arr,index+1) || checkValidSequence(root.right,arr,index+1);
     }
+
+    /**
+     * 5406. 收集树上所有苹果的最少时间
+     * 给你一棵有 n 个节点的无向树，节点编号为 0 到 n-1 ，它们中有一些节点有苹果。
+     *
+     * 通过树上的一条边，需要花费 1 秒钟。你从 节点 0 出发，请你返回最少需要多少秒，可以收集到所有苹果，并回到节点 0 。
+     *
+     * 无向树的边由 edges 给出，其中 edges[i] = [fromi, toi] ，表示有一条边连接 from 和 toi 。
+     *
+     * 除此以外，还有一个布尔数组 hasApple ，其中 hasApple[i] = true 代表节点 i 有一个苹果，否则，节点 i 没有苹果。
+     *
+     * @param n 节点数
+     * @param edges 无向树
+     * @param hasApple 节点是否有苹果
+     * @return 最小时间
+     */
+    public int minTime(int n, int[][] edges, List<Boolean> hasApple) {
+        Map<Integer,List<Integer>> cache = new HashMap<>();
+        // 建立邻接表
+        for (int[] edge : edges) {
+            List<Integer> list = cache.computeIfAbsent(edge[0], k -> new ArrayList<>());
+            list.add(edge[1]);
+        }
+        int res = 0;
+        // root节点不管是不是苹果，步数都是0，单独提出来，不要判断
+        List<Integer> children = cache.get(0);
+        // 从子节点开始遍历
+        for (int childIndex : children){
+            res += getAppleByNode(cache,childIndex,hasApple);
+        }
+        return res;
+
+    }
+
+    /**
+     * 获取苹果的step
+     * @param cache 邻接表
+     * @param index 当前元素下标
+     * @param hasApple 是否含有苹果的标识
+     * @return 从当前开始要获取苹果的step
+     */
+    private int getAppleByNode(Map<Integer,List<Integer>> cache,int index,List<Boolean> hasApple){
+        List<Integer> children = cache.get(index);
+        if (children == null) {
+            // 叶子节点判断，有苹果，返回来回路径，没有则返回0
+            return hasApple.get(index) ? 2 : 0;
+        }
+        int res = 0;
+        for (int childIndex : children){
+            res += getAppleByNode(cache,childIndex,hasApple);
+        }
+        // 孩子有苹果,带上自己的来回路径，孩子没有苹果，判断自己是不是有苹果
+        return res > 0 ? res + 2 :hasApple.get(index) ? 2 : 0;
+    }
 }
