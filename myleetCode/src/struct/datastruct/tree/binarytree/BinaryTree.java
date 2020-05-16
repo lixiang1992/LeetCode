@@ -3604,7 +3604,7 @@ public class BinaryTree {
     }
 
     /**
-     * 5406. 收集树上所有苹果的最少时间
+     * 1443. 收集树上所有苹果的最少时间
      * 给你一棵有 n 个节点的无向树，节点编号为 0 到 n-1 ，它们中有一些节点有苹果。
      *
      * 通过树上的一条边，需要花费 1 秒钟。你从 节点 0 出发，请你返回最少需要多少秒，可以收集到所有苹果，并回到节点 0 。
@@ -3618,42 +3618,59 @@ public class BinaryTree {
      * @param hasApple 节点是否有苹果
      * @return 最小时间
      */
-    public int minTime(int n, int[][] edges, List<Boolean> hasApple) {
-        Map<Integer,List<Integer>> cache = new HashMap<>();
+    public int minTime(int n, int[][] edges, List<Boolean> hasApple){
+        Map<Integer,List<Integer>> adjTable = new HashMap<>();
         // 建立邻接表
         for (int[] edge : edges) {
-            List<Integer> list = cache.computeIfAbsent(edge[0], k -> new ArrayList<>());
-            list.add(edge[1]);
+            // 由于是无向图，所以互相建立
+            buildTable(adjTable,edge[0],edge[1]);
+            buildTable(adjTable,edge[1],edge[0]);
         }
+        // 访问标识
+        boolean[] visit = new boolean[n];
         int res = 0;
         // root节点不管是不是苹果，步数都是0，单独提出来，不要判断
-        List<Integer> children = cache.get(0);
-        // 从子节点开始遍历
+        List<Integer> children = adjTable.get(0);
+        visit[0] = true;// 出发节点被访问
         for (int childIndex : children){
-            res += getAppleByNode(cache,childIndex,hasApple);
+            res += getAppleByNode(adjTable,childIndex,hasApple,visit);
         }
         return res;
-
     }
 
     /**
-     * 获取苹果的step
-     * @param cache 邻接表
-     * @param index 当前元素下标
-     * @param hasApple 是否含有苹果的标识
-     * @return 从当前开始要获取苹果的step
+     * 从无向图中获取苹果的时间
+     * @param adjTable 邻接表
+     * @param index 当前节点
+     * @param hasApple 节点是否有苹果
+     * @param visit 节点访问标识
+     * @return 当前index获取苹果的step
      */
-    private int getAppleByNode(Map<Integer,List<Integer>> cache,int index,List<Boolean> hasApple){
-        List<Integer> children = cache.get(index);
-        if (children == null) {
-            // 叶子节点判断，有苹果，返回来回路径，没有则返回0
-            return hasApple.get(index) ? 2 : 0;
+    private int getAppleByNode(Map<Integer, List<Integer>> adjTable, int index, List<Boolean> hasApple, boolean[] visit) {
+        if (visit[index]){
+            return 0;// 访问过了，不处理，直接返回
         }
+        // 标记当前节点被访问
+        visit[index] = true;
+        // 获取相邻节点集合
+        List<Integer> children = adjTable.get(index);
         int res = 0;
         for (int childIndex : children){
-            res += getAppleByNode(cache,childIndex,hasApple);
+            res += getAppleByNode(adjTable,childIndex,hasApple,visit);
         }
-        // 孩子有苹果,带上自己的来回路径，孩子没有苹果，判断自己是不是有苹果
-        return res > 0 ? res + 2 :hasApple.get(index) ? 2 : 0;
+        // 图的遍历，不是回溯，不用重置
+//        visit[index] = false;
+        return res > 0 ? res + 2 : hasApple.get(index) ? 2 : 0;
     }
+
+    /**
+     * 建立邻接表
+     * @param adjTable 邻接表
+     * @param start 起始
+     * @param end 结束
+     */
+    private void buildTable(Map<Integer,List<Integer>> adjTable,int start,int end){
+        adjTable.computeIfAbsent(start, k -> new ArrayList<>()).add(end);
+    }
+
 }
