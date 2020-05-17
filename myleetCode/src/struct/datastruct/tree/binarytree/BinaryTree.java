@@ -3673,4 +3673,29 @@ public class BinaryTree {
         adjTable.computeIfAbsent(start, k -> new ArrayList<>()).add(end);
     }
 
+    /**
+     * 二叉树中所有的好节点
+     * @param root
+     * @return
+     */
+    public int goodNodes(TreeNode root) {
+        if(root == null) {
+            return 0;
+        }
+        return countNodes(root,root.val);
+    }
+
+    private int countNodes(TreeNode root,int max){
+        if (root == null){
+            return 0;
+        }
+        // 好节点数
+        int res = 0;
+        if (root.val >= max){
+            res++;
+            max = root.val;// 替换路径上的最大值
+        }
+        // 获取左右子树好节点数，再带上自己
+        return res + countNodes(root.left,max) + countNodes(root.right,max);
+    }
 }
