@@ -22,11 +22,11 @@ public class MinCameraCover_968 {
      * @param root 根节点
      * @return 最小监控的数量
      */
-    public int minCameraCover(TreeNode root) {
+    public int minCameraCover_1(TreeNode root) {
         if (root == null) {
             return 0;
         }
-        int sumValue = 0;
+        int ans = 0;
         Deque<TreeNode> stack = new LinkedList<>();
         TreeNode node = root;
         TreeNode tempNode = node;// 上一个遍历到的节点
@@ -34,30 +34,21 @@ public class MinCameraCover_968 {
         while (node != null || !stack.isEmpty()) {
             if (node != null) {
                 stack.push(node);
-                if (isLeaf(node.left) || isLeaf(node.right)) {
-                    sumValue++;
-                    node.val = 1;// 1表示监控器节点
-                    if (node.left != null) {
-                        node.left.val = 2;// 2表示被监控到
-                    }
-                    if (node.right != null) {
-                        node.right.val = 2;// 2表示被监控到
-                    }
-                }
                 node = node.left;
             } else {
                 node = stack.peek();
                 if (node.right == null || node.right == tempNode) {
-                    // 当前节点出栈，出栈判断子树和自身是否在监控中
-                    if (!isControlNode(node.left) || !isControlNode(node.right)) {
-                        // 左右孩子有一个没有被监控了
+                    // 节点出栈，判断左右子树的状态，决定自身状态
+                    // -1表示不需要监控，0表示未监控，1表示被监控，2表示是监控器
+                    int leftVal = getNodeVal(node.left);
+                    int rightVal = getNodeVal(node.right);
+                    if (leftVal == 0 || rightVal == 0){
+                        // 左右孩子存在一个没有被监控，则当前节点要设置为监控器节点
+                        node.val = 2;
+                        ans++;// 监控器+1
+                    }else if (leftVal == 2 || rightVal == 2){
+                        // 左右孩子有一个是监控器，则当前节点被监控了
                         node.val = 1;
-                        sumValue++;// 当前节点是监控器
-                    } else if (isCameraNode(node.left) || isCameraNode(node.right)) {
-                        // 左右孩子有一个是监控器节点
-                        if (node.val == 0) {
-                            node.val = 2;// 当前节点被监控
-                        }
                     }
                     tempNode = stack.pop();
                     node = null;
@@ -67,43 +58,54 @@ public class MinCameraCover_968 {
                 }
             }
         }
-        if (tempNode.val == 0) {// 最后一个节点可能漏掉
-            tempNode.val = 1;// 标记为监控节点
-            sumValue++;
+        if (root.val == 0) {// root一个节点可能漏掉
+            root.val = 2;// 标记为监控节点
+            ans++;
         }
-        return sumValue;
+        return ans;
     }
 
     /**
-     * 是叶子节点
-     *
-     * @param node 节点
-     * @return 是否叶子节点
+     * 获取node.val
+     * @param node node
+     * @return node的状态
      */
-    private boolean isLeaf(TreeNode node) {
-        return node != null && (node.left == null && node.right == null);
+    private int getNodeVal(TreeNode node){
+        return node == null ? -1 : node.val;
     }
 
-    /**
-     * 是监控器节点
-     * node.val = 1表示该节点是监控器
-     *
-     * @param node 节点
-     * @return 节点是否监控器
-     */
-    private boolean isCameraNode(TreeNode node) {
-        return node != null && node.val == 1;
+    // 递归解法
+    public int minCameraCover(TreeNode root){
+        int[] ans = {0};
+        int status = minCameraCoverRecursion(root,ans);
+        return status == 0 ? ans[0] + 1 : ans[0];
     }
 
-    /**
-     * 是被监控节点
-     * node.val 是1或2都表示被监控了
-     *
-     * @param node 节点
-     * @return 节点是否被监控
-     */
-    private boolean isControlNode(TreeNode node) {
-        return node == null || node.val > 0;
+    private int minCameraCoverRecursion(TreeNode root,int[] ans){
+        // -1表示不需要监控，0表示未监控，1表示被监控，2表示是监控器
+        if (root == null){
+            return -1;
+        }
+        if (root.left == null && root.right == null) {
+            return 0;// 叶子节点特判，因为叶子节点的父节点是一定要被监控的
+        }
+        // 后序遍历，获取左右孩子的状态
+        int left = minCameraCoverRecursion(root.left,ans);
+        int right = minCameraCoverRecursion(root.right,ans);
+        if (left == 0 || right == 0){
+            // 左右孩子存在一个没有被监控，则当前节点要设置为监控器节点
+            ans[0]++;
+            return 2;
+        }
+        if (left == 1 && right == 1){
+            // 左右孩子都被监控了，则当前节点是暂不处理的，因为当前节点父节点会回来照顾他的
+            return 0;
+        }
+        if (left == 2 || right == 2){
+            // 左右孩子有一个是监控器，则当前节点被监控了
+            return 1;
+        }
+        return 0;
     }
 
 }
