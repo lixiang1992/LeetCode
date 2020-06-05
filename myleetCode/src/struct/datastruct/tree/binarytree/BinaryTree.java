@@ -4,7 +4,19 @@ import struct.pub.list.ListNode;
 import struct.pub.tree.TreeLinkNode;
 import struct.pub.tree.TreeNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * 二叉树类型题目
@@ -3623,8 +3635,8 @@ public class BinaryTree {
         // 建立邻接表
         for (int[] edge : edges) {
             // 由于是无向图，所以互相建立
-            buildTable(adjTable,edge[0],edge[1]);
-            buildTable(adjTable,edge[1],edge[0]);
+            adjTable.computeIfAbsent(edge[0], k -> new ArrayList<>()).add(edge[1]);
+            adjTable.computeIfAbsent(edge[1], k -> new ArrayList<>()).add(edge[0]);
         }
         // 访问标识
         boolean[] visit = new boolean[n];
@@ -3637,6 +3649,7 @@ public class BinaryTree {
         }
         return res;
     }
+
 
     /**
      * 从无向图中获取苹果的时间
@@ -3661,16 +3674,6 @@ public class BinaryTree {
         // 图的遍历，不是回溯，不用重置
 //        visit[index] = false;
         return res > 0 ? res + 2 : hasApple.get(index) ? 2 : 0;
-    }
-
-    /**
-     * 建立邻接表
-     * @param adjTable 邻接表
-     * @param start 起始
-     * @param end 结束
-     */
-    private void buildTable(Map<Integer,List<Integer>> adjTable,int start,int end){
-        adjTable.computeIfAbsent(start, k -> new ArrayList<>()).add(end);
     }
 
     /**
