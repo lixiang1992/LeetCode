@@ -3189,6 +3189,44 @@ public class BinaryTree {
     }
 
     /**
+     * 1161.最大内层元素和
+     * @param root root
+     * @return 最大内层和的层数
+     */
+    public int maxLevelSum(TreeNode root) {
+        TreeNode node = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(node);
+        int rear = queue.size();
+        int max = Integer.MIN_VALUE;
+        int ans = 0;
+        int temp = 0;// 每一层的值
+        int floor = 1;// 当前层
+        while (!queue.isEmpty()){
+            node = queue.poll();
+            rear--;
+            temp += node.val;
+            if (node.left != null){
+                queue.offer(node.left);
+            }
+            if (node.right != null){
+                queue.offer(node.right);
+            }
+            // 当前层遍历完成
+            if (rear == 0){
+                if (temp > max){
+                    max = temp;
+                    ans = floor;
+                }
+                temp = 0;
+                floor++;
+                rear = queue.size();
+            }
+        }
+        return ans;
+    }
+
+    /**
      * 1302.层数最深叶子节点之和
      * 二叉树层次遍历，每一层都累加叶子节点值，进入下一层累计值就清空sum值
      * @param root root
