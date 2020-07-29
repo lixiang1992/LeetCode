@@ -2,6 +2,7 @@ package struct.datastruct.stack;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * 栈的练习
@@ -120,5 +121,88 @@ public class LinkStack {
             res[stack.pop()] = 0;
         }
         return res;
+    }
+
+    public int sumSubarrayMins(int[] A) {
+        return 0;
+    }
+
+    /**
+     * 1124.表现良好的最长时段
+     * @param hours
+     * @return
+     */
+    public int longestWPI(int[] hours) {
+        int max = 0;
+        Stack<Integer> stack = new Stack<>();
+        int[] prefixSrc = new int[hours.length + 1];
+        //大于8的置为1，否则置为-1
+        for (int i = 0; i < hours.length; i++) {
+            if (hours[i] > 8) {
+                max = 1;
+                hours[i] = 1;
+            } else {
+                hours[i] = -1;
+            }
+            //初始化前缀和数组
+            prefixSrc[0] = 0;
+            prefixSrc[i + 1] = prefixSrc[i] + hours[i];
+        }
+        for (int i = 0; i < prefixSrc.length - 1; i++) {
+            //实现单调栈
+            if (stack.isEmpty()) {
+                stack.push(i);
+            } else {
+                if (prefixSrc[i] < prefixSrc[stack.peek()]) {
+                    stack.push(i);
+                }
+            }
+        }
+        //开始寻找,从后往前遍历
+        for (int i = prefixSrc.length - 1; i >= 0; i--) {
+            int last = i;
+            while (!stack.isEmpty() && prefixSrc[i] > prefixSrc[stack.peek()]) {
+                last = stack.pop();
+            }
+            if (last != i) {
+                int width = i - last;
+                max = max > width ? max : width;
+            }
+        }
+        return max;
+    }
+
+    /**
+     * 1190.给出一个字符串 s（仅含有小写英文字母和括号）。
+     *
+     * 请你按照从括号内到外的顺序，逐层反转每对匹配括号中的字符串，并返回最终的结果。
+     *
+     * 注意，您的结果中 不应 包含任何括号。
+     *
+     * @param s
+     * @return
+     */
+    public String reverseParentheses(String s) {
+        StringBuilder res = new StringBuilder();
+        Deque<StringBuilder> stack = new LinkedList<>();
+        stack.push(res);
+        for(int i = 0;i < s.length();i++){
+            char c = s.charAt(i);
+            if(c == '('){
+                // 新的一层
+                StringBuilder next = new StringBuilder();
+                stack.push(next);
+            }else if(c == ')'){
+                // 已经完成的字符串
+                StringBuilder over = stack.pop();
+                StringBuilder cur = stack.peek();
+                cur.append(over.reverse());
+            }else {
+                // 字符加入
+                StringBuilder cur = stack.peek();
+                cur.append(c);
+            }
+        }
+        return res.toString();
     }
 }
