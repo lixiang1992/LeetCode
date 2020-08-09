@@ -1,4 +1,4 @@
-package hash;
+package struct.datastruct.hash;
 
 import java.util.*;
 
@@ -105,6 +105,83 @@ public class Hash {
             sum = tempSum;
         }
         return sum;
+    }
+
+    /**
+     * 128.最长连续序列
+     * @param nums
+     * @return
+     */
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int num : nums){
+            set.add(num);
+        }
+
+        int ans = 0;
+        for(int num : set){
+            // 上一个如果存在，则在内部的循环中处理过了
+            if (!set.contains(num-1)){
+                int currentNum = num;
+                int tempLength = 1;// 有数字，他本身就是有序的，起始为1
+                // 向后滑动
+                while (set.contains(currentNum+1)){
+                    currentNum++;
+                    tempLength++;
+                }
+                ans = Math.max(tempLength,ans);
+            }
+        }
+        return ans;
+    }
+
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        Map<Character,Integer> map = new HashMap<>();
+        int ans = 1;
+        int begin = 0;
+        for(int i = 0;i < s.length();i++){
+            char c = s.charAt(i);
+            map.put(c,map.getOrDefault(c,0) + 1);
+            while(map.size()>=k){
+                char b = s.charAt(begin);
+                int cnt = map.getOrDefault(b,0);
+                if(cnt > 1){
+                    map.put(b,cnt - 1);
+                } else {
+                    map.remove(b);
+                }
+                begin++;
+            }
+            ans = Math.max(ans,i - begin + 1);
+        }
+        return ans;
+    }
+
+    /**
+     * 713. 乘积小于K的子数组
+     * 给定一个正整数数组 nums。
+     *
+     * 找出该数组内乘积小于 k 的连续的子数组的个数。
+     * 滑动窗口思想
+     * @param nums
+     * @param k
+     * @return
+     */
+    public int numSubarrayProductLessThanK(int[] nums, int k) {
+        if (k <= 1){
+            return 0;
+        }
+        long cur = 1L;
+        int start = 0;
+        int res = 0;
+        for (int i = 0; i < nums.length; i++) {
+            cur *= nums[i];
+            while (cur >= k){
+                cur /= nums[start++];
+            }
+            res+= i - start + 1;
+        }
+        return res;
     }
 
     /**

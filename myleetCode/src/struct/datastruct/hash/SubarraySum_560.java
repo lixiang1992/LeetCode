@@ -1,4 +1,4 @@
-package hash;
+package struct.datastruct.hash;
 
 import java.util.HashMap;
 import java.util.Map;
