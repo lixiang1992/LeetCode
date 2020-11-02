@@ -44,7 +44,8 @@ public class Match_213 {
     }
 
     public int furthestBuilding(int[] heights, int bricks, int ladders) {
-        Queue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        // TOP K 问题，维护一个容量是ladders的堆，在堆外面的用砖头
+        Queue<Integer> pq = new PriorityQueue<>();
         int n = heights.length;
         for(int i = 1;i < heights.length;i++){
             if(heights[i] <= heights[i - 1]){
@@ -55,7 +56,7 @@ public class Match_213 {
             if(pq.size() > ladders){
                 bricks -= pq.poll();
             }
-            if(bricks <= 0){
+            if(bricks < 0){
                 return i - 1;
             }
         }
